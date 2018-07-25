@@ -1,0 +1,55 @@
+
+#####################################
+########## OPEN API CALLS ###########
+#####################################
+open permission:
+  - 'static#*'
+
+login permission:
+  # Feed Calls
+  - 'api/public/v1/test#test'
+
+#####################################
+####### ROLES REQUIRED CALLS ########
+#####################################
+roles permission:
+  restricted:
+    home_read:
+      - 'home#index'
+    ########################
+    ##### AUTH MODULE ######
+    ########################
+    users_read:
+      - 'users#index'
+      - 'users#show'
+    users_write:
+      - 'users#new'
+      - 'users#create'
+      - 'users#edit'
+      - 'users#update'
+      - 'users#perform_action'
+    users_destroy:
+      - 'users#destroy'
+    orders_users_write:
+      - 'users#new_user'
+      - 'users#create_from_order_flow'
+    roles_read:
+      - 'roles#index'
+      - 'roles#show'
+    roles_write:
+      - 'roles#new'
+      - 'roles#create'
+      - 'roles#edit'
+      - 'roles#update'
+    roles_destroy:
+      - 'roles#destroy'
+    permissions_read:
+      - 'permissions#index'
+      - 'permissions#show'
+    permissions_write:
+      - 'permissions#new'
+      - 'permissions#create'
+      - 'permissions#edit'
+      - 'permissions#update'
+    permissions_destroy:
+      - 'permissions#destroy'

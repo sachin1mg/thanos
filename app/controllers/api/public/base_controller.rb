@@ -1,5 +1,5 @@
 module Api::Public
-  class BaseController < ::BaseController
+  class BaseController < ::AuthController
     before_action :disable_fields
 
     #

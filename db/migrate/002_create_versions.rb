@@ -10,8 +10,8 @@ class CreateVersions < ActiveRecord::Migration[5.1]
 
   def change
     create_table :versions do |t|
-      t.citext   :item_type, {:null=>false}
-      t.citext  :item_id,   null: false
+      t.citext   :item_type, null: false
+      t.citext   :item_id,   null: false
       t.citext   :event,     null: false
       t.citext   :whodunnit
       # t.text     :object, limit: TEXT_BYTES

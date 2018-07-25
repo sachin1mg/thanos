@@ -12,9 +12,9 @@ PSQL:
   POOL: 5
   HOST: localhost
   PORT: 5432
-  USERNAME: vanilla_applcation_user
-  PASSWORD: vanilla_applcation_pass
-  DATABASE: vanilla_applcation_db
+  USERNAME: odin_user
+  PASSWORD: odin_pass
+  DATABASE: odin_db
   CONNECT_TIMEOUT: 2
   READ_TIMEOUT: 10
   WRITE_TIMEOUT: 10

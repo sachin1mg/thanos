@@ -1,9 +1,11 @@
 class AuthController < BaseController
-  before_action :authenticate_user!
+  before_action :authorize_user!
 
-  private
-
-  def authenticate_user!
-    raise ::Unauthorized if current_user.id.blank?
+  def authorize_user!
+    AuthModule::Permissions.new(
+        user: current_user,
+        controller: params[:controller],
+        action: params[:action]
+    ).authorize!
   end
 end
