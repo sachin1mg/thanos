@@ -51,3 +51,4 @@ class ApplicationController < ActionController::API
   def valid_health?
   end
 end
+
