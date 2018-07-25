@@ -6,8 +6,10 @@ class ApplicationWorker
   #
   # Execute given block and run garbage collector in the end
   #
-  def with_garbage_collection
-    yield
+  def uncached
+    ActiveRecord::Base.uncached do
+      yield
+    end
   ensure
     # Ensure that Garbage collector always run
     GC.start
