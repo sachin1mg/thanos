@@ -4,6 +4,9 @@ Rails.application.routes.draw do
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
-  extend InternalRoutes
-  extend PublicRoutes
+
+  namespace 'api', module: 'api/public' do
+    namespace :v1 do
+    end
+  end
 end

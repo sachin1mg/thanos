@@ -46,11 +46,6 @@ group :development do
 
   gem 'brakeman', '~> 4.2', require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis.
   gem 'bullet', '~> 5.7', '>= 5.7.5' # help to kill N+1 queries and unused eager loading.
-  gem 'rails-erd', '~> 1.5', '>= 1.5.2' # Automatically generate an entity-relationship diagram (ERD) for your Rails models.
-end
-
-group :test do
-  gem 'simplecov', '~> 0.15.1', require: false # Code coverage for Ruby 1.9+ with a powerful configuration library and automatic merging of coverage across test suites
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -74,5 +69,3 @@ gem 'sidekiq', '~> 5.1', '>= 5.1.1' # Simple, efficient background processing fo
 gem 'sidekiq-limit_fetch', '~> 3.4' # Sidekiq strategy to restrict number of workers which are able to run specified queues simultaneously.
 gem 'sidekiq-logstash', '~> 0.3.0' # Sidekiq::Logstash turns your Sidekiq log into an organised, aggregated, JSON-syntax log ready to be sent to a logstash server.
 gem 'sidekiq-reliable-fetch', github: 'rohitjangid/sidekiq-reliable-fetch', branch: 'refactor/sidekiq-version' # Redis reliable queue pattern implemented in Sidekiq
-# gem 'sidekiq_remove_scheduled', '~> 1.0', '>= 1.0.2' # Just call remove_scheduled method and pass the argument to the worker to remove scheduled jobs. No need to store Job Ids
-gem 'whenever', '~> 0.10.0' # Clean ruby syntax for writing and deploying cron jobs
