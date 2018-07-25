@@ -1,0 +1,2 @@
+class ApiFailure < StandardError
+end

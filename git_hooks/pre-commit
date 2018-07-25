@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
+# A hook script to verify that only syntactically valid ruby code is commited.
+# Called by git-commit with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# Put this code into a file called "pre-commit" inside your .git/hooks
+# directory, and make sure it is executable ("chmod +x .git/hooks/pre-commit")
+
+# Ruby 2 or higher required
+if RUBY_VERSION.to_f < 2.0
+  $stderr.puts "Ruby version 2.0 or higher required!"
+  exit 1
+end
+
+require 'shellwords'
+require 'open3'
+include Open3
+
+# Set this to true if you want warnings to stop your commit
+stop_on_warnings = (%x(git config --bool hooks.stop-on-warnings).chomp != "false")
+
+# Set this to true if you'd like to skip checking erb files
+skip_erb_files = true#(%x(git config --bool hooks.skip-erb-files).chomp == "true")
+
+# Set this if you'd like to use a specific ruby executable to for syntax checking
+ruby_compiler = %x(git config hooks.ruby-compiler).chomp
+if ruby_compiler.empty?
+  compiler_ruby = %x(which ruby).chomp
+end
+
+if compiler_ruby.nil? or compiler_ruby == ""
+  $stderr.puts "Couldn't find `rbx` or `ruby` executable!"
+  exit 1
+end
+
+changed_ruby_files = `git diff-index --name-only --cached HEAD`.split("\n").inject([]) do |files, line|
+  files << line.chomp if line =~ /(.+\.(e?rb|task|rake|thor)|[Rr]akefile|[Tt]horfile)/
+  files
+end
+
+warnings_and_errors = []
+
+changed_ruby_files.each do |file|
+  next if not File.readable?(file)
+
+  if file =~ /\.erb\z/
+    next if skip_erb_files
+    striped_content = File.read(file).gsub(/(<%=)(.*(do|\{)(\s*\|[^|]*\|)?\s*%>)/, "<%\\2")
+    # Set trim mode to "-", just as Rails does
+    cmd = [["erb", "-xT-"].shelljoin, " | ", [compiler_ruby, "-wc"].shelljoin].join
+  else
+    cmd = [compiler_ruby, "-wc", file].shelljoin
+  end
+
+  errors = []
+  popen3(cmd) do |stdin, stdout, stderr|
+    if file =~ /\.erb\z/
+      stdin.puts striped_content
+      stdin.close
+    end
+    errors = stderr.read.split("\n")
+  end
+
+  errors.reject!{ |line| line =~ /[0-9]+:\s+warning:/ } unless stop_on_warnings
+
+  if errors.any?
+    errors.map!{ |line| line.sub(/#{file}:/, '') }
+    warnings_and_errors << "#{file}:\n#{errors.join("\n")}"
+  end
+end
+
+if warnings_and_errors.any?
+  $stderr.puts warnings_and_errors.join("\n\n")
+  exit 1
+else
+  # All is well
+  exit 0
+end

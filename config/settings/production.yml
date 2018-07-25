@@ -1,0 +1,5 @@
+RAILS:
+  SECRET_KEY_BASE: ''
+
+CONSTANTS:
+  DOMAIN: ''

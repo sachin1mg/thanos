@@ -1,0 +1,10 @@
+development:
+  adapter: async
+
+test:
+  adapter: async
+
+production:
+  adapter: redis
+  url: <%= "redis://#{Settings.REDIS.HOST}:#{Settings.REDIS.PORT}/1" %>
+  channel_prefix: vanilla_application_production

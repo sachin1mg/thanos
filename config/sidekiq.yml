@@ -1,0 +1,6 @@
+:concurrency: 3
+:logfile: ./log/sidekiq.log
+:queues:
+  - critical
+  - default
+  - low
