@@ -19,10 +19,8 @@ ActiveRecord::Schema.define(version: 7) do
   create_table "permissions", force: :cascade do |t|
     t.citext "label"
     t.citext "status"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_permissions_on_deleted_at"
     t.index ["label"], name: "index_permissions_on_label"
     t.index ["status"], name: "index_permissions_on_status"
   end
@@ -37,11 +35,11 @@ ActiveRecord::Schema.define(version: 7) do
 
   create_table "roles", force: :cascade do |t|
     t.citext "label"
-    t.datetime "deleted_at"
+    t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_roles_on_deleted_at"
     t.index ["label"], name: "index_roles_on_label"
+    t.index ["parent_id"], name: "index_roles_on_parent_id"
   end
 
   create_table "roles_users", id: false, force: :cascade do |t|
@@ -54,15 +52,20 @@ ActiveRecord::Schema.define(version: 7) do
 
   create_table "users", force: :cascade do |t|
     t.citext "name"
-    t.citext "country_code"
-    t.citext "phone_number"
-    t.citext "email", null: false
-    t.citext "encrypted_password", null: false
-    t.datetime "deleted_at"
+    t.citext "email", default: "", null: false
+    t.citext "encrypted_password", default: "", null: false
+    t.citext "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet "current_sign_in_ip"
+    t.inet "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   create_table "versions", force: :cascade do |t|
