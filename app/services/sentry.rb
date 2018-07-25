@@ -9,7 +9,16 @@ class Sentry
   # @param extra = {} [Hash] Extra Info
   #
   def self.error(msg, extra = {})
-    self.capture(msg, level: 'error', extra: extra)
+    self.capture(msg, level: :error, extra: extra)
+  end
+
+  #
+  # Send info to Sentry
+  # @param msg [String] Message
+  # @param extra = {} [Hash] Extra Info
+  #
+  def self.info(msg, extra = {})
+    self.capture(msg, level: :info, extra: extra)
   end
 
   #
@@ -18,7 +27,7 @@ class Sentry
   # @param level: 'info' [String] Level
   # @param extra: {} [Hash] Extra Info
   #
-  def self.capture(msg, level: 'info', extra: {})
+  def self.capture(msg, level: :info, extra: {})
     Logging.log(level, msg, extra)
     Raven.capture_message(msg,
                           level: level,
