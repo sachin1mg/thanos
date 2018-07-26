@@ -40,11 +40,7 @@ module Api::Public::V1
     end
 
     def material_requests
-      if params[:sales_order_id].present?
-        sales_order.material_requests
-      else
-        MaterialRequest.all
-      end
+      current_vendor.material_requests
     end
 
     def sales_order
@@ -56,10 +52,11 @@ module Api::Public::V1
     end
 
     def index_filters
+      param! :sales_order_id, String, blank: false
       param! :type, String, blank: false
       param! :delivery_date, Date, blank: false
 
-      params.permit(:type, :delivery_date)
+      params.permit(:sales_order_id, :type, :delivery_date)
     end
 
     #####################
