@@ -3,12 +3,12 @@ module Api::Public::V1
     skip_before_action :valid_action?, only: [:destroy, :show]
 
     def create
-      sales_order = SalesOrder.create!(param_attributes)
+      sales_order = sales_orders.create!(param_attributes)
       render_serializer scope: sales_order
     end
 
     def index
-      sales_orders = SalesOrder.all.filter(index_filters)
+      sales_orders = sales_orders.filter(index_filters)
       render_serializer scope: sales_orders, sorting: true
     end
 
@@ -53,7 +53,11 @@ module Api::Public::V1
     # @return [SalesOrder] Sales Order derived from id in params
     #
     def sales_order
-      @sales_order ||= SalesOrder.find(params[:id])
+      @sales_order ||= sales_orders.find(params[:id])
+    end
+
+    def sales_orders
+      @sales_orders ||= current_vendor.sales_orders
     end
 
     #
