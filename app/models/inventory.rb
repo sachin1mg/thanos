@@ -14,6 +14,8 @@ class Inventory < ApplicationRecord
   validates_numericality_of :cost_price, greater_than: 0
   validates_numericality_of :selling_price, greater_than: 0
 
+  scope :available, -> { where('quantity > ?', 0) }
+
   before_validation :init
 
   def init

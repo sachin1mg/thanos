@@ -3,10 +3,10 @@ module Api::Public::V1
     skip_before_action :valid_action?, only: [:destroy, :show]
 
     def create
-      sales_order = sales_orders.create!(param_attributes)
+      sales_order = SalesOrderModule::SalesOrderManager.create!(param_attributes)
       render_serializer scope: sales_order
     end
-
+ 
     def index
       sales_orders = sales_orders.filter(index_filters)
       render_serializer scope: sales_orders, sorting: true
@@ -24,7 +24,8 @@ module Api::Public::V1
     private
 
     def param_attributes
-      params.permit(:vendor_id, :order_reference_id, :customer_name, :amount, :discount, :source, :barcode, :shipping_label_url)
+      params.permit(:order_reference_id, :customer_name, :amount, :discount, :source,
+                    :barcode, :shipping_label_url, :vendor_id, sales_order_items: [:price, :quantity, :discount, :sku_id])
     end
 
     def index_filters
@@ -71,6 +72,12 @@ module Api::Public::V1
       param! :source, String, blank: false
       param! :barcode, String, blank: false
       param! :shipping_label_url, String, blank: false
+      param! :sales_order_items, Array, blank: false, required: true do |array|
+        array.param! :sku_id, Integer, required: true, blank: false
+        array.param! :quantity, Integer, required: true, blank: false
+        array.param! :price, Float, required: true, blank: false
+        array.param! :discount, Float, required: true, blank: false
+      end
     end
   end
 end

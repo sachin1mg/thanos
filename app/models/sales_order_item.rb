@@ -9,11 +9,10 @@ class SalesOrderItem < ApplicationRecord
   }
 
   validates_presence_of :price, :status
-  validates_numericality_of :price, :discount, greater_than_or_equal_to: 0
+  validates_numericality_of :price, :discount, :quantity, greater_than_or_equal_to: 0
 
   belongs_to :sales_order
   belongs_to :sku
-  belongs_to :inventory, optional: true
   has_many :inventory_pickups
 
   before_validation :init
