@@ -3,13 +3,14 @@ module Api::Public::V1
     skip_before_action :valid_action?, only: [:destroy, :show]
 
     def create
-      inventory_pickup = InventoryPickup.create!(param_attributes)
+      sales_order_item = sales_order.sales_order_items.find(params[:sales_order_item_id])
+      inventory_pickup = sales_order_item.inventory_pickups.create!(param_attributes)
       render_serializer scope: inventory_pickup
     end
 
     def index
-      inventory_pickups = InventoryPickup.filter(index_filters)
-      render_serializer scope: inventory_pickups, sorting: true
+      filter_inventory_pickups = inventory_pickups.filter(index_filters)
+      render_serializer scope: filter_inventory_pickups, sorting: true
     end
 
     def show
@@ -28,7 +29,7 @@ module Api::Public::V1
     end
 
     def index_filters
-      params.permit(:sales_order_id)
+      {}
     end
 
     ######################
@@ -46,8 +47,12 @@ module Api::Public::V1
       @inventory_pickup ||= inventory_pickups.find(params[:id])
     end
 
+    def sales_order
+      @sales_order ||= SalesOrder.find(params[:sales_order_id])
+    end
+
     def inventory_pickups
-      @inventory_pickups ||= InventoryPickup.filter(sales_order_id: params[:sales_order_id])
+      @inventory_pickups ||= sales_order.inventory_pickups
     end
 
     #

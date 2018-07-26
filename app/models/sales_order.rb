@@ -13,6 +13,7 @@ class SalesOrder < ApplicationRecord
 
   belongs_to :vendor
   has_many :sales_order_items
+  has_many :inventory_pickups, through: :sales_order_items
   has_one :invoice
 
   before_validation :init
