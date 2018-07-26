@@ -7,7 +7,7 @@ class CreateInventories < ActiveRecord::Migration[5.1]
       t.references :batch, foreign_key: true
       t.integer :quantity
       t.decimal :mrp, precision: 8, scale: 2
-      t.jsonb :meta_data
+      t.jsonb :metadata
 
       t.datetime :deleted_at
       t.timestamps

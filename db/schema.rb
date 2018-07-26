@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.decimal "mrp", precision: 8, scale: 2
     t.date "manufacturing_date"
     t.date "expiry_date"
-    t.jsonb "meta_data"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.bigint "batch_id"
     t.integer "quantity"
     t.decimal "mrp", precision: 8, scale: 2
-    t.jsonb "meta_data"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.citext "rack"
     t.citext "slab"
     t.citext "bin"
-    t.jsonb "meta_data"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.citext "item_group"
     t.citext "uom"
     t.integer "pack_size"
-    t.jsonb "meta_data"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.citext "name", null: false
     t.citext "status"
     t.citext "types", array: true
-    t.jsonb "meta_data"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -5,7 +5,7 @@ class CreateBatches < ActiveRecord::Migration[5.1]
       t.decimal :mrp, precision: 8, scale: 2
       t.date :manufacturing_date
       t.date :expiry_date
-      t.jsonb :meta_data
+      t.jsonb :metadata
 
       t.datetime :deleted_at
       t.timestamps

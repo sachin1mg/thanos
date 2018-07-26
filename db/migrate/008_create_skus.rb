@@ -6,7 +6,7 @@ class CreateSkus < ActiveRecord::Migration[5.1]
       t.citext :item_group
       t.citext :uom
       t.integer :pack_size
-      t.jsonb :meta_data
+      t.jsonb :metadata
 
       t.datetime :deleted_at
       t.timestamps
