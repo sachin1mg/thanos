@@ -23,4 +23,8 @@ class SalesOrderItem < ApplicationRecord
     self.discount ||= 0
     self.metadata ||= {}
   end
+
+  def batches
+    self.inventory_pickups.map(&:batch).compact
+  end
 end
