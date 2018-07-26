@@ -10,7 +10,7 @@ class SalesOrder < ApplicationRecord
   validates_presence_of :amount, :status
   validates_numericality_of :amount, :discount, greater_than_or_equal_to: 0
 
-  # belongs_to :vendor
+  belongs_to :vendor
   has_many :sales_order_items
   has_one :invoice
 
