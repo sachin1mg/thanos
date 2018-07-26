@@ -1,6 +1,6 @@
 module Api::Public
   class AuthController < BaseController
-    before_action :authenticate!
+    # before_action :authenticate!
 
     private
 

@@ -7,8 +7,11 @@ module PublicRoutes
 
           resources :skus
           resources :batches
-          resources :locations
-          resources :vendors
+
+          resources :vendors do
+            resources :locations
+          end
+
           resources :inventories
         end
       end

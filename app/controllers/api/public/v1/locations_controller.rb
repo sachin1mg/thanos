@@ -2,7 +2,8 @@ module Api::Public::V1
   class LocationsController < ::Api::Public::AuthController
     # GET /locations
     def index
-      render json: Location.all
+      resources = Location.all
+      render_serializer scope: resources
     end
 
     # GET /locations/1
@@ -11,9 +12,13 @@ module Api::Public::V1
     end
 
     def create
+      location = InventoryModule::LocationManager.create(location_params)
+      render_serializer scope: location
     end
 
     def update
+      location = location_manager.update(location_params)
+      render_serializer scope: location
     end
 
     # DELETE /locations/1
@@ -24,7 +29,16 @@ module Api::Public::V1
     private
 
     def location
+
       @location ||= Location.find(params[:id])
+    end
+
+    def location_params
+      params.permit(:vendor_id, :aisle, :rack, :slab, :bin)
+    end
+
+    def location_manager
+      @location_manager ||= InventoryModule::LocationManager.new(location)
     end
   end
 end
