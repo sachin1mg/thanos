@@ -61,6 +61,7 @@ gem 'lograge', '~> 0.9.0' # Tame Rails' multi-line logging into a single line pe
 gem 'logstash-event', '~> 1.2', '>= 1.2.02' # Library that contains the classes required to create LogStash events
 gem 'newrelic_rpm', '~> 4.8', '>= 4.8.0.341' # Tracking the application metrics in new relic
 gem 'paper_trail', '~> 8.1', '>= 8.1.2' # Track changes to your models, for auditing or versioning.
+gem 'paperclip', '~> 6.0' # Easy upload management for ActiveRecord
 gem 'paranoia', '~> 2.4' # Paranoia is a re-implementation of acts_as_paranoid. when you called destroy on an Active Record object that it didn't actually destroy it, but just "hid" the record.
 gem 'rails_param', '~> 0.10.0' # Parameter Validation and Type Coercion for Rails
 gem 'redis', '~> 4.0', '>= 4.0.1' # A Ruby client that tries to match Redis' API one-to-one, while still providing an idiomatic interface.
