@@ -21,7 +21,7 @@ module Api::Public::V1
 
     # PUT /inventories/1
     def update
-      inventory.update_attributes(inventory_params)
+      inventory.update_attributes!(inventory_params)
       render_serializer scope: inventory
     end
 
