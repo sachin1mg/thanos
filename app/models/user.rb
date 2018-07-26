@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   validates_presence_of :email
 
+  belongs_to :vendor
   has_and_belongs_to_many :roles
   has_many :permissions, through: :roles
 

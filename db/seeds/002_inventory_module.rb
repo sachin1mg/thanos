@@ -6,6 +6,8 @@
   )
 end
 
+User.update_all(vendor_id: Vendor.first.id)
+
 100.times do
   Sku.create(
     sku_name: Faker::Name.name,

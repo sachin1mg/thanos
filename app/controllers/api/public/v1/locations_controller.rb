@@ -2,8 +2,8 @@ module Api::Public::V1
   class LocationsController < ::Api::Public::AuthController
     # GET /locations
     def index
-      locations = locations.filter(index_filters)
-      render_serializer scope: locations
+      resources = locations.filter(index_filters)
+      render_serializer scope: resources
     end
 
     # GET /locations/1
