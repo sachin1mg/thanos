@@ -10,6 +10,7 @@ module PublicRoutes
           resources :vendors
           resources :locations
           resources :inventories
+          resources :suppliers, only: [:create, :update, :index, :show]
         end
       end
     end
