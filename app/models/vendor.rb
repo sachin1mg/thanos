@@ -6,4 +6,10 @@ class Vendor < ApplicationRecord
   has_many :inventories
 
   validates_presence_of :name, :status, :types, :invoice_number_template
+
+  before_validation :init
+
+  def init
+    self.metadata ||= {}
+  end
 end
