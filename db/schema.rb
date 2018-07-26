@@ -70,10 +70,10 @@ ActiveRecord::Schema.define(version: 15) do
   end
 
   create_table "permissions_roles", id: false, force: :cascade do |t|
-    t.bigint "permission_id"
     t.bigint "role_id"
-    t.index ["permission_id", "role_id"], name: "index_permissions_roles_on_permission_id_and_role_id", unique: true
+    t.bigint "permission_id"
     t.index ["permission_id"], name: "index_permissions_roles_on_permission_id"
+    t.index ["role_id", "permission_id"], name: "index_permissions_roles_on_role_id_and_permission_id", unique: true
     t.index ["role_id"], name: "index_permissions_roles_on_role_id"
   end
 
@@ -87,10 +87,10 @@ ActiveRecord::Schema.define(version: 15) do
   end
 
   create_table "roles_users", id: false, force: :cascade do |t|
-    t.bigint "role_id"
     t.bigint "user_id"
-    t.index ["role_id", "user_id"], name: "index_roles_users_on_role_id_and_user_id", unique: true
+    t.bigint "role_id"
     t.index ["role_id"], name: "index_roles_users_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", unique: true
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
