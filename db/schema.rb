@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 19) do
+ActiveRecord::Schema.define(version: 22) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,16 +161,61 @@ ActiveRecord::Schema.define(version: 19) do
     t.index ["vendor_id"], name: "index_sales_orders_on_vendor_id"
   end
 
+  create_table "schemes", force: :cascade do |t|
+    t.bigint "vendor_id"
+    t.citext "vendor_type"
+    t.citext "name"
+    t.citext "discount_type"
+    t.float "discount_units"
+    t.citext "min_amount_type"
+    t.float "min_amount"
+    t.citext "status"
+    t.datetime "expiry_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_schemes_on_deleted_at"
+    t.index ["expiry_at"], name: "index_schemes_on_expiry_at"
+    t.index ["name", "vendor_id", "vendor_type"], name: "index_schemes_on_name_and_vendor_id_and_vendor_type", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["status"], name: "index_schemes_on_status"
+    t.index ["vendor_id"], name: "index_schemes_on_vendor_id"
+  end
+
   create_table "skus", force: :cascade do |t|
     t.citext "sku_name", null: false
     t.citext "manufacturer_name", null: false
     t.citext "item_group"
     t.citext "uom"
+    t.citext "onemg_sku_id"
     t.integer "pack_size"
     t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "supplier_skus", force: :cascade do |t|
+    t.bigint "supplier_id"
+    t.bigint "sku_id"
+    t.citext "supplier_sku_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sku_id"], name: "index_supplier_skus_on_sku_id"
+    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.citext "name", null: false
+    t.citext "status"
+    t.citext "types", array: true
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_suppliers_on_deleted_at"
+    t.index ["status"], name: "index_suppliers_on_status"
   end
 
   create_table "users", force: :cascade do |t|
@@ -193,17 +238,47 @@ ActiveRecord::Schema.define(version: 19) do
     t.index ["vendor_id"], name: "index_users_on_vendor_id"
   end
 
+  create_table "vendor_supplier_contracts", force: :cascade do |t|
+    t.bigint "vendor_id"
+    t.bigint "supplier_id"
+    t.citext "status"
+    t.integer "priority"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_vendor_supplier_contracts_on_deleted_at"
+    t.index ["status"], name: "index_vendor_supplier_contracts_on_status"
+    t.index ["supplier_id"], name: "index_vendor_supplier_contracts_on_supplier_id"
+    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["vendor_id"], name: "index_vendor_supplier_contracts_on_vendor_id"
+  end
+
+  create_table "vendor_supplier_schemes", force: :cascade do |t|
+    t.bigint "vendor_supplier_contract_id"
+    t.bigint "sku_id"
+    t.bigint "scheme_id"
+    t.citext "status"
+    t.datetime "expiry_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_vendor_supplier_schemes_on_deleted_at"
+    t.index ["expiry_at"], name: "index_vendor_supplier_schemes_on_expiry_at"
+    t.index ["scheme_id"], name: "index_vendor_supplier_schemes_on_scheme_id"
+    t.index ["sku_id"], name: "index_vendor_supplier_schemes_on_sku_id"
+    t.index ["status"], name: "index_vendor_supplier_schemes_on_status"
+    t.index ["vendor_supplier_contract_id"], name: "index_vendor_supplier_schemes_on_vendor_supplier_contract_id"
+  end
+
   create_table "vendors", force: :cascade do |t|
     t.citext "name", null: false
     t.citext "status"
-    t.citext "types", array: true
     t.jsonb "metadata"
     t.citext "invoice_number_template"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status"], name: "index_vendors_on_status"
-    t.index ["types"], name: "index_vendors_on_types", using: :gin
   end
 
   create_table "versions", force: :cascade do |t|
