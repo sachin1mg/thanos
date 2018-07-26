@@ -5,10 +5,18 @@ module InventoryModule
       self.batch = batch
     end
 
-    def self.create
+    def self.create(params)
+      self.new(Batch.new(params)).save
     end
 
-    def update
+    def update(params)
+      batch.assign_attributes(params)
+      save
+    end
+
+    def save
+      batch.save!
+      batch
     end
 
     private

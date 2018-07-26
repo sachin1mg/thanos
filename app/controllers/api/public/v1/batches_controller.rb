@@ -20,7 +20,7 @@ module Api::Public::V1
     end
 
     def update
-      batch_manager.update(batch_params)
+      batch = batch_manager.update(batch_params)
       render_serializer scope: batch
     end
 
