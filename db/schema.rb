@@ -202,6 +202,18 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.citext "name", null: false
+    t.citext "status"
+    t.citext "types", array: true
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_suppliers_on_deleted_at"
+    t.index ["status"], name: "index_suppliers_on_status"
+  end
+
   create_table "users", force: :cascade do |t|
     t.citext "name"
     t.citext "email", default: "", null: false
@@ -293,9 +305,9 @@ ActiveRecord::Schema.define(version: 22) do
   add_foreign_key "sales_orders", "vendors"
   add_foreign_key "schemes", "vendors"
   add_foreign_key "supplier_skus", "skus"
-  add_foreign_key "supplier_skus", "vendors", column: "supplier_id"
+  add_foreign_key "supplier_skus", "suppliers"
+  add_foreign_key "vendor_supplier_contracts", "suppliers"
   add_foreign_key "vendor_supplier_contracts", "vendors"
-  add_foreign_key "vendor_supplier_contracts", "vendors", column: "supplier_id"
   add_foreign_key "vendor_supplier_schemes", "schemes"
   add_foreign_key "vendor_supplier_schemes", "skus"
   add_foreign_key "vendor_supplier_schemes", "vendor_supplier_contracts"

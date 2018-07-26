@@ -8,7 +8,7 @@ class VendorSupplierContract < ApplicationRecord
   }
 
   belongs_to :vendor
-  belongs_to :supplier, class_name: 'Vendor', foreign_key: 'supplier_id'
+  belongs_to :supplier
 
   before_validation :init
 
