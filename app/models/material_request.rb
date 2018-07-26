@@ -20,7 +20,7 @@ class MaterialRequest < ApplicationRecord
   belongs_to :sales_order
   has_many :material_request_items
 
-  validates_presence_of :code, :status, :delivery_date
+  validates_presence_of :code, :status
 
   before_validation :init
 

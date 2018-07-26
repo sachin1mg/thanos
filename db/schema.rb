@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "batch_id"
     t.bigint "location_id"
     t.integer "quantity"
+    t.integer "reserved_quantity"
     t.decimal "cost_price", precision: 8, scale: 2
     t.decimal "selling_price", precision: 8, scale: 2
     t.jsonb "metadata"
@@ -93,7 +94,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "material_request_id"
     t.bigint "sku_id"
     t.integer "quantity"
-    t.integer "status"
+    t.citext "status"
     t.date "schedule_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -109,7 +110,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "sales_order_id"
     t.citext "code"
     t.citext "type"
-    t.integer "status"
+    t.citext "status"
     t.date "delivery_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -145,7 +146,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "sku_id"
     t.integer "quantity"
     t.decimal "price", precision: 8, scale: 2
-    t.integer "status"
+    t.citext "status"
     t.date "schedule_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -162,7 +163,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "supplier_id"
     t.citext "material_request_ids", array: true
     t.citext "code"
-    t.integer "status"
+    t.citext "status"
     t.date "delivery_date"
     t.date "schedule_date"
     t.jsonb "metadata"
@@ -182,7 +183,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.integer "received_quantity"
     t.integer "returned_quantity"
     t.decimal "price", precision: 8, scale: 2
-    t.integer "status"
+    t.citext "status"
     t.date "schedule_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -200,7 +201,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "supplier_id"
     t.bigint "purchase_order_id"
     t.citext "code"
-    t.integer "status"
+    t.citext "status"
     t.decimal "total_amount", precision: 8, scale: 2
     t.jsonb "metadata"
     t.datetime "deleted_at"

@@ -14,7 +14,7 @@ class PurchaseOrderItem < ApplicationRecord
   belongs_to :purchase_order
   has_many :purchase_receipt_items
 
-  validates_presence_of :price, :quantity, :schedule_date, :status
+  validates_presence_of :price, :quantity, :status
   validates_numericality_of :quantity, greater_than_or_equal_to: 0
   validates_numericality_of :price, greater_than_or_equal_to: 0
 
@@ -23,5 +23,7 @@ class PurchaseOrderItem < ApplicationRecord
   def init
     self.status ||= :draft
     self.metadata ||= {}
+    self.quantity ||= 0
+    self.price ||= 0
   end
 end

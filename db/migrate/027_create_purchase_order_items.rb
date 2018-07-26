@@ -6,7 +6,7 @@ class CreatePurchaseOrderItems < ActiveRecord::Migration[5.1]
       t.references :sku, foreign_key: true
       t.integer :quantity
       t.decimal :price, precision: 8, scale: 2
-      t.integer :status, index: true
+      t.citext :status, index: true
       t.date :schedule_date
       t.jsonb :metadata
       t.datetime :deleted_at, index: true

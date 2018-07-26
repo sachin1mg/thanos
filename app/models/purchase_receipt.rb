@@ -21,5 +21,6 @@ class PurchaseReceipt < ApplicationRecord
   def init
     self.status ||= :draft
     self.metadata ||= {}
+    self.total_amount ||= 0
   end
 end
