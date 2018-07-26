@@ -6,7 +6,7 @@ module InventoryModule
     end
 
     def self.create(params)
-      self.new(Batch.new(params)).save
+      save
     end
 
     def update(params)

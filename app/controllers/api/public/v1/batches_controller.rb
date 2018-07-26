@@ -4,7 +4,7 @@ module Api::Public::V1
 
     # GET /batches
     def index
-      batches = Batch.filters(index_filters)
+      batches = Batch.filter(index_filters)
       render_serializer scope: batches
     end
 
@@ -15,7 +15,7 @@ module Api::Public::V1
 
     # POST /batches
     def create
-      batch = InventoryModule::BatchManager.create(batch_params)
+      batch = InventoryModule::BatchManager.new(Batch.new(batch_params)).create
       render_serializer scope: batch
     end
 

@@ -15,7 +15,7 @@ module Api::Public::V1
 
     # POST /inventories
     def create
-      inventory = InventoryModule::InventoryManager.create(inventory_params)
+      inventory = InventoryModule::InventoryManager.new(Inventory.new(inventory_params)).create
       render_serializer scope: inventory
     end
 
