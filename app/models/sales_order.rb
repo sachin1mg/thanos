@@ -11,7 +11,15 @@ class SalesOrder < ApplicationRecord
   validates_numericality_of :amount, :discount, greater_than_or_equal_to: 0
 
   # belongs_to :vendor
-  has_many :sales_order_skus
+  has_many :sales_order_items
   has_one :invoice
-  has_many :pickups
+
+  before_validation :init
+  
+  def init
+    self.status ||= :active
+    self.amount ||= 0
+    self.discount ||= 0
+    self.metadata ||= {}
+  end
 end

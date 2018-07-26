@@ -1,6 +1,6 @@
-class CreateSalesOrderSkus < ActiveRecord::Migration[5.1]
+class CreateSalesOrderItems < ActiveRecord::Migration[5.1]
   def change
-    create_table :sales_order_skus do |t|
+    create_table :sales_order_items do |t|
       # t.belongs_to :sku, foreign_key: true
       t.belongs_to :sales_order, foreign_key: true
       t.decimal :price, precision: 8, scale: 2

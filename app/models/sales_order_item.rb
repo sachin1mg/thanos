@@ -1,4 +1,4 @@
-class SalesOrderSku < ApplicationRecord
+class SalesOrderItem < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
@@ -12,5 +12,14 @@ class SalesOrderSku < ApplicationRecord
 
   belongs_to :sales_order
   # belongs_to :sku
-  has_many :pickups
+  has_many :inventory_pickups
+
+  before_validation :init
+
+  def init
+    self.status ||= :active
+    self.price ||= 0
+    self.discount ||= 0
+    self.metadata ||= {}
+  end
 end

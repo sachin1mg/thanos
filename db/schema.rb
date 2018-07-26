@@ -16,6 +16,16 @@ ActiveRecord::Schema.define(version: 18) do
   enable_extension "plpgsql"
   enable_extension "citext"
 
+  create_table "inventory_pickups", force: :cascade do |t|
+    t.bigint "sales_order_item_id"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_inventory_pickups_on_deleted_at"
+    t.index ["sales_order_item_id"], name: "index_inventory_pickups_on_sales_order_item_id"
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.bigint "sales_order_id"
     t.citext "number"
@@ -24,6 +34,7 @@ ActiveRecord::Schema.define(version: 18) do
     t.string "attachment_content_type"
     t.integer "attachment_file_size"
     t.datetime "attachment_updated_at"
+    t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -49,15 +60,6 @@ ActiveRecord::Schema.define(version: 18) do
     t.index ["role_id"], name: "index_permissions_roles_on_role_id"
   end
 
-  create_table "pickups", force: :cascade do |t|
-    t.bigint "sales_order_sku_id"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_pickups_on_deleted_at"
-    t.index ["sales_order_sku_id"], name: "index_pickups_on_sales_order_sku_id"
-  end
-
   create_table "roles", force: :cascade do |t|
     t.citext "label"
     t.integer "parent_id"
@@ -75,7 +77,7 @@ ActiveRecord::Schema.define(version: 18) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
-  create_table "sales_order_skus", force: :cascade do |t|
+  create_table "sales_order_items", force: :cascade do |t|
     t.bigint "sales_order_id"
     t.decimal "price", precision: 8, scale: 2
     t.decimal "discount", precision: 8, scale: 2
@@ -84,9 +86,9 @@ ActiveRecord::Schema.define(version: 18) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_sales_order_skus_on_deleted_at"
-    t.index ["sales_order_id"], name: "index_sales_order_skus_on_sales_order_id"
-    t.index ["status"], name: "index_sales_order_skus_on_status"
+    t.index ["deleted_at"], name: "index_sales_order_items_on_deleted_at"
+    t.index ["sales_order_id"], name: "index_sales_order_items_on_sales_order_id"
+    t.index ["status"], name: "index_sales_order_items_on_status"
   end
 
   create_table "sales_orders", force: :cascade do |t|
@@ -136,11 +138,11 @@ ActiveRecord::Schema.define(version: 18) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "inventory_pickups", "sales_order_items"
   add_foreign_key "invoices", "sales_orders"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
-  add_foreign_key "pickups", "sales_order_skus"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
-  add_foreign_key "sales_order_skus", "sales_orders"
+  add_foreign_key "sales_order_items", "sales_orders"
 end
