@@ -10,46 +10,53 @@ module Api::Public::V1
 
     # GET /material_request_items/1
     def show
-      render_serializer scope: location
+      render_serializer scope: material_request_item
     end
 
     def create
-      location = material_request_items.create!(location_params)
-      render_serializer scope: location
+      material_request_item = material_request_items.create!(material_request_item_create_params)
+      render_serializer scope: material_request_item
     end
 
     def update
-      location.update_attributes!(location_params)
-      render_serializer scope: location
+      material_request_item.update_attributes!(material_request_item_update_params)
+      render_serializer scope: material_request_item
     end
 
     # DELETE /material_request_items/1
     def destroy
-      location.destroy!
+      material_request_item.destroy!
       api_render json: {}
     end
 
     private
 
-    def location_params
-      params.require(:location).permit(:aisle, :rack, :slab, :bin)
+    def material_request_item_create_params
+      params.require(:material_request_item).permit(:sku_id, :quantity, :schedule_date, :metadata)
+    end
+
+    def material_request_item_update_params
+      params.require(:material_request_item).permit(:quantity, :schedule_date, :metadata)
     end
 
     def material_request_items
-      @material_request_items ||= current_vendor.material_request_items
+      @material_request_items ||= material_request.material_request_items
     end
 
-    def location
-      @location ||= material_request_items.find(params[:id])
+    def material_request_item
+      @material_request_item ||= material_request_items.find(params[:id])
+    end
+
+    def material_request
+      @material_request ||= MaterialRequest.find(params[:id])
     end
 
     def index_filters
-      param! :aisle, String, blank: false
-      param! :rack, String, blank: false
-      param! :slab, String, blank: false
-      param! :bin, String, blank: false
+      param! :sku_id, Integer, blank: false
+      param! :quantity, Integer, blank: false
+      param! :schedule_date, Date, blank: false
 
-      params.permit(:aisle, :slab, :bin, :rack)
+      params.permit(:sku_id, :quantity, :schedule_date)
     end
 
     #####################
@@ -61,20 +68,19 @@ module Api::Public::V1
     end
 
     def valid_create?
-      param! :location, Hash, required: true, blank: false do |p|
-        p.param! :aisle, String, required: true, blank: false
-        p.param! :rack, String, required: true, blank: false
-        p.param! :slab, String, required: true, blank: false
-        p.param! :bin, String, required: true, blank: false
+      param! :material_request_item, Hash, required: true, blank: false do |p|
+        param! :sku_id, Integer, required: true, blank: false
+        param! :quantity, Integer, blank: false
+        param! :schedule_date, Date, blank: false
+        param! :metadata, Hash, blank: false
       end
     end
 
     def valid_update?
-      pparam! :location, Hash, required: true, blank: false do |p|
-        p.param! :aisle, String, blank: false
-        p.param! :rack, String, blank: false
-        p.param! :slab, String, blank: false
-        p.param! :bin, String, blank: false
+      param! :material_request_item, Hash, required: true, blank: false do |p|
+        param! :quantity, Integer, blank: false
+        param! :schedule_date, Date, blank: false
+        param! :metadata, Hash, blank: false
       end
     end
   end
