@@ -1,6 +1,6 @@
 module Api::Public::V1
   class SalesOrdersController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:destroy]
+    skip_before_action :valid_action?, only: [:destroy, :show]
 
     def create
       sales_order = SalesOrder.create!(param_attributes)
@@ -13,12 +13,7 @@ module Api::Public::V1
     end
 
     def show
-      after_serialize = Proc.new do |data|
-                          data[:item_details] = sales_order.sales_order_items
-                          data
-                        end
-
-      render_serializer scope: sales_order, after_serialize: after_serialize
+      render_serializer scope: sales_order
     end
 
     def destroy
@@ -51,13 +46,6 @@ module Api::Public::V1
     #
     def valid_index?
       param! :sort_by, String, default: 'id:asc'
-    end
-
-    #
-    # Validate show action params
-    #
-    def valid_show?
-      param! :id, Integer, required: true, blank: false
     end
 
     #
