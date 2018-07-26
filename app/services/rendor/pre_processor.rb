@@ -51,7 +51,7 @@ module Rendor
       prepare_sort_by
       apply_sorting
       apply_pagination if @enable_pagination
-      # apply_select
+      apply_select
       serialized_json
 
       # Call hook
