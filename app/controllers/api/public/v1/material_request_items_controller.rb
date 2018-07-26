@@ -69,18 +69,18 @@ module Api::Public::V1
 
     def valid_create?
       param! :material_request_item, Hash, required: true, blank: false do |p|
-        param! :sku_id, Integer, required: true, blank: false
-        param! :quantity, Integer, blank: false
-        param! :schedule_date, Date, blank: false
-        param! :metadata, Hash, blank: false
+        p.param! :sku_id, Integer, required: true, blank: false
+        p.param! :quantity, Integer, blank: false
+        p.param! :schedule_date, Date, blank: false
+        p.param! :metadata, Hash, blank: false
       end
     end
 
     def valid_update?
       param! :material_request_item, Hash, required: true, blank: false do |p|
-        param! :quantity, Integer, blank: false
-        param! :schedule_date, Date, blank: false
-        param! :metadata, Hash, blank: false
+        p.param! :quantity, Integer, blank: false
+        p.param! :schedule_date, Date, blank: false
+        p.param! :metadata, Hash, blank: false
       end
     end
   end
