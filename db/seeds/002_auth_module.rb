@@ -1,9 +1,12 @@
 puts 'Auth module seeder start'
 
+vendor = Vendor.first
+
 20.times do
   User.create!(name: Faker::GameOfThrones.character,
                email: Faker::Internet.email,
-               password: 'hackathon')
+               password: 'hackathon',
+               vendor: vendor)
 end
 
 AuthModule::Permissions.new.refresh

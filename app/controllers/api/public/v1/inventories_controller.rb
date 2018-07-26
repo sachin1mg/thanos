@@ -4,8 +4,8 @@ module Api::Public::V1
 
     # GET /inventories
     def index
-      inventories = inventories.filter(index_filters)
-      render_serializer scope: inventories
+      resources = inventories.filter(index_filters)
+      render_serializer scope: resources
     end
 
     # GET /inventories/1
