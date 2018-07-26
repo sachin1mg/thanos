@@ -4,7 +4,7 @@ class CreatePurchaseOrders < ActiveRecord::Migration[5.1]
       t.references :supplier, foreign_key: true
       t.citext :material_request_ids, array: true
       t.citext :code
-      t.integer :status, index: true
+      t.citext :status, index: true
       t.date :delivery_date
       t.date :schedule_date
       t.jsonb :metadata

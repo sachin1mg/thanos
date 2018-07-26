@@ -15,9 +15,10 @@ class SalesOrder < ApplicationRecord
   has_many :sales_order_items
   has_many :inventory_pickups, through: :sales_order_items
   has_many :invoices
+  has_one :material_request
 
   before_validation :init
-  
+
   def init
     self.status ||= :draft
     self.amount ||= 0

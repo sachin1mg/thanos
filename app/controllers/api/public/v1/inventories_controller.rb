@@ -21,7 +21,7 @@ module Api::Public::V1
 
     # PUT /inventories/1
     def update
-      inventory.update_attributes!(inventory_params)
+      inventory.update_attributes!(inventory_update_params)
       render_serializer scope: inventory
     end
 
@@ -37,6 +37,10 @@ module Api::Public::V1
       params.require(:inventory).permit(:sku_id, :batch_id, :location_id,
         :quantity, :cost_price, :selling_price, :metadata
       )
+    end
+
+    def inventory_update_params
+      params.require(:inventory).permit(:location_id, :quantity, :cost_price, :selling_price)
     end
 
     def index_filters

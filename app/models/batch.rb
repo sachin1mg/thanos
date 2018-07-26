@@ -3,6 +3,7 @@ class Batch < ApplicationRecord
   acts_as_paranoid
 
   has_many :inventories
+  has_many :purchase_receipt_items
   belongs_to :sku
 
   validates_presence_of :manufacturing_date, :expiry_date

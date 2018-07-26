@@ -8,7 +8,7 @@ class CreatePurchaseReceiptItems < ActiveRecord::Migration[5.1]
       t.integer :received_quantity
       t.integer :returned_quantity
       t.decimal :price, precision: 8, scale: 2
-      t.integer :status, index: true
+      t.citext :status, index: true
       t.date :schedule_date
       t.jsonb :metadata
       t.datetime :deleted_at, index: true
