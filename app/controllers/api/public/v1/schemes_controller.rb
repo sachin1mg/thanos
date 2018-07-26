@@ -32,7 +32,7 @@ module Api::Public::V1
     end
 
     def schemable
-      @schemable ||= if params[:schemable_type] == 'Vendor'
+      @schemable ||= if params[:schemable_type].downcase == 'vendor'
                        Vendor.find(params[:schemable_id])
                      else
                        Supplier.find(params[:schemable_id])
@@ -41,7 +41,9 @@ module Api::Public::V1
 
     def valid_create?
       param! :schemable_id, Integer, required: true
-      param! :schemable_type, String, required: true, blank: false
+      param! :schemable_type, String, required: true, blank: false,
+             transform: -> (schemable_type) { schemable_type.downcase }, in: ['vendor', 'supplier']
+
       param! :scheme, Hash, required: true, blank: false do |s|
         s.param! :name, String
         s.param! :discount_type, String
@@ -55,7 +57,9 @@ module Api::Public::V1
 
     def valid_update?
       param! :schemable_id, Integer, required: true
-      param! :schemable_type, String, required: true, blank: false
+      param! :schemable_type, String, required: true, blank: false,
+             transform: -> (schemable_type) { schemable_type.downcase }, in: ['vendor', 'supplier']
+
       param! :scheme, Hash, required: true, blank: false do |s|
         s.param! :name, String
         s.param! :discount_type, String
