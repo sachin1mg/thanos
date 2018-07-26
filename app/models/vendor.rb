@@ -20,6 +20,7 @@ class Vendor < ApplicationRecord
   validate :valid_types
 
   def init
+    self.status ||= :active
     self.types ||= []
     self.metadata ||= {}
   end
