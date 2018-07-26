@@ -33,19 +33,18 @@ module Api::Public::V1
 
     def purchase_order_create_params
       params.require(:purchase_order).permit(:code, :delivery_date,
-                                             :metadata, material_request_ids: [])
+        metadata: params[:purchase_order][:metadata]&.keys, material_request_ids: [])
     end
 
     def purchase_order_update_params
-      params.require(:purchase_order).permit(:metadata, material_request_ids: [])
+      params.require(:purchase_order).permit(
+        metadata: params[:purchase_order][:metadata]&.keys,
+        material_request_ids: []
+      )
     end
 
     def purchase_orders
-      if params[:supplier_id].present?
-        supplier.purchase_orders
-      else
-        PurchaseOrder.all
-      end
+      current_vendor.purchase_orders
     end
 
     def supplier
@@ -58,9 +57,11 @@ module Api::Public::V1
 
     def index_filters
       param! :type, String, blank: false
-      param! :delivery_date, Date, blank: false
+      param! :supplier_id, Integer, blank: false
+      param! :to_delivery_date, Date, blank: false
+      param! :from_delivery_date, Date, blank: false
 
-      params.permit(:type, :delivery_date)
+      params.permit(:type, :to_delivery_date, :from_delivery_date, :supplier_id)
     end
 
     #####################

@@ -33,15 +33,15 @@ module Api::Public::V1
 
     def purchase_receipt_create_params
       params.require(:purchase_receipt).permit(:supplier_id, :purchase_order_id, :code,
-        :total_amount, :metadata)
+        :total_amount, metadata: params[:purchase_receipt][:metadata]&.keys)
     end
 
     def purchase_receipt_update_params
-      params.require(:purchase_receipt).permit(:total_amount, :metadata)
+      params.require(:purchase_receipt).permit(:total_amount, metadata: params[:purchase_receipt][:metadata]&.keys)
     end
 
     def purchase_receipts
-      @purchase_receipts ||= PurchaseReceipt.all
+      @purchase_receipts ||= current_vendor.purchase_receipts
     end
 
     def purchase_receipt

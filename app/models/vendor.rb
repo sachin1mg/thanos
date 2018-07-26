@@ -14,9 +14,9 @@ class Vendor < ApplicationRecord
   has_many :purchase_orders
   has_many :purchase_receipts
   has_many :material_requests
-  has_many :purchase_receipt_items, through: :purchase_orders
-  has_many :material_request_items, through: :purchase_receipts
+  has_many :purchase_receipt_items, through: :purchase_receipts
   has_many :material_request_items, through: :material_requests
+  has_many :purchase_order_items, through: :purchase_orders
 
   validates_presence_of :name, :status, :invoice_number_template
 

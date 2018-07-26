@@ -32,11 +32,13 @@ module Api::Public::V1
     private
 
     def material_request_item_create_params
-      params.require(:material_request_item).permit(:sku_id, :quantity, :schedule_date, :metadata)
+      params.require(:material_request_item).permit(:sku_id, :quantity, :schedule_date,
+        metadata: params[:material_request_item][:metadata]&.keys)
     end
 
     def material_request_item_update_params
-      params.require(:material_request_item).permit(:quantity, :schedule_date, :metadata)
+      params.require(:material_request_item).permit(:quantity, :schedule_date,
+        metadata: params[:material_request_item][:metadata]&.keys)
     end
 
     def material_request_items
@@ -48,15 +50,16 @@ module Api::Public::V1
     end
 
     def material_request
-      @material_request ||= MaterialRequest.find(params[:material_request_id])
+      @material_request ||= current_vendor.material_requests.find(params[:material_request_id])
     end
 
     def index_filters
       param! :sku_id, Integer, blank: false
       param! :quantity, Integer, blank: false
-      param! :schedule_date, Date, blank: false
+      param! :to_schedule_date, Date, blank: false
+      param! :from_schedule_date, Date, blank: false
 
-      params.permit(:sku_id, :quantity, :schedule_date)
+      params.permit(:sku_id, :quantity, :to_schedule_date, :from_schedule_date)
     end
 
     #####################

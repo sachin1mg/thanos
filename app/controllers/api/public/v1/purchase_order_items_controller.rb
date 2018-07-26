@@ -33,13 +33,13 @@ module Api::Public::V1
 
     def purchase_order_item_create_params
       params.require(:purchase_order_item).permit(:material_request_item_id,
-                                                  :sku_id, :quantity, :price,
-                                                  :schedule_date, :metadata)
+        :sku_id, :quantity, :price, :schedule_date,
+        metadata: params[:purchase_order_item][:metadata]&.keys)
     end
 
     def purchase_order_item_update_params
       params.require(:purchase_order_item).permit(:quantity, :price, :schedule_date,
-                                                  :metadata)
+        metadata: params[:purchase_order_item][:metadata]&.keys)
     end
 
     def purchase_order_items
@@ -51,15 +51,20 @@ module Api::Public::V1
     end
 
     def purchase_order
-      @purchase_order ||= PurchaseOrder.find(params[:purchase_order_id])
+      @purchase_order ||= current_vendor.purchase_orders.find(params[:purchase_order_id])
     end
 
     def index_filters
       param! :sku_id, Integer, blank: false
+      param! :material_request_item_id, Integer, blank: false
       param! :status, String, blank: false
-      param! :schedule_date, Date, blank: false
+      param! :to_schedule_date, Date, blank: false
+      param! :from_schedule_date, Date, blank: false
+      param! :minimum_price, Float, blank: false
+      param! :maximum_price, Float, blank: false
 
-      params.permit(:sku_id, :status, :schedule_date)
+      params.permit(:sku_id, :status, :to_schedule_date, :material_request_item_id,
+        :from_schedule_date, :minimum_price, :maximum_price)
     end
 
     #####################
