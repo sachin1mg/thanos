@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "batch_id"
     t.bigint "location_id"
     t.integer "quantity"
+    t.integer "blocked_quantity"
     t.integer "reserved_quantity"
     t.decimal "cost_price", precision: 8, scale: 2
     t.decimal "selling_price", precision: 8, scale: 2
@@ -233,6 +234,7 @@ ActiveRecord::Schema.define(version: 28) do
   create_table "sales_order_items", force: :cascade do |t|
     t.bigint "sku_id"
     t.bigint "sales_order_id"
+    t.bigint "inventory_id"
     t.decimal "price", precision: 8, scale: 2
     t.decimal "discount", precision: 8, scale: 2
     t.citext "status"
@@ -241,6 +243,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_sales_order_items_on_deleted_at"
+    t.index ["inventory_id"], name: "index_sales_order_items_on_inventory_id"
     t.index ["sales_order_id"], name: "index_sales_order_items_on_sales_order_id"
     t.index ["sku_id"], name: "index_sales_order_items_on_sku_id"
     t.index ["status"], name: "index_sales_order_items_on_status"
@@ -425,6 +428,7 @@ ActiveRecord::Schema.define(version: 28) do
   add_foreign_key "purchase_receipts", "suppliers"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
+  add_foreign_key "sales_order_items", "inventories"
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_order_items", "skus"
   add_foreign_key "sales_orders", "vendors"

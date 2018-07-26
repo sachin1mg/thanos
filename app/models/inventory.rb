@@ -10,6 +10,7 @@ class Inventory < ApplicationRecord
 
   validates_presence_of :quantity, :cost_price, :selling_price
   validates_numericality_of :quantity, greater_than_or_equal_to: 0
+  validates_numericality_of :blocked_quantity, greater_than_or_equal_to: 0
   validates_numericality_of :cost_price, greater_than: 0
   validates_numericality_of :selling_price, greater_than: 0
 

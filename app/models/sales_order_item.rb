@@ -13,6 +13,7 @@ class SalesOrderItem < ApplicationRecord
 
   belongs_to :sales_order
   belongs_to :sku
+  belongs_to :inventory, optional: true
   has_many :inventory_pickups
 
   before_validation :init

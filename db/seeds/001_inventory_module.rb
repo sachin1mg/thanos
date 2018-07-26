@@ -45,6 +45,7 @@ skus.each do |sku|
     location_id: location.id,
     batch: batch,
     quantity: rand(1...100),
+    blocked_quantity: rand(1...50),
     cost_price: rand(1.0...100.0).round(2),
     selling_price: rand(1.0...100.0).round(2)
   )
