@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.citext "status"
     t.citext "types", array: true
     t.jsonb "metadata"
+    t.citext "invoice_number_template"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
