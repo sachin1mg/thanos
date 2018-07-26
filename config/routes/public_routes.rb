@@ -24,4 +24,3 @@ module PublicRoutes
     end
   end
 end
-p
