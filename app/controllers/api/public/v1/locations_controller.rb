@@ -1,5 +1,7 @@
 module Api::Public::V1
   class LocationsController < ::Api::Public::AuthController
+    skip_before_action :valid_action?, only: [:show, :destroy]
+
     # GET /locations
     def index
       resources = locations.filter(index_filters)
@@ -42,6 +44,38 @@ module Api::Public::V1
     end
 
     def index_filters
+      param! :aisle, String, blank: false
+      param! :rack, String, blank: false
+      param! :slab, String, blank: false
+      param! :bin, String, blank: false
+
+      params.permit(:aisle, :slab, :bin, :rack)
+    end
+
+    #####################
+    #### VALIDATIONS ####
+    #####################
+
+    def valid_index?
+      param! :sort_by, String, default: 'id:asc'
+    end
+
+    def valid_create?
+      param! :location, Hash, required: true, blank: false do |p|
+        p.param! :aisle, String, required: true, blank: false
+        p.param! :rack, String, required: true, blank: false
+        p.param! :slab, String, required: true, blank: false
+        p.param! :bin, String, required: true, blank: false
+      end
+    end
+
+    def valid_update?
+      pparam! :location, Hash, required: true, blank: false do |p|
+        p.param! :aisle, String, blank: false
+        p.param! :rack, String, blank: false
+        p.param! :slab, String, blank: false
+        p.param! :bin, String, blank: false
+      end
     end
   end
 end

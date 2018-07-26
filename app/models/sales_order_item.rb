@@ -3,8 +3,9 @@ class SalesOrderItem < ApplicationRecord
   has_paper_trail
 
   enum status: {
-    active: 'active',
-    inactive: 'inactive'
+    draft: 'draft',
+    to_be_processed: 'to_be_processed',
+    processed: 'processed'
   }
 
   validates_presence_of :price, :status
@@ -17,7 +18,7 @@ class SalesOrderItem < ApplicationRecord
   before_validation :init
 
   def init
-    self.status ||= :active
+    self.status ||= :draft
     self.price ||= 0
     self.discount ||= 0
     self.metadata ||= {}

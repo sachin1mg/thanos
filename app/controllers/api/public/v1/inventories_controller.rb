@@ -1,6 +1,6 @@
 module Api::Public::V1
   class InventoriesController < ::Api::Public::AuthController
-    skip_before_action :valid_action?
+    skip_before_action :valid_action?, only: [:show, :destroy]
 
     # GET /inventories
     def index
@@ -34,12 +34,60 @@ module Api::Public::V1
     private
 
     def inventory_params
-      params.require(:inventory).permit(:vendor_id, :sku_id, :batch_id,
-        :location_id, :quantity, :cost_price, :selling_price, :metadata
+      params.require(:inventory).permit(:sku_id, :batch_id, :location_id,
+        :quantity, :cost_price, :selling_price, :metadata
       )
     end
 
     def index_filters
+      param! :sku_ids, Array do |id, index|
+        id.param! index, Integer
+      end
+
+      param! :batch_ids, Array do |id, index|
+        id.param! index, Integer
+      end
+
+      param! :location_ids, Array do |id, index|
+        id.param! index, Integer
+      end
+      param! :cost_price, Float, blank: false
+      param! :selling_price, Float, blank: false
+      param! :quantity, Integer, blank: false
+
+      params.permit(:quantity, :selling_price, :cost_price, sku_ids: [], batch_ids: [], location_ids: [])
+    end
+
+    #####################
+    #### VALIDATIONS ####
+    #####################
+
+    def valid_index?
+      param! :sort_by, String, default: 'id:asc'
+    end
+
+    def valid_create?
+      param! :inventory, Hash, required: true, blank: false do |p|
+        p.param! :sku_id, Integer, required: true, blank: false
+        p.param! :batch_id, Integer, required: true, blank: false
+        p.param! :location_id, Integer, required: true, blank: false
+        p.param! :quantity, Integer, required: true, blank: false
+        p.param! :cost_price, Float, required: true, blank: false
+        p.param! :selling_price, Float, required: true, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
+    end
+
+    def valid_update?
+      param! :inventory, Hash, required: true, blank: false do |p|
+        p.param! :sku_id, Integer, blank: false
+        p.param! :batch_id, Integer, blank: false
+        p.param! :location_id, Integer, blank: false
+        p.param! :quantity, Integer, blank: false
+        p.param! :cost_price, Float, blank: false
+        p.param! :selling_price, Float, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
     end
 
     def inventories
