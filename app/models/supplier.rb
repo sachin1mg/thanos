@@ -10,6 +10,8 @@ class Supplier < ApplicationRecord
   has_many :vendor_supplier_contracts
   has_many :supplier_skus
   has_many :schemes, as: :schemable
+  has_many :purchase_orders
+  has_many :purchase_receipts
 
   validates_presence_of :name, :status, :types
 
