@@ -3,12 +3,11 @@ module Api::Public::V1
     skip_before_action :valid_action?
 
     def index
-      invoices = sales_order.invoice
+      invoices = sales_order.invoices
       render_serializer scope: invoices
     end
 
     def show
-      invoice = Invoice.find_by!(sales_order: sales_order, id: params[:id])
       render_serializer scope: invoice
     end
 
@@ -19,6 +18,13 @@ module Api::Public::V1
     #
     def sales_order
       @sales_order ||= SalesOrder.find(params[:sales_order_id])
+    end
+
+    #
+    # @return [Invoice] Invoice derived from id in params
+    #
+    def invoice
+      @invoice ||= sales_order.invoices.find(params[:id])
     end
   end
 end
