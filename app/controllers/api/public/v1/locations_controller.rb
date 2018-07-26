@@ -70,7 +70,7 @@ module Api::Public::V1
     end
 
     def valid_update?
-      pparam! :location, Hash, required: true, blank: false do |p|
+      param! :location, Hash, required: true, blank: false do |p|
         p.param! :aisle, String, blank: false
         p.param! :rack, String, blank: false
         p.param! :slab, String, blank: false
