@@ -4,6 +4,7 @@ module Api::Public::V1
 
     def index
       suppliers = Supplier
+      suppliers = suppliers.search(search_query) if search_query.present?
       render_serializer scope: suppliers
     end
 
@@ -29,6 +30,10 @@ module Api::Public::V1
 
     def supplier
       @supplier ||= Supplier.find(params[:id])
+    end
+
+    def search_query
+      params[:q]&.strip
     end
 
     def valid_create?
