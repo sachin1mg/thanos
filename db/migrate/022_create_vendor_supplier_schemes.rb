@@ -10,5 +10,11 @@ class CreateVendorSupplierSchemes < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
+
+    add_index :vendor_supplier_schemes,
+              [:vendor_supplier_contract_id, :sku_id, :scheme_id],
+              unique: true,
+              where: 'deleted_at is null',
+              name: 'unique_vendor_supplier_contract_id_sku_id_scheme_id'
   end
 end

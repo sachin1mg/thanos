@@ -16,4 +16,8 @@ class VendorSupplierScheme < ApplicationRecord
   def init
     self.status ||= :active
   end
+
+  def supplier
+    self.vendor_supplier_contract.supplier
+  end
 end

@@ -10,6 +10,8 @@ class VendorSupplierContract < ApplicationRecord
   belongs_to :vendor
   belongs_to :supplier
 
+  has_many :vendor_supplier_schemes
+
   before_validation :init
 
   def init
