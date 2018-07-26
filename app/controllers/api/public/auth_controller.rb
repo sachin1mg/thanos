@@ -1,4 +1,4 @@
 module Api::Public
-  class AuthController < BaseController
+  class AuthController < ::Api::Public::BaseController
   end
 end

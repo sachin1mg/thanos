@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 22) do
+ActiveRecord::Schema.define(version: 28) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,39 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["vendor_id"], name: "index_locations_on_vendor_id"
   end
 
+  create_table "material_request_items", force: :cascade do |t|
+    t.bigint "material_request_id"
+    t.bigint "sku_id"
+    t.integer "quantity"
+    t.integer "status"
+    t.date "schedule_date"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_material_request_items_on_deleted_at"
+    t.index ["material_request_id"], name: "index_material_request_items_on_material_request_id"
+    t.index ["sku_id"], name: "index_material_request_items_on_sku_id"
+    t.index ["status"], name: "index_material_request_items_on_status"
+  end
+
+  create_table "material_requests", force: :cascade do |t|
+    t.bigint "sales_order_id"
+    t.citext "code"
+    t.citext "type"
+    t.integer "status"
+    t.date "delivery_date"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_material_requests_on_code"
+    t.index ["deleted_at"], name: "index_material_requests_on_deleted_at"
+    t.index ["sales_order_id"], name: "index_material_requests_on_sales_order_id"
+    t.index ["status"], name: "index_material_requests_on_status"
+    t.index ["type"], name: "index_material_requests_on_type"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.citext "label"
     t.citext "status"
@@ -104,6 +137,79 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["permission_id"], name: "index_permissions_roles_on_permission_id"
     t.index ["role_id", "permission_id"], name: "index_permissions_roles_on_role_id_and_permission_id", unique: true
     t.index ["role_id"], name: "index_permissions_roles_on_role_id"
+  end
+
+  create_table "purchase_order_items", force: :cascade do |t|
+    t.bigint "purchase_order_id"
+    t.bigint "material_request_item_id"
+    t.bigint "sku_id"
+    t.integer "quantity"
+    t.decimal "price", precision: 8, scale: 2
+    t.integer "status"
+    t.date "schedule_date"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_purchase_order_items_on_deleted_at"
+    t.index ["material_request_item_id"], name: "index_purchase_order_items_on_material_request_item_id"
+    t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
+    t.index ["sku_id"], name: "index_purchase_order_items_on_sku_id"
+    t.index ["status"], name: "index_purchase_order_items_on_status"
+  end
+
+  create_table "purchase_orders", force: :cascade do |t|
+    t.bigint "supplier_id"
+    t.citext "material_request_ids", array: true
+    t.citext "code"
+    t.integer "status"
+    t.date "delivery_date"
+    t.date "schedule_date"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_purchase_orders_on_deleted_at"
+    t.index ["status"], name: "index_purchase_orders_on_status"
+    t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
+  end
+
+  create_table "purchase_receipt_items", force: :cascade do |t|
+    t.bigint "purchase_receipt_id"
+    t.bigint "purchase_order_item_id"
+    t.bigint "sku_id"
+    t.bigint "batch_id"
+    t.integer "received_quantity"
+    t.integer "returned_quantity"
+    t.decimal "price", precision: 8, scale: 2
+    t.integer "status"
+    t.date "schedule_date"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["batch_id"], name: "index_purchase_receipt_items_on_batch_id"
+    t.index ["deleted_at"], name: "index_purchase_receipt_items_on_deleted_at"
+    t.index ["purchase_order_item_id"], name: "index_purchase_receipt_items_on_purchase_order_item_id"
+    t.index ["purchase_receipt_id"], name: "index_purchase_receipt_items_on_purchase_receipt_id"
+    t.index ["sku_id"], name: "index_purchase_receipt_items_on_sku_id"
+    t.index ["status"], name: "index_purchase_receipt_items_on_status"
+  end
+
+  create_table "purchase_receipts", force: :cascade do |t|
+    t.bigint "supplier_id"
+    t.bigint "purchase_order_id"
+    t.citext "code"
+    t.integer "status"
+    t.decimal "total_amount", precision: 8, scale: 2
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_purchase_receipts_on_deleted_at"
+    t.index ["purchase_order_id"], name: "index_purchase_receipts_on_purchase_order_id"
+    t.index ["status"], name: "index_purchase_receipts_on_status"
+    t.index ["supplier_id"], name: "index_purchase_receipts_on_supplier_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -301,8 +407,21 @@ ActiveRecord::Schema.define(version: 22) do
   add_foreign_key "inventory_pickups", "sales_order_items"
   add_foreign_key "invoices", "sales_orders"
   add_foreign_key "locations", "vendors"
+  add_foreign_key "material_request_items", "material_requests"
+  add_foreign_key "material_request_items", "skus"
+  add_foreign_key "material_requests", "sales_orders"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
+  add_foreign_key "purchase_order_items", "material_request_items"
+  add_foreign_key "purchase_order_items", "purchase_orders"
+  add_foreign_key "purchase_order_items", "skus"
+  add_foreign_key "purchase_orders", "suppliers"
+  add_foreign_key "purchase_receipt_items", "batches"
+  add_foreign_key "purchase_receipt_items", "purchase_order_items"
+  add_foreign_key "purchase_receipt_items", "purchase_receipts"
+  add_foreign_key "purchase_receipt_items", "skus"
+  add_foreign_key "purchase_receipts", "purchase_orders"
+  add_foreign_key "purchase_receipts", "suppliers"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
   add_foreign_key "sales_order_items", "sales_orders"

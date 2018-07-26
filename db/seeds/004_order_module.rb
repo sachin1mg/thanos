@@ -38,15 +38,17 @@ puts 'Sales Order Item Seeder end'
 puts 'Invoices Seeder Start'
 
 SalesOrder.all.each do |sales_order|
-  Invoice.create!(
-    sales_order: sales_order,
-    number: "INV-#{sales_order.id}",
-    date: Date.today,
-    attachment_file_name: Faker::File.file_name(nil, nil, 'pdf'),
-    attachment_content_type: 'application/pdf',
-    attachment_file_size: rand(0...1000),
-    attachment_updated_at: Time.zone.now
-  )
+  [1, 2].sample.times do |n|
+    Invoice.create!(
+      sales_order: sales_order,
+      number: "INV-#{sales_order.id}-#{n + 1}",
+      date: Date.today,
+      attachment_file_name: Faker::File.file_name(nil, nil, 'pdf'),
+      attachment_content_type: 'application/pdf',
+      attachment_file_size: rand(0...1000),
+      attachment_updated_at: Time.zone.now
+    )
+  end
 end
 
 puts 'Invoices Seeder End'
