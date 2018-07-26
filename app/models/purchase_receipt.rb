@@ -12,6 +12,7 @@ class PurchaseReceipt < ApplicationRecord
   has_many :purchase_receipt_items
   belongs_to :purchase_order
   belongs_to :supplier
+  belongs_to :vendor
 
   validates_presence_of :code, :total_amount, :status
   validates_numericality_of :total_amount, greater_than_or_equal_to: 0
