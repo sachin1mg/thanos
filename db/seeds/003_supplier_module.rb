@@ -9,7 +9,7 @@ end
 Vendor.limit(10).each do |vendor|
   ['quantity', 'flat', 'percent'].each do |discount_type|
     Scheme.create!(vendor: vendor,
-                   vendor_type: vendor.types.first,
+                   vendor_type: ['Vendor', 'Supplier'].sample,
                    name: Faker::GameOfThrones.character,
                    discount_type: discount_type,
                    discount_units: 10,

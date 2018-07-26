@@ -8,6 +8,7 @@
 PUMA_CONFIG_FILE=config/puma.rb
 PUMA_PID_FILE=tmp/pids/puma.pid
 PUMA_SOCKET=tmp/sockets/puma.sock
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # check if puma process is running
 puma_is_running() {
@@ -74,8 +75,8 @@ case "$1" in
     fi
 
     echo "Trying cold reboot"
-    script/puma.sh stop
-    script/puma.sh start
+    ${DIR}/puma.sh stop
+    ${DIR}/puma.sh start
     ;;
 
   *)
