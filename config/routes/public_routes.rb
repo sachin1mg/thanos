@@ -3,15 +3,12 @@ module PublicRoutes
     router.instance_eval do
       namespace 'api', module: 'api/public' do
         namespace :v1 do
-          get :test, to: 'test#test'
-
-          resources :skus
-          resources :batches
-
-          resources :vendors do
-            resources :locations
+          resources :skus do
+            resources :batches
           end
 
+          resources :vendors
+          resources :locations
           resources :inventories
         end
       end

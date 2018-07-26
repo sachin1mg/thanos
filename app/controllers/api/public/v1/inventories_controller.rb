@@ -4,7 +4,7 @@ module Api::Public::V1
 
     # GET /inventories
     def index
-      inventories = Inventory.filter(index_filters)
+      inventories = inventories.filter(index_filters)
       render_serializer scope: inventories
     end
 
@@ -15,26 +15,23 @@ module Api::Public::V1
 
     # POST /inventories
     def create
-      inventory = InventoryModule::InventoryManager.new(Inventory.new(inventory_params)).create
+      inventory = inventories.create!(inventory_params)
       render_serializer scope: inventory
     end
 
     # PUT /inventories/1
     def update
-      inventory = inventory_manager.update(inventory_params)
+      inventory.update_attributes(inventory_params)
       render_serializer scope: inventory
     end
 
     # DELETE /inventories/1
     def destroy
-      inventory.destroy
+      inventory.destroy!
+      api_render json: {}
     end
 
     private
-
-    def inventory
-      @inventory ||= Inventory.find(params[:id])
-    end
 
     def inventory_params
       params.require(:inventory).permit(:vendor_id, :sku_id, :batch_id,
@@ -42,11 +39,15 @@ module Api::Public::V1
       )
     end
 
-    def inventory_manager
-      @inventory_manager ||= InventoryModule::InventoryManager.new(inventory)
+    def index_filters
     end
 
-    def index_filters
+    def inventories
+      @inventories ||= current_vendor.inventories
+    end
+
+    def inventory
+      @inventory ||= inventories.find(params[:id])
     end
   end
 end

@@ -2,7 +2,7 @@ module Api::Public::V1
   class SkusController < ::Api::Public::AuthController
     # GET /skus
     def index
-      render json: Sku.all
+      render json: Sku.scoped
     end
 
     # GET /skus/1

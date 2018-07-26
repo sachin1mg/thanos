@@ -15,35 +15,32 @@ module Api::Public::V1
 
     # POST /batches
     def create
-      batch = InventoryModule::BatchManager.new(Batch.new(batch_params)).create
+      batch = Batch.create!(batch_params)
       render_serializer scope: batch
     end
 
     def update
-      batch = batch_manager.update(batch_params)
+      batch.update_attributes!(batch_params)
       render_serializer scope: batch
     end
 
     # DELETE /batches/1
     def destroy
-      batch.destroy
+      batch.destroy!
+      api_render json: {}
     end
 
     private
-
-    def batch
-      @batch ||= Batch.find(params[:id])
-    end
-
     def batch_params
       params.require(:batch).permit(:sku_id, :mrp, :manufacturing_date, :expiry_date, :metadata)
     end
 
-    def batch_manager
-      @batch_manager ||= InventoryModule::BatchManager.new(batch)
+    def index_filters
+      params.permit(:sku_id)
     end
 
-    def index_filters
+    def batch
+      @batch ||= Batch.find(params[:id])
     end
   end
 end
