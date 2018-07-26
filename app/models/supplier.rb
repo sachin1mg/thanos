@@ -20,4 +20,8 @@ class Supplier < ApplicationRecord
     self.types ||= []
     self.metadata ||= {}
   end
+
+  def self.search(term)
+    where("name like '%#{term}%'")
+  end
 end
