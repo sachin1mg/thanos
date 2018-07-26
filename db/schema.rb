@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.citext "manufacturer_name", null: false
     t.citext "item_group"
     t.citext "uom"
+    t.citext "onemg_sku_id"
     t.integer "pack_size"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -270,7 +271,6 @@ ActiveRecord::Schema.define(version: 22) do
   create_table "vendors", force: :cascade do |t|
     t.citext "name", null: false
     t.citext "status"
-    t.citext "types", array: true
     t.jsonb "metadata"
     t.citext "invoice_number_template"
     t.datetime "deleted_at"

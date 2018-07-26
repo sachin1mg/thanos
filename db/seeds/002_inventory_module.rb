@@ -2,7 +2,6 @@
   Vendor.create(
     name: Faker::Name.name,
     status: [:active, :inactive].sample,
-    types: Vendor::TYPES,
     invoice_number_template: ['DD-MM-YYYY-123', 'YYYY-MM-DD-123'].sample
   )
 end
@@ -12,6 +11,7 @@ end
     sku_name: Faker::Name.name,
     manufacturer_name: Faker::Company.name,
     item_group: ['Homeopathy', 'Allopathy'].sample,
+    onemg_sku_id: Faker::IDNumber.valid,
     uom: [:number, :ml].sample,
     pack_size: rand(1...100),
   )
