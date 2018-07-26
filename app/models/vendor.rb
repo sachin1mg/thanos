@@ -10,6 +10,7 @@ class Vendor < ApplicationRecord
   has_many :locations
   has_many :inventories
   has_many :sales_orders
+  has_many :vendor_supplier_contracts
 
   validates_presence_of :name, :status, :invoice_number_template
 
