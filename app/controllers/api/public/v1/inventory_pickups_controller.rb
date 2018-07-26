@@ -17,7 +17,7 @@ module Api::Public::V1
     end
 
     def destroy
-      inventory_pickup.delete
+      inventory_pickup.destroy!
       api_render json: {}
     end
 
@@ -28,7 +28,7 @@ module Api::Public::V1
     end
 
     def index_filters
-      params.permit()
+      params.permit(:sales_order_id)
     end
 
     ######################
@@ -43,7 +43,11 @@ module Api::Public::V1
     end
 
     def inventory_pickup
-      @inventory_pickup ||= InventoryPickup.find(params[:id])
+      @inventory_pickup ||= inventory_pickups.find(params[:id])
+    end
+
+    def inventory_pickups
+      @inventory_pickups ||= InventoryPickup.filter(sales_order_id: params[:sales_order_id])
     end
 
     #
