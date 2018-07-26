@@ -17,7 +17,7 @@ module Api::Public::V1
     end
 
     def destroy
-      sales_order_item.delete
+      sales_order_item.destroy!
       api_render json: {}
     end
 

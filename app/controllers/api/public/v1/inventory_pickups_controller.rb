@@ -17,7 +17,7 @@ module Api::Public::V1
     end
 
     def destroy
-      inventory_pickup.delete
+      inventory_pickup.destroy!
       api_render json: {}
     end
 
