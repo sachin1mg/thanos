@@ -29,10 +29,10 @@ ActiveRecord::Schema.define(version: 12) do
   end
 
   create_table "inventories", force: :cascade do |t|
-    t.bigint "location_id"
     t.bigint "vendor_id"
     t.bigint "sku_id"
     t.bigint "batch_id"
+    t.bigint "location_id"
     t.integer "quantity"
     t.decimal "cost_price", precision: 8, scale: 2
     t.decimal "selling_price", precision: 8, scale: 2
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 12) do
     t.index ["batch_id"], name: "index_inventories_on_batch_id"
     t.index ["location_id"], name: "index_inventories_on_location_id"
     t.index ["sku_id"], name: "index_inventories_on_sku_id"
+    t.index ["vendor_id", "sku_id", "batch_id", "location_id"], name: "index_inventories_on_vendor_id_sku_id_batch_id_and_location_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["vendor_id"], name: "index_inventories_on_vendor_id"
   end
 
