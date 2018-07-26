@@ -12,6 +12,15 @@ module Api::Public::V1
       render_serializer scope: sales_orders, sorting: true
     end
 
+    def show
+      after_serialize = Proc.new do |data|
+                          data[:item_details] = sales_order.sales_order_items
+                          data
+                        end
+
+      render_serializer scope: sales_order, after_serialize: after_serialize
+    end
+
     def destroy
       sales_order.delete
     end
@@ -44,6 +53,16 @@ module Api::Public::V1
       param! :sort_by, String, default: 'id:asc'
     end
 
+    #
+    # Validate show action params
+    #
+    def valid_show?
+      param! :id, Integer, required: true, blank: false
+    end
+
+    #
+    # @return [SalesOrder] Sales Order derived from id in params
+    #
     def sales_order
       @sales_order ||= SalesOrder.find(params[:id])
     end
