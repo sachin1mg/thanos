@@ -4,4 +4,10 @@ class Location < ApplicationRecord
 
   belongs_to :vendor
   has_many :inventories
+
+  before_validation :init
+
+  def init
+    self.metadata ||= {}
+  end
 end
