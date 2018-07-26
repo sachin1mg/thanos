@@ -1,5 +1,7 @@
 module Api::Public::V1
   class SkusController < ::Api::Public::AuthController
+    skip_before_action :valid_action?
+
     # GET /skus
     def index
       render json: Sku.scoped

@@ -15,6 +15,7 @@ module PublicRoutes
             resources :invoices
           end
           resources :inventory_pickups
+          resources :suppliers, only: [:create, :update, :index, :show]
         end
       end
     end
