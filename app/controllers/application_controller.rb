@@ -43,6 +43,8 @@ class ApplicationController < ActionController::API
   def current_user
     return unless signed_in?
     @current_user ||= User.find(@current_user_id)
+  rescue ActiveRecord::RecordNotFound
+    raise ::Unauthorized
   end
 
   def signed_in?
