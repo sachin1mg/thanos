@@ -12,7 +12,7 @@ skus = Sku.all
   )
 end
 
-puts 'Sales Order Seeder start'
+puts 'Sales Order Seeder end'
 
 
 puts 'Sales Order Item Seeder start'
@@ -33,5 +33,5 @@ SalesOrder.all.each do |sales_order|
   )
 end
 
-puts 'Sales Order Item Seeder start'
+puts 'Sales Order Item Seeder end'
 
