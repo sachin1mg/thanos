@@ -4,7 +4,7 @@ module Api::Public::V1
 
     # GET /vendors
     def index
-      vendors = Vendor.filters(index_filters)
+      vendors = Vendor.filter(index_filters)
       render_serializer scope: vendors
     end
 
