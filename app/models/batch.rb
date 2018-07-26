@@ -7,9 +7,10 @@ class Batch < ApplicationRecord
 
   validates_presence_of :manufacturing_date, :expiry_date
   validates_numericality_of :mrp, greater_than: 0
-  validate :valid_expiry_date
 
   before_validation :init
+
+  validate :valid_expiry_date
 
   def init
     self.metadata ||= {}
