@@ -4,8 +4,8 @@ class InventoryPickup < ApplicationRecord
 
   enum status: {
     pending: 'pending',
-    ready: 'ready',
-    closed: 'closed'
+    completed: 'completed',
+    cancelled: 'cancelled'
   }
 
   belongs_to :inventory
