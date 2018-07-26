@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 7) do
+ActiveRecord::Schema.define(version: 9) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,13 @@ ActiveRecord::Schema.define(version: 7) do
     t.index ["role_id"], name: "index_permissions_roles_on_role_id"
   end
 
+  create_table "pickups", force: :cascade do |t|
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_pickups_on_deleted_at"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.citext "label"
     t.datetime "deleted_at"
@@ -50,6 +57,24 @@ ActiveRecord::Schema.define(version: 7) do
     t.index ["role_id", "user_id"], name: "index_roles_users_on_role_id_and_user_id", unique: true
     t.index ["role_id"], name: "index_roles_users_on_role_id"
     t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
+  create_table "sales_orders", force: :cascade do |t|
+    t.citext "order_reference_id"
+    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "discount", precision: 8, scale: 2
+    t.citext "barcode"
+    t.citext "source"
+    t.citext "shipping_label_url"
+    t.citext "status"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_sales_orders_on_deleted_at"
+    t.index ["order_reference_id"], name: "index_sales_orders_on_order_reference_id"
+    t.index ["source"], name: "index_sales_orders_on_source"
+    t.index ["status"], name: "index_sales_orders_on_status"
   end
 
   create_table "users", force: :cascade do |t|
