@@ -11,7 +11,9 @@ module PublicRoutes
           resources :locations
           resources :inventories
 
-          resources :sales_orders
+          resources :sales_orders do
+            resources :invoices
+          end
           resources :inventory_pickups
         end
       end

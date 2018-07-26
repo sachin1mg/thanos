@@ -3,21 +3,16 @@ module Api::Public::V1
     skip_before_action :valid_action?
 
     def index
-      api_render json: {a: 'namaste'}
+      invoices = sales_order.invoice
+      render_serializer scope: invoices
+    end
+
+    def show
+      invoice = Invoice.find_by!(sales_order: sales_order, id: params[:id])
+      render_serializer scope: invoice
     end
 
     private
-
-    def index_filters
-      # param! :id, Integer, blank: false
-      # param! :status, String, in: SalesOrder.statuses.keys, blank: false
-      # param! :order_reference_id, String, blank: false
-      # param! :customer_name, String, blank: false
-      # param! :from_date, String, transform: :to_date
-      # param! :to_date, String, transform: :to_date
-
-      # params.permit(:id, :status, :order_reference_id, :from_date, :customer_name, :to_date)
-    end
 
     #
     # @return [SalesOrder] Sales Order derived from sales_order_id in params
