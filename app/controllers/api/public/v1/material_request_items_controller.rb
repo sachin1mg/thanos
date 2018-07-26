@@ -48,7 +48,7 @@ module Api::Public::V1
     end
 
     def material_request
-      @material_request ||= MaterialRequest.find(params[:id])
+      @material_request ||= MaterialRequest.find(params[:material_request_id])
     end
 
     def index_filters
