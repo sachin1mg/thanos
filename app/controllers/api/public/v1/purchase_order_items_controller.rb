@@ -1,4 +1,93 @@
 module Api::Public::V1
   class PurchaseOrderItemsController < ::Api::Public::AuthController
+    skip_before_action :valid_action?, only: [:show, :destroy]
+
+    # GET /purchase_order_items
+    def index
+      resources = purchase_order_items.filter(index_filters)
+      render_serializer scope: resources
+    end
+
+    # GET /purchase_order_items/1
+    def show
+      render_serializer scope: purchase_order_item
+    end
+
+    def create
+      purchase_order_item = purchase_order_items.create!(purchase_order_item_create_params)
+      render_serializer scope: purchase_order_item
+    end
+
+    def update
+      purchase_order_item.update_attributes!(purchase_order_items_update_params)
+      render_serializer scope: purchase_order_item
+    end
+
+    # DELETE /purchase_order_items/1
+    def destroy
+      purchase_order_item.destroy!
+      api_render json: {}
+    end
+
+    private
+
+    def purchase_order_item_create_params
+      params.require(:purchase_order_item).permit(:material_request_item_id,
+                                                  :sku_id, :quantity, :price,
+                                                  :schedule_date, :metadata)
+    end
+
+    def purchase_order_item_update_params
+      params.require(:purchase_order_item).permit(:quantity, :price, :schedule_date,
+                                                  :metadata)
+    end
+
+    def purchase_order_items
+      @purchase_order_items ||= purchase_order.purchase_order_items
+    end
+
+    def purchase_order_item
+      @purchase_order_item ||= purchase_order_items.find(params[:id])
+    end
+
+    def purchase_order
+      @purchase_order ||= PurchaseOrder.find(params[:purchase_order_id])
+    end
+
+    def index_filters
+      param! :sku_id, Integer, blank: false
+      param! :status, String, blank: false
+      param! :schedule_date, Date, blank: false
+
+      params.permit(:sku_id, :status, :schedule_date)
+    end
+
+    #####################
+    #### VALIDATIONS ####
+    #####################
+
+    def valid_index?
+      param! :sort_by, String, default: 'id:asc'
+    end
+
+    def valid_create?
+      param! :purchase_order_item, Hash, required: true, blank: false do |p|
+        p.param! :sku_id, Integer, required: true, blank: false
+        p.param! :material_request_item_id, Integer, required: true, blank: false
+        p.param! :quantity, Integer, blank: false
+        p.param! :price, Float, blank: false
+        p.param! :schedule_date, Date, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
+    end
+
+    def valid_update?
+      param! :purchase_order_item, Hash, required: true, blank: false do |p|
+        p.param! :quantity, Integer, blank: false
+        p.param! :price, Float, blank: false
+        p.param! :schedule_date, Date, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
+    end
   end
 end
