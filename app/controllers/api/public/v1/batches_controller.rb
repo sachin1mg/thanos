@@ -1,22 +1,27 @@
 module Api::Public::V1
   class BatchesController < ::Api::Public::AuthController
+    skip_before_action :valid_action?
+
     # GET /batches
     def index
-      render json: Batch.all
+      batches = Batch.filters(index_filters)
+      render_serializer scope: batches
     end
 
     # GET /batches/1
     def show
-      render json: batch
+      render_serializer scope: batch
     end
 
-    # POST /movies
+    # POST /batches
     def create
-      batch = Batch.create(batch_params)
-      render json: batch
+      batch = InventoryModule::BatchManager.create(batch_params)
+      render_serializer scope: batch
     end
 
     def update
+      batch_manager.update(batch_params)
+      render_serializer scope: batch
     end
 
     # DELETE /batches/1
@@ -28,6 +33,17 @@ module Api::Public::V1
 
     def batch
       @batch ||= Batch.find(params[:id])
+    end
+
+    def batch_params
+      params.require(:batch).permit(:sku_id, :mrp, :manufacturing_date, :expiry_date, :metadata)
+    end
+
+    def batch_manager
+      @batch_manager ||= InventoryModule::BatchManager.new(batch)
+    end
+
+    def index_filters
     end
   end
 end
