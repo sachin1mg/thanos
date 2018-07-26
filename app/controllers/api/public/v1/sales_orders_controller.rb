@@ -23,6 +23,7 @@ module Api::Public::V1
 
     def destroy
       sales_order.delete
+      api_render json: {}
     end
 
     private
