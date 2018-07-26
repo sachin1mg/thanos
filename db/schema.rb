@@ -174,7 +174,8 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_schemes_on_deleted_at"
     t.index ["expiry_at"], name: "index_schemes_on_expiry_at"
-    t.index ["name", "vendor_id", "vendor_type"], name: "index_schemes_on_name_and_vendor_id_and_vendor_type", unique: true
+    t.index ["name", "vendor_id", "vendor_type"], name: "index_schemes_on_name_and_vendor_id_and_vendor_type", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["status"], name: "index_schemes_on_status"
     t.index ["vendor_id"], name: "index_schemes_on_vendor_id"
   end
 
@@ -198,7 +199,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sku_id"], name: "index_supplier_skus_on_sku_id"
-    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true
+    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
   end
 
@@ -243,8 +244,9 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_vendor_supplier_contracts_on_deleted_at"
+    t.index ["status"], name: "index_vendor_supplier_contracts_on_status"
     t.index ["supplier_id"], name: "index_vendor_supplier_contracts_on_supplier_id"
-    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true
+    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["vendor_id"], name: "index_vendor_supplier_contracts_on_vendor_id"
   end
 
@@ -261,6 +263,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["expiry_at"], name: "index_vendor_supplier_schemes_on_expiry_at"
     t.index ["scheme_id"], name: "index_vendor_supplier_schemes_on_scheme_id"
     t.index ["sku_id"], name: "index_vendor_supplier_schemes_on_sku_id"
+    t.index ["status"], name: "index_vendor_supplier_schemes_on_status"
     t.index ["vendor_supplier_contract_id"], name: "index_vendor_supplier_schemes_on_vendor_supplier_contract_id"
   end
 
@@ -303,12 +306,4 @@ ActiveRecord::Schema.define(version: 22) do
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_order_items", "skus"
   add_foreign_key "sales_orders", "vendors"
-  add_foreign_key "schemes", "vendors"
-  add_foreign_key "supplier_skus", "skus"
-  add_foreign_key "supplier_skus", "suppliers"
-  add_foreign_key "vendor_supplier_contracts", "suppliers"
-  add_foreign_key "vendor_supplier_contracts", "vendors"
-  add_foreign_key "vendor_supplier_schemes", "schemes"
-  add_foreign_key "vendor_supplier_schemes", "skus"
-  add_foreign_key "vendor_supplier_schemes", "vendor_supplier_contracts"
 end
