@@ -14,9 +14,6 @@ module InventoryModule
       save
     end
 
-    #
-    # Save inventory and publish inventory update event.
-    #
     def save
       location.save!
       location

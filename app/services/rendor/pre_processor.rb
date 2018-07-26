@@ -69,10 +69,10 @@ module Rendor
       return unless @enable_sorting
       return if sort_by.blank?
       self.sort_by =  case sort_by
-                      when String
-                        Queries::Sorts.parse(sort_by)
-                      else
-                        sort_by
+                        when String
+                          Queries::Sorts.parse(sort_by)
+                        else
+                          sort_by
                       end
     end
 
@@ -162,12 +162,12 @@ module Rendor
     #
     def model
       case scope
-      when ApplicationRecord
-        scope.class
-      when ActiveRecord::Relation
-        scope.model
-      else
-        scope
+        when ApplicationRecord
+          scope.class
+        when ActiveRecord::Relation
+          scope.model
+        else
+          scope
       end
     end
   end
