@@ -8,5 +8,8 @@ module Api::Public
     def disable_fields
       params[:fields] = nil
     end
+
+    def valid_index?
+    end
   end
 end
