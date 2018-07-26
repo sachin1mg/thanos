@@ -4,6 +4,7 @@ module PublicRoutes
       namespace 'api', module: 'api/public' do
         namespace :v1 do
           get :test, to: 'test#test'
+          resources :suppliers, only: [:create, :update, :index, :show]
         end
       end
     end
