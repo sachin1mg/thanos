@@ -1,6 +1,10 @@
 class BatchSerializer < ApplicationSerializer
-  attributes :id, :sku_id, :mrp, :manufacturing_date, :expiry_date,
+  attributes :id, :sku, :mrp, :manufacturing_date, :expiry_date,
              :created_at, :updated_at
+
+  def sku
+    ActiveModelSerializers::SerializableResource.new(object.sku, fields: [:id, :sku_name]).as_json
+  end
 
   #
   # Default attributes for serializer

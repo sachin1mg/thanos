@@ -83,4 +83,3 @@ module Api::Public::V1
     end
   end
 end
-
