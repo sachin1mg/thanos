@@ -4,6 +4,7 @@ class CreateVendors < ActiveRecord::Migration[5.1]
       t.citext :name, null: false
       t.citext :status, index: true
       t.citext :types, array: true, index: { using: :gin }
+      t.jsonb :meta_data
 
       t.datetime :deleted_at
       t.timestamps

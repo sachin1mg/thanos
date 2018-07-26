@@ -6,6 +6,7 @@ class CreateLocations < ActiveRecord::Migration[5.1]
       t.citext :rack
       t.citext :slab
       t.citext :bin
+      t.jsonb :meta_data
 
       t.datetime :deleted_at
       t.timestamps
