@@ -3,7 +3,7 @@ puts 'Seeding supplier module'
 Vendor.all.each do |vendor|
   ['quantity', 'flat', 'percent'].each do |discount_type|
     Scheme.create!(vendor: vendor,
-                   vendor_type: vendor.type,
+                   vendor_type: vendor.types.first,
                    name: Faker::GameOfThrones.character,
                    discount_type: discount_type,
                    discount_units: 10,

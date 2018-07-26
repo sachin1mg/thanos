@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 19) do
+ActiveRecord::Schema.define(version: 22) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -190,6 +190,18 @@ ActiveRecord::Schema.define(version: 19) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "supplier_skus", force: :cascade do |t|
+    t.bigint "supplier_id"
+    t.bigint "sku_id"
+    t.citext "supplier_sku_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sku_id"], name: "index_supplier_skus_on_sku_id"
+    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true
+    t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.citext "name"
     t.citext "email", default: "", null: false
@@ -208,6 +220,36 @@ ActiveRecord::Schema.define(version: 19) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["vendor_id"], name: "index_users_on_vendor_id"
+  end
+
+  create_table "vendor_supplier_contracts", force: :cascade do |t|
+    t.bigint "vendor_id"
+    t.bigint "supplier_id"
+    t.citext "status"
+    t.integer "priority"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_vendor_supplier_contracts_on_deleted_at"
+    t.index ["supplier_id"], name: "index_vendor_supplier_contracts_on_supplier_id"
+    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true
+    t.index ["vendor_id"], name: "index_vendor_supplier_contracts_on_vendor_id"
+  end
+
+  create_table "vendor_supplier_schemes", force: :cascade do |t|
+    t.bigint "vendor_supplier_contract_id"
+    t.bigint "sku_id"
+    t.bigint "scheme_id"
+    t.citext "status"
+    t.datetime "expiry_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_vendor_supplier_schemes_on_deleted_at"
+    t.index ["expiry_at"], name: "index_vendor_supplier_schemes_on_expiry_at"
+    t.index ["scheme_id"], name: "index_vendor_supplier_schemes_on_scheme_id"
+    t.index ["sku_id"], name: "index_vendor_supplier_schemes_on_sku_id"
+    t.index ["vendor_supplier_contract_id"], name: "index_vendor_supplier_schemes_on_vendor_supplier_contract_id"
   end
 
   create_table "vendors", force: :cascade do |t|
@@ -250,4 +292,11 @@ ActiveRecord::Schema.define(version: 19) do
   add_foreign_key "sales_order_items", "skus"
   add_foreign_key "sales_orders", "vendors"
   add_foreign_key "schemes", "vendors"
+  add_foreign_key "supplier_skus", "skus"
+  add_foreign_key "supplier_skus", "vendors", column: "supplier_id"
+  add_foreign_key "vendor_supplier_contracts", "vendors"
+  add_foreign_key "vendor_supplier_contracts", "vendors", column: "supplier_id"
+  add_foreign_key "vendor_supplier_schemes", "schemes"
+  add_foreign_key "vendor_supplier_schemes", "skus"
+  add_foreign_key "vendor_supplier_schemes", "vendor_supplier_contracts"
 end

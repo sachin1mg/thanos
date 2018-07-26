@@ -20,7 +20,7 @@ class Vendor < ApplicationRecord
   validate :valid_types
 
   def init
-    self.type ||= []
+    self.types ||= []
     self.metadata ||= {}
   end
 
