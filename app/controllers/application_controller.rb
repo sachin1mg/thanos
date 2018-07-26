@@ -6,6 +6,7 @@ class ApplicationController < ActionController::API
   include Concerns::Cacheable
   include Concerns::ParamValidator
 
+  before_action :authenticate_user!
   before_action :set_raven_context
   before_action :set_paper_trail_whodunnit
 
@@ -34,12 +35,27 @@ class ApplicationController < ActionController::API
   end
 
   def set_raven_context
+    return unless signed_in?
     Raven.user_context(id: current_user.id)
     Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 
   def current_user
-    OpenStruct.new(id: params[:user_id])
+    return unless signed_in?
+    @current_user ||= User.find(@current_user_id)
+  end
+
+  def signed_in?
+    @current_user_id.present?
+  end
+
+  def authenticate_user!
+    token = request.headers['Authorization']
+    return unless token.present?
+    jwt_payload = JWT.decode(token, Rails.application.secrets.secret_key_base).first
+    @current_user_id = jwt_payload['id']
+  rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
+    raise ::Unauthorized
   end
 
   def health
