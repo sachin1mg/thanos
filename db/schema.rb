@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 15) do
+ActiveRecord::Schema.define(version: 19) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,35 @@ ActiveRecord::Schema.define(version: 15) do
     t.index ["sku_id"], name: "index_inventories_on_sku_id"
     t.index ["vendor_id", "sku_id", "batch_id", "location_id"], name: "index_inventories_on_vendor_id_sku_id_batch_id_and_location_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["vendor_id"], name: "index_inventories_on_vendor_id"
+  end
+
+  create_table "inventory_pickups", force: :cascade do |t|
+    t.bigint "sales_order_item_id"
+    t.bigint "inventory_id"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_inventory_pickups_on_deleted_at"
+    t.index ["inventory_id"], name: "index_inventory_pickups_on_inventory_id"
+    t.index ["sales_order_item_id"], name: "index_inventory_pickups_on_sales_order_item_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.bigint "sales_order_id"
+    t.citext "number"
+    t.date "date"
+    t.string "attachment_file_name"
+    t.string "attachment_content_type"
+    t.integer "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_invoices_on_deleted_at"
+    t.index ["number"], name: "index_invoices_on_number", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["sales_order_id"], name: "index_invoices_on_sales_order_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -92,6 +121,42 @@ ActiveRecord::Schema.define(version: 15) do
     t.index ["role_id"], name: "index_roles_users_on_role_id"
     t.index ["user_id", "role_id"], name: "index_roles_users_on_user_id_and_role_id", unique: true
     t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
+  create_table "sales_order_items", force: :cascade do |t|
+    t.bigint "sku_id"
+    t.bigint "sales_order_id"
+    t.decimal "price", precision: 8, scale: 2
+    t.decimal "discount", precision: 8, scale: 2
+    t.citext "status"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_sales_order_items_on_deleted_at"
+    t.index ["sales_order_id"], name: "index_sales_order_items_on_sales_order_id"
+    t.index ["sku_id"], name: "index_sales_order_items_on_sku_id"
+    t.index ["status"], name: "index_sales_order_items_on_status"
+  end
+
+  create_table "sales_orders", force: :cascade do |t|
+    t.bigint "vendor_id"
+    t.citext "order_reference_id"
+    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "discount", precision: 8, scale: 2
+    t.citext "barcode"
+    t.citext "source"
+    t.citext "shipping_label_url"
+    t.citext "status"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_sales_orders_on_deleted_at"
+    t.index ["order_reference_id"], name: "index_sales_orders_on_order_reference_id"
+    t.index ["source"], name: "index_sales_orders_on_source"
+    t.index ["status"], name: "index_sales_orders_on_status"
+    t.index ["vendor_id"], name: "index_sales_orders_on_vendor_id"
   end
 
   create_table "skus", force: :cascade do |t|
@@ -155,9 +220,15 @@ ActiveRecord::Schema.define(version: 15) do
   add_foreign_key "inventories", "locations"
   add_foreign_key "inventories", "skus"
   add_foreign_key "inventories", "vendors"
+  add_foreign_key "inventory_pickups", "inventories"
+  add_foreign_key "inventory_pickups", "sales_order_items"
+  add_foreign_key "invoices", "sales_orders"
   add_foreign_key "locations", "vendors"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
+  add_foreign_key "sales_order_items", "sales_orders"
+  add_foreign_key "sales_order_items", "skus"
+  add_foreign_key "sales_orders", "vendors"
 end
