@@ -11,9 +11,14 @@ module Api::Public::V1
     end
 
     def create
+      sku = Sku.build(sku_params)
+      sku = InventoryModule::SkuManager.new(sku).create
+      render_serializer scope: sku
     end
 
     def update
+      sku = sku_manager.update(sku_params)
+      render_serializer scope: sku
     end
 
     # DELETE /skus/1
@@ -25,6 +30,14 @@ module Api::Public::V1
 
     def sku
       @sku ||= Sku.find(params[:id])
+    end
+
+    def sku_manager
+      @sku_manager ||= InventoryModule::SkuManager.new(sku)
+    end
+
+    def sku_params
+      params.permit(:onemg_sku_id, :sku_name, :manufacturer_name, :item_group, :uom, :pack_size)
     end
   end
 end
