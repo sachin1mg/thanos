@@ -6,7 +6,8 @@ class CreateInventories < ActiveRecord::Migration[5.1]
       t.references :sku, foreign_key: true
       t.references :batch, foreign_key: true
       t.integer :quantity
-      t.decimal :mrp, precision: 8, scale: 2
+      t.decimal :cost_price, precision: 8, scale: 2
+      t.decimal :selling_price, precision: 8, scale: 2
       t.jsonb :metadata
 
       t.datetime :deleted_at

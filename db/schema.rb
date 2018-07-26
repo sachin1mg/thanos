@@ -34,7 +34,8 @@ ActiveRecord::Schema.define(version: 12) do
     t.bigint "sku_id"
     t.bigint "batch_id"
     t.integer "quantity"
-    t.decimal "mrp", precision: 8, scale: 2
+    t.decimal "cost_price", precision: 8, scale: 2
+    t.decimal "selling_price", precision: 8, scale: 2
     t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
