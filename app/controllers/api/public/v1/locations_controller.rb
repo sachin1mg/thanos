@@ -12,7 +12,9 @@ module Api::Public::V1
     end
 
     def create
-      location = InventoryModule::LocationManager.create(location_params)
+      vendor = Vendor.find(params[:vendor_id])
+      location = vendor.locations.build(location_params)
+      location = InventoryModule::LocationManager.new(location).create
       render_serializer scope: location
     end
 
@@ -29,11 +31,12 @@ module Api::Public::V1
     private
 
     def location
-      @location ||= Location.find(params[:id])
+      vendor = Vendor.find(params[:vendor_id])
+      @location ||= vendor.location.find(params[:id])
     end
 
     def location_params
-      params.permit(:vendor_id, :aisle, :rack, :slab, :bin)
+      params.permit(:aisle, :rack, :slab, :bin)
     end
 
     def location_manager

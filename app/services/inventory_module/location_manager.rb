@@ -5,9 +5,8 @@ module InventoryModule
       self.location = location
     end
 
-    def self.create(params)
-      location = Location.new(params)
-      self.new(location).save
+    def create
+      save
     end
 
     def update(params)
