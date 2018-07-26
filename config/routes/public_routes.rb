@@ -7,6 +7,13 @@ module PublicRoutes
             resources :sales_order_items
           end
           resources :inventory_pickups
+          resources :skus do
+            resources :batches
+          end
+
+          resources :vendors
+          resources :locations
+          resources :inventories
         end
       end
     end
