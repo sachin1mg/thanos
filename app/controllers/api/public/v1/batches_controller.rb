@@ -1,6 +1,6 @@
 module Api::Public::V1
   class BatchesController < ::Api::Public::AuthController
-    skip_before_action :valid_action?
+    skip_before_action :valid_action?, only: [:show, :destroy]
 
     # GET /batches
     def index
@@ -15,10 +15,11 @@ module Api::Public::V1
 
     # POST /batches
     def create
-      batch = Batch.create!(batch_params)
+      batch = sku.batches.create!(batch_params)
       render_serializer scope: batch
     end
 
+    # PUT /batches/1
     def update
       batch.update_attributes!(batch_params)
       render_serializer scope: batch
@@ -31,16 +32,54 @@ module Api::Public::V1
     end
 
     private
+
     def batch_params
-      params.require(:batch).permit(:sku_id, :mrp, :manufacturing_date, :expiry_date, :metadata)
+      params.require(:batch).permit(:mrp, :manufacturing_date, :expiry_date, :metadata)
+    end
+
+    ######################
+    #### VALIDATIONS ####
+    ######################
+
+    def valid_index?
+      param! :sort_by, String, default: 'id:asc'
+    end
+
+    def valid_create?
+      param! :batch, Hash, required: true, blank: false do |p|
+        p.param! :mrp, Float, required: true, blank: false
+        p.param! :manufacturing_date, Date, required: true, blank: false
+        p.param! :expiry_date, Date, required: true, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
+    end
+
+    def valid_update?
+      param! :batch, Hash, required: true, blank: false do |p|
+        p.param! :mrp, Float, blank: false
+        p.param! :manufacturing_date, Date, blank: false
+        p.param! :expiry_date, Date, blank: false
+        p.param! :metadata, Hash, blank: false
+      end
     end
 
     def index_filters
-      params.permit(:sku_id)
+      param! :sku_ids, Array do |id, index|
+        id.param! index, Integer
+      end
+      param! :manufacturing_date, Date, blank: false
+      param! :expiry_date, Date, blank: false
+      param! :mrp, Float, blank: false
+
+      params.permit(:manufacturing_date, :expiry_date, :mrp, sku_ids: [])
     end
 
     def batch
       @batch ||= Batch.find(params[:id])
+    end
+
+    def sku
+      @sku ||= Sku.find(params[:sku_id])
     end
   end
 end
