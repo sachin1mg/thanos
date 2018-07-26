@@ -266,8 +266,8 @@ ActiveRecord::Schema.define(version: 28) do
   end
 
   create_table "schemes", force: :cascade do |t|
-    t.bigint "vendor_id"
-    t.citext "vendor_type"
+    t.string "schemable_type"
+    t.bigint "schemable_id"
     t.citext "name"
     t.citext "discount_type"
     t.float "discount_units"
@@ -280,9 +280,9 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_schemes_on_deleted_at"
     t.index ["expiry_at"], name: "index_schemes_on_expiry_at"
-    t.index ["name", "vendor_id", "vendor_type"], name: "index_schemes_on_name_and_vendor_id_and_vendor_type", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["name", "schemable_id", "schemable_type"], name: "index_schemes_on_name_and_schemable_id_and_schemable_type", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["schemable_type", "schemable_id"], name: "index_schemes_on_schemable_type_and_schemable_id"
     t.index ["status"], name: "index_schemes_on_status"
-    t.index ["vendor_id"], name: "index_schemes_on_vendor_id"
   end
 
   create_table "skus", force: :cascade do |t|

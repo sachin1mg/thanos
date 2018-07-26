@@ -11,6 +11,7 @@ module PublicRoutes
           resources :locations
           resources :inventories
           resources :suppliers, only: [:create, :update, :index, :show]
+          resources :schemes, only: [:create, :update, :index, :show]
         end
       end
     end

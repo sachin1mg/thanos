@@ -1,8 +1,7 @@
 class CreateSchemes < ActiveRecord::Migration[5.1]
   def change
     create_table :schemes do |t|
-      t.belongs_to :vendor
-      t.citext :vendor_type
+      t.references :schemable, polymorphic: true
       t.citext :name
       t.citext :discount_type
       t.float :discount_units
@@ -15,6 +14,6 @@ class CreateSchemes < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :schemes, [:name, :vendor_id, :vendor_type], unique: true, where: 'deleted_at is null'
+    add_index :schemes, [:name, :schemable_id, :schemable_type], unique: true, where: 'deleted_at is null'
   end
 end
