@@ -5,6 +5,15 @@ module Api::Public::V1
       render_serializer scope: sales_orders, sorting: true
     end
 
+    def show
+      after_serialize = Proc.new do |data|
+                          data[:item_details] = sales_order.sales_order_items
+                          data
+                        end
+
+      render_serializer scope: sales_order, after_serialize: after_serialize
+    end
+
     private
 
     def index_filters
@@ -27,6 +36,20 @@ module Api::Public::V1
     #
     def valid_index?
       param! :sort_by, String, default: 'id:asc'
+    end
+
+    #
+    # Validate show action params
+    #
+    def valid_show?
+      param! :id, Integer, required: true, blank: false
+    end
+
+    #
+    # 
+    #
+    def sales_order
+      @sales_order ||= SalesOrder.find(params[:id])
     end
   end
 end
