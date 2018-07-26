@@ -2,7 +2,10 @@ puts 'Sales Order Seeder start'
 
 100.times do
   amount = Faker::Number.decimal(2).to_f
-  SalesOrder.create!(discount: rand(0.0...amount),
+  SalesOrder.create!(vendor: Vendor.first,
+                     order_reference_id: Faker::Lorem.characters(10),
+                     customer_name: Faker::GameOfThrones.character,
+                     discount: rand(0.0...amount),
                      amount: amount)
 end
 
