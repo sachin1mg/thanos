@@ -18,6 +18,7 @@ module PublicRoutes
           end
           resources :suppliers, only: [:create, :update, :index, :show]
           resources :schemes, only: [:create, :update, :index, :show]
+          resources :vendor_supplier_contracts, only: [:create, :update, :index, :show]
         end
       end
     end
