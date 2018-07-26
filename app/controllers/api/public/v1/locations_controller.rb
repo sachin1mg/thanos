@@ -29,7 +29,6 @@ module Api::Public::V1
     private
 
     def location
-
       @location ||= Location.find(params[:id])
     end
 
