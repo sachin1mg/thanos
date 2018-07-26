@@ -11,7 +11,7 @@ class SalesOrderItem < ApplicationRecord
   validates_numericality_of :price, :discount, greater_than_or_equal_to: 0
 
   belongs_to :sales_order
-  # belongs_to :sku
+  belongs_to :sku
   has_many :inventory_pickups
 
   before_validation :init

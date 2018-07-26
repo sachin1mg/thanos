@@ -1,7 +1,7 @@
 class CreateSalesOrders < ActiveRecord::Migration[5.1]
   def change
     create_table :sales_orders do |t|
-      # t.belongs_to :vendor, foreign_key: true
+      t.belongs_to :vendor, foreign_key: true
       t.citext :order_reference_id, index: true
       t.decimal :amount, precision: 8, scale: 2
       t.decimal :discount, precision: 8, scale: 2
