@@ -4,6 +4,7 @@ module PublicRoutes
       namespace 'api', module: 'api/public' do
         namespace :v1 do
           resources :sales_orders
+          resources :inventory_pickups
         end
       end
     end
