@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 28) do
   create_table "sales_orders", force: :cascade do |t|
     t.bigint "vendor_id"
     t.citext "order_reference_id"
+    t.citext "customer_name"
     t.decimal "amount", precision: 8, scale: 2
     t.decimal "discount", precision: 8, scale: 2
     t.citext "barcode"
@@ -258,6 +259,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["customer_name"], name: "index_sales_orders_on_customer_name"
     t.index ["deleted_at"], name: "index_sales_orders_on_deleted_at"
     t.index ["order_reference_id"], name: "index_sales_orders_on_order_reference_id"
     t.index ["source"], name: "index_sales_orders_on_source"
