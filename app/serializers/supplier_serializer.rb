@@ -6,7 +6,7 @@ class SupplierSerializer < ApplicationSerializer
   #
   # @return [Array] Array of symbolize attributes
   #
-  def default_attributes
+  def self.default_attributes
     [:id, :name, :status, :types, :metadata, :created_at, :updated_at, :deleted_at]
   end
 end

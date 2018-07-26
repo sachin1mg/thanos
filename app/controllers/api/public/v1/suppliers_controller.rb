@@ -1,5 +1,7 @@
 module Api::Public::V1
   class SuppliersController < BaseController
+    skip_before_action :valid_action?, only: [:index, :show]
+
     def index
       suppliers = Supplier
       render_serializer scope: suppliers
@@ -27,12 +29,6 @@ module Api::Public::V1
 
     def supplier
       @supplier ||= Supplier.find(params[:id])
-    end
-
-    def valid_index?
-    end
-
-    def valid_show?
     end
 
     def valid_create?
