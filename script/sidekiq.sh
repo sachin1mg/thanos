@@ -27,7 +27,7 @@ case "$1" in
 
   stop)
     echo "Stopping sidekiq..."
-      bundle exec sidekiqctl stop $SIDEKIQ_PID_FILE 0
+      bundle exec sidekiqctl stop $SIDEKIQ_PID_FILE 5
       rm -f $SIDEKIQ_PID_FILE
 
     echo "done"
@@ -36,7 +36,7 @@ case "$1" in
   restart)
     echo "Restarting sidekiq..."
     if sidekiq_is_running ; then
-      bundle exec sidekiqctl stop $SIDEKIQ_PID_FILE 0
+      bundle exec sidekiqctl stop $SIDEKIQ_PID_FILE 5
     fi
 
     bundle exec sidekiq -d -P $SIDEKIQ_PID_FILE
