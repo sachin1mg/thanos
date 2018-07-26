@@ -38,6 +38,35 @@ module Api::Public::V1
     end
 
     def index_filters
+      param! :status, String, blank: false
+
+      params.permit(:status)
+    end
+
+    #####################
+    #### VALIDATIONS ####
+    #####################
+
+    def valid_index?
+      param! :sort_by, String, default: 'id:asc'
+    end
+
+    def valid_create?
+      param! :vendor, Hash, required: true, blank: false do |p|
+        p.param! :name, String, required: true, blank: false
+        p.param! :status, String, blank: false
+        p.param! :metadata, Hash, blank: false
+        p.param! :invoice_number_template, String, required: true, blank: false
+      end
+    end
+
+    def valid_update?
+      param! :vendor, Hash, required: true, blank: false do |p|
+        p.param! :name, String, blank: false
+        p.param! :status, String, blank: false
+        p.param! :metadata, Hash, blank: false
+        p.param! :invoice_number_template, String, blank: false
+      end
     end
 
     def vendor

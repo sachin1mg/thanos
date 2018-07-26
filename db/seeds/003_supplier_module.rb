@@ -7,16 +7,6 @@ puts 'Seeding supplier module'
 end
 
 Vendor.limit(10).each do |vendor|
-  ['quantity', 'flat', 'percent'].each do |discount_type|
-    Scheme.create!(vendor: vendor,
-                   vendor_type: ['Vendor', 'Supplier'].sample,
-                   name: Faker::GameOfThrones.character,
-                   discount_type: discount_type,
-                   discount_units: 10,
-                   min_amount_type: discount_type,
-                   min_amount: 100)
-  end
-
   Supplier.limit(10).each do |supplier|
     VendorSupplierContract.create!(vendor: vendor,
                                    supplier: supplier,
@@ -25,6 +15,15 @@ Vendor.limit(10).each do |vendor|
 end
 
 Supplier.limit(10).each do |supplier|
+  ['quantity', 'flat', 'percent'].each do |discount_type|
+    Scheme.create!(schemable: supplier,
+                   name: Faker::GameOfThrones.character,
+                   discount_type: discount_type,
+                   discount_units: 10,
+                   min_amount_type: discount_type,
+                   min_amount: 100)
+  end
+
   Sku.limit(10).each do |sku|
     SupplierSku.create!(supplier: supplier, sku: sku, supplier_sku_id: Faker::Number.number(5))
   end
