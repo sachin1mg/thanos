@@ -159,6 +159,25 @@ ActiveRecord::Schema.define(version: 19) do
     t.index ["vendor_id"], name: "index_sales_orders_on_vendor_id"
   end
 
+  create_table "schemes", force: :cascade do |t|
+    t.bigint "vendor_id"
+    t.citext "vendor_type"
+    t.citext "name"
+    t.citext "discount_type"
+    t.float "discount_units"
+    t.citext "min_amount_type"
+    t.float "min_amount"
+    t.citext "status"
+    t.datetime "expiry_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_schemes_on_deleted_at"
+    t.index ["expiry_at"], name: "index_schemes_on_expiry_at"
+    t.index ["name", "vendor_id", "vendor_type"], name: "index_schemes_on_name_and_vendor_id_and_vendor_type", unique: true
+    t.index ["vendor_id"], name: "index_schemes_on_vendor_id"
+  end
+
   create_table "skus", force: :cascade do |t|
     t.citext "sku_name", null: false
     t.citext "manufacturer_name", null: false
@@ -201,7 +220,6 @@ ActiveRecord::Schema.define(version: 19) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status"], name: "index_vendors_on_status"
-    t.index ["types"], name: "index_vendors_on_types", using: :gin
   end
 
   create_table "versions", force: :cascade do |t|
@@ -231,4 +249,5 @@ ActiveRecord::Schema.define(version: 19) do
   add_foreign_key "sales_order_items", "sales_orders"
   add_foreign_key "sales_order_items", "skus"
   add_foreign_key "sales_orders", "vendors"
+  add_foreign_key "schemes", "vendors"
 end
