@@ -5,6 +5,7 @@ class CreateSkus < ActiveRecord::Migration[5.1]
       t.citext :manufacturer_name, null: false
       t.citext :item_group
       t.citext :uom
+      t.citext :onemg_sku_id
       t.integer :pack_size
       t.jsonb :metadata
 

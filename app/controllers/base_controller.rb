@@ -1,4 +1,30 @@
 class BaseController < ApplicationController
+  prepend_before_action :disable_includes
+  prepend_before_action :prepare_params
+  before_action :valid_pagination_params?
+
+
+  def valid_pagination_params?
+    param! :page, Integer, default: 1
+    param! :per_page, Integer, default: Settings.CONSTANTS.PAGINATION.DEFAULT_PER_PAGE
+  end
+
+  #
+  # Disable includes
+  #
+  def disable_includes
+    params[:include] = nil
+  end
+
+  #
+  # Preprocess params
+  #
+  def prepare_params
+    param! :fields, String, default: '', transform: -> (param) { param.split(',').map(&:to_sym) }
+    param! :include, String, default: '', transform: -> (param) { param.split(',').map(&:to_sym) }
+    param! :query, String, blank: false, transform: -> (query) { query.strip }
+  end
+
   #
   # Perform render operation with serializers
   # @param scope: ActiveRecord Scope
