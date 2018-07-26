@@ -35,7 +35,7 @@ class BaseController < ApplicationController
   # @param sorting: false [Boolean] Flag to enable sorting
   # @param after_serialize: nil [Proc] Block to process after serialization
   #
-  def render_serializer(scope:, meta: {}, query: params, pagination: true, pagination_meta: true, sorting: false, after_serialize: nil)
+  def render_serializer(scope:, meta: {}, query: params, pagination: true, pagination_meta: true, sorting: true, after_serialize: nil)
     pre_processor = Rendor::PreProcessor.new(
         scope: scope,
         meta: meta,
