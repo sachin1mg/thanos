@@ -7,6 +7,12 @@ class Scheme < ApplicationRecord
     inactive: 'inactive'
   }
 
+  enum discount_type: {
+    quantity: 'quantity',
+    flat: 'flat',
+    percent: 'percent'
+  }
+
   validates_presence_of :discount_type, :discount_units
   validates_numericality_of :discount_units, greater_than_or_equal_to: 0
   validates :name, uniqueness: { scope: [:schemable_id, :schemable_type] }
