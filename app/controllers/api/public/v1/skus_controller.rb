@@ -4,12 +4,12 @@ module Api::Public::V1
 
     # GET /skus
     def index
-      render json: Sku.scoped
+      render_serializer scope: Sku.scoped
     end
 
     # GET /skus/1
     def show
-      render json: sku
+      render_serializer scope: sku
     end
 
     def create
