@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
   include Concerns::Cacheable
   include Concerns::ParamValidator
 
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_raven_context
   before_action :set_paper_trail_whodunnit
 

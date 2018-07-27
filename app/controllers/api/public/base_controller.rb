@@ -1,7 +1,7 @@
 module Api::Public
   class BaseController < ::AuthController
     def current_vendor
-      Vendor.last
+      current_user.vendor
     end
   end
 end
