@@ -25,6 +25,7 @@ login permission:
   - 'api/public/v1/supplier_skus#*'
   - 'api/public/v1/suppliers#*'
   - 'api/public/v1/vendor_supplier_contracts#*'
+  - 'api/public/v1/vendor_supplier_schemes#*'
   - 'api/public/v1/vendors#*'
 
 #####################################
