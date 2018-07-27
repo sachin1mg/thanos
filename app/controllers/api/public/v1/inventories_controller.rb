@@ -58,8 +58,11 @@ module Api::Public::V1
       param! :cost_price, Float, blank: false
       param! :selling_price, Float, blank: false
       param! :quantity, Integer, blank: false
+      param! :sku_name, String, blank: false
+      param! :manufacturer_name, String, blank: false
 
-      params.permit(:quantity, :selling_price, :cost_price, sku_ids: [], batch_ids: [], location_ids: [])
+      params.permit(:quantity, :selling_price, :cost_price, :sku_name, :manufacturer_name,
+                    sku_ids: [], batch_ids: [], location_ids: [])
     end
 
     #####################
