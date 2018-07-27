@@ -18,7 +18,7 @@ puts 'Sales Order Seeder end'
 puts 'Sales Order Item Seeder start'
 
 SalesOrder.all.each do |sales_order|
-  SalesOrderItem.create!(
+  item1 = SalesOrderItem.create!(
     sales_order: sales_order,
     discount: sales_order.discount * 0.4,
     quantity: rand(1...10),
@@ -26,12 +26,24 @@ SalesOrder.all.each do |sales_order|
     sku: skus.sample
   )
 
-  SalesOrderItem.create!(
+  InventoryPickup.create!(
+    sales_order_item: item1,
+    inventory: item1.sku.inventories.sample,
+    quantity: rand(1..item1.quantity)
+  )
+
+  item2 = SalesOrderItem.create!(
     sales_order: sales_order,
     discount: sales_order.discount * 0.6,
     price: sales_order.amount * 0.6,
     quantity: rand(1...10),
     sku: skus.sample
+  )
+
+  InventoryPickup.create!(
+    sales_order_item: item2,
+    inventory: item2.sku.inventories.sample,
+    quantity: rand(1..item2.quantity)
   )
 end
 
