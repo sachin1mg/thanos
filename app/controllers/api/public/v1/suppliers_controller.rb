@@ -33,7 +33,7 @@ module Api::Public::V1
     end
 
     def search_query
-      params[:q]&.strip
+      params[:name]&.strip
     end
 
     def valid_create?
