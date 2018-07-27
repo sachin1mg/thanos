@@ -4,7 +4,7 @@ module Api::Public::V1
 
     # GET /skus
     def index
-      render_serializer scope: Sku.scoped
+      render_serializer scope: Sku.scoped.filter(index_filters)
     end
 
     # GET /skus/1
@@ -41,7 +41,7 @@ module Api::Public::V1
       param! :item_group, String, blank: false
       param! :uom, String, blank: false
 
-      params.permit(:onemg_sku_id, :manufacturer_name, :item_group, :uom)
+      params.permit(:onemg_sku_id, :sku_name, :manufacturer_name, :item_group, :uom)
     end
 
     #####################
