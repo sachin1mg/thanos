@@ -3,17 +3,20 @@ puts 'Material Request Seeder start'
 sales_orders = SalesOrder.all
 skus = Sku.includes(:batches)
 suppliers = Supplier.all
+vendors = Vendor.all
 
 sales_orders.each do |sales_order|
+
+  sku = skus.sample
+  supplier = suppliers.sample
+  vendor = vendors.sample
 
   material_request = sales_order.create_material_request!(
     code: Faker::Code.nric,
     delivery_date: rand(1...100).days.from_now,
-    type: [:jit, :bulk].sample
+    type: [:jit, :bulk].sample,
+    vendor: vendor
   )
-
-  sku = skus.sample
-  supplier = suppliers.sample
 
   material_request_item = material_request.material_request_items.create!(
     quantity: rand(1...100),
@@ -25,13 +28,15 @@ sales_orders.each do |sales_order|
     supplier: supplier,
     material_request_ids: [material_request.id],
     code: Faker::Code.nric,
-    delivery_date: rand(1...100).days.from_now
+    delivery_date: rand(1...100).days.from_now,
+    vendor: vendor
   )
 
   purchase_receipt = purchase_order.purchase_receipts.create!(
     supplier: supplier,
     code: Faker::Code.nric,
-    total_amount: rand(1.0...100.0).round(2)
+    total_amount: rand(1.0...100.0).round(2),
+    vendor: vendor
   )
 
   purchase_order_item = purchase_order.purchase_order_items.create!(

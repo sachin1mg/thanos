@@ -46,6 +46,7 @@ group :development do
 
   gem 'brakeman', '~> 4.2', require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis.
   gem 'bullet', '~> 5.7', '>= 5.7.5' # help to kill N+1 queries and unused eager loading.
+  gem 'awesome_print'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 28) do
 
   create_table "material_requests", force: :cascade do |t|
     t.bigint "sales_order_id"
+    t.bigint "vendor_id"
     t.citext "code"
     t.citext "type"
     t.citext "status"
@@ -124,6 +125,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["sales_order_id"], name: "index_material_requests_on_sales_order_id"
     t.index ["status"], name: "index_material_requests_on_status"
     t.index ["type"], name: "index_material_requests_on_type"
+    t.index ["vendor_id"], name: "index_material_requests_on_vendor_id"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -164,6 +166,7 @@ ActiveRecord::Schema.define(version: 28) do
 
   create_table "purchase_orders", force: :cascade do |t|
     t.bigint "supplier_id"
+    t.bigint "vendor_id"
     t.citext "material_request_ids", array: true
     t.citext "code"
     t.citext "status"
@@ -176,6 +179,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["deleted_at"], name: "index_purchase_orders_on_deleted_at"
     t.index ["status"], name: "index_purchase_orders_on_status"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
+    t.index ["vendor_id"], name: "index_purchase_orders_on_vendor_id"
   end
 
   create_table "purchase_receipt_items", force: :cascade do |t|
@@ -203,6 +207,7 @@ ActiveRecord::Schema.define(version: 28) do
   create_table "purchase_receipts", force: :cascade do |t|
     t.bigint "supplier_id"
     t.bigint "purchase_order_id"
+    t.bigint "vendor_id"
     t.citext "code"
     t.citext "status"
     t.decimal "total_amount", precision: 8, scale: 2
@@ -214,6 +219,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["purchase_order_id"], name: "index_purchase_receipts_on_purchase_order_id"
     t.index ["status"], name: "index_purchase_receipts_on_status"
     t.index ["supplier_id"], name: "index_purchase_receipts_on_supplier_id"
+    t.index ["vendor_id"], name: "index_purchase_receipts_on_vendor_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -415,18 +421,21 @@ ActiveRecord::Schema.define(version: 28) do
   add_foreign_key "material_request_items", "material_requests"
   add_foreign_key "material_request_items", "skus"
   add_foreign_key "material_requests", "sales_orders"
+  add_foreign_key "material_requests", "vendors"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
   add_foreign_key "purchase_order_items", "material_request_items"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "skus"
   add_foreign_key "purchase_orders", "suppliers"
+  add_foreign_key "purchase_orders", "vendors"
   add_foreign_key "purchase_receipt_items", "batches"
   add_foreign_key "purchase_receipt_items", "purchase_order_items"
   add_foreign_key "purchase_receipt_items", "purchase_receipts"
   add_foreign_key "purchase_receipt_items", "skus"
   add_foreign_key "purchase_receipts", "purchase_orders"
   add_foreign_key "purchase_receipts", "suppliers"
+  add_foreign_key "purchase_receipts", "vendors"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
   add_foreign_key "sales_order_items", "sales_orders"

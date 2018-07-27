@@ -19,6 +19,7 @@ class MaterialRequest < ApplicationRecord
 
   belongs_to :sales_order
   has_many :material_request_items
+  belongs_to :vendor
 
   validates_presence_of :code, :status
 
