@@ -384,6 +384,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["scheme_id"], name: "index_vendor_supplier_schemes_on_scheme_id"
     t.index ["sku_id"], name: "index_vendor_supplier_schemes_on_sku_id"
     t.index ["status"], name: "index_vendor_supplier_schemes_on_status"
+    t.index ["vendor_supplier_contract_id", "sku_id", "scheme_id"], name: "unique_vendor_supplier_contract_id_sku_id_scheme_id", unique: true, where: "(deleted_at IS NULL)"
     t.index ["vendor_supplier_contract_id"], name: "index_vendor_supplier_schemes_on_vendor_supplier_contract_id"
   end
 
