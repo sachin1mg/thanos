@@ -1,5 +1,5 @@
 class BatchSerializer < ApplicationSerializer
-  attributes :id, :sku, :mrp, :manufacturing_date, :expiry_date,
+  attributes :id, :name, :sku, :mrp, :manufacturing_date, :expiry_date,
              :created_at, :updated_at
 
   def sku

@@ -28,6 +28,7 @@ class SalesOrderItem < ApplicationRecord
     self.inventory_pickups.map do |inventory_pickup|
       { 
         id: inventory_pickup.inventory.batch_id,
+        name: inventory_pickup.inventory.batch.name,
         expiry_date: inventory_pickup.inventory.batch.expiry_date,
         location: inventory_pickup.inventory.location.to_s,
         quantity: inventory_pickup.quantity
