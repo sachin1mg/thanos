@@ -66,9 +66,9 @@ module SalesOrderModule
 
     def create_material_request(mr_sku_quantity)
       # TODO KAMAL
-      # ProcurementModule::MaterialRequestManager.create!(type: :jit,
-      #                                                   sales_order: sales_order,
-      #                                                   skus: mr_sku_quantity)
+      ProcurementModule::MaterialRequestManager.create!(type: :jit,
+                                                        sales_order: sales_order,
+                                                        skus: mr_sku_quantity)
     end
 
     #
