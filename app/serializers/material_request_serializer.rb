@@ -1,5 +1,5 @@
 class MaterialRequestSerializer < ApplicationSerializer
-  attributes :id, :sales_order_id, :code, :type, :status, :delivery_date, :vendor_id
+  attributes :id, :sales_order_id, :code, :type, :status, :delivery_date, :vendor_id,
              :created_at, :updated_at
 
   #
