@@ -10,4 +10,8 @@ class Location < ApplicationRecord
   def init
     self.metadata ||= {}
   end
+
+  def to_s
+    "#{aisle}-#{rack}-#{slab}-#{bin}"
+  end
 end

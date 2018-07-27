@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 28) do
   create_table "batches", force: :cascade do |t|
     t.bigint "sku_id"
     t.decimal "mrp", precision: 8, scale: 2
+    t.citext "name"
     t.date "manufacturing_date"
     t.date "expiry_date"
     t.jsonb "metadata"
