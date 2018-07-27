@@ -68,10 +68,12 @@ module Api::Public::V1
         id.param! index, Integer
       end
       param! :manufacturing_date, Date, blank: false
+      param! :manufacturer_name, String, transform: :strip
+      param! :sku_name, String, transform: :strip
       param! :expiry_date, Date, blank: false
       param! :mrp, Float, blank: false
 
-      params.permit(:manufacturing_date, :expiry_date, :mrp, sku_ids: [])
+      params.permit(:manufacturing_date, :manufacturer_name, :sku_name, :expiry_date, :mrp, sku_ids: [])
     end
 
     def batch
