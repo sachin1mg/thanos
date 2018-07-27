@@ -24,7 +24,14 @@ class SalesOrderItem < ApplicationRecord
     self.metadata ||= {}
   end
 
-  def batches
-    self.inventory_pickups.map(&:batch).compact
+  def batches_and_locations
+    self.inventory_pickups.map do |inventory_pickup|
+      { 
+        id: inventory_pickup.inventory.batch_id,
+        expiry_date: inventory_pickup.inventory.batch.expiry_date,
+        location: inventory_pickup.inventory.location.to_s,
+        quantity: inventory_pickup.quantity
+      }
+    end
   end
 end
