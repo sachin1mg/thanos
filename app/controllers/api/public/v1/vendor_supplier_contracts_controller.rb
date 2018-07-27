@@ -1,5 +1,5 @@
 module Api::Public::V1
-  class VendorSupplierContractsController < BaseController
+  class VendorSupplierContractsController < ::Api::Public::AuthController
     skip_before_action :valid_action?, only: [:index, :show]
 
     def index
