@@ -2,17 +2,17 @@ module Api::Public::V1
   class SalesOrdersController < ::Api::Public::AuthController
     skip_before_action :valid_action?, only: [:destroy, :show]
 
-    def create
-      sales_order = SalesOrderModule::SalesOrderManager.create!(param_attributes)
-      render_serializer scope: sales_order
-    end
- 
     def index
-      sales_orders = sales_orders.filter(index_filters)
-      render_serializer scope: sales_orders, sorting: true
+      resources = sales_orders.filter(index_filters)
+      render_serializer scope: resources, sorting: true
     end
 
     def show
+      render_serializer scope: sales_order
+    end
+
+    def create
+      sales_order = SalesOrderModule::SalesOrderManager.create!(param_attributes)
       render_serializer scope: sales_order
     end
 
