@@ -37,6 +37,7 @@ module Api::Public::V1
     def index_filters
       param! :onemg_sku_id, String, blank: false
       param! :manufacturer_name, String, blank: false
+      param! :sku_name, String, blank: false
       param! :item_group, String, blank: false
       param! :uom, String, blank: false
 

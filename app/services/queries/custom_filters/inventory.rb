@@ -2,9 +2,6 @@ module Queries::CustomFilters
   class Inventory < ::Queries::Filters
 
     def sku_name(sku_name)
-      Rails.logger.info("#########################")
-      Rails.logger.info(sku_name)
-      Rails.logger.info(scope.count)
       scope.joins(:sku).where("sku_name like ?", "%#{sku_name.downcase}%")
     end
 
