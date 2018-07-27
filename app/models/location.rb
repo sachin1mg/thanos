@@ -12,6 +12,6 @@ class Location < ApplicationRecord
   end
 
   def to_s
-    "#{aisle}-#{rack}-#{slab}-#{bin}"
+    "#{self.aisle}-#{self.rack}-#{self.slab}-#{self.bin}"
   end
 end

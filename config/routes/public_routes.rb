@@ -32,6 +32,7 @@ module PublicRoutes
           resources :schemes, only: [:create, :update, :index, :show]
           resources :vendor_supplier_contracts, only: [:create, :update, :index, :show]
           resources :supplier_skus, only: [:create, :update, :index, :show]
+          resources :vendor_supplier_schemes, only: [:create, :update, :index, :show]
           resources :batches, only: [:create, :update, :index, :show]
         end
       end
