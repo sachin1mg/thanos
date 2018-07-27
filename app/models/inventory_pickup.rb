@@ -19,4 +19,8 @@ class InventoryPickup < ApplicationRecord
     self.status = :pending
     self.metadata ||= {}
   end
+
+  def batch
+    self.inventory.batch
+  end
 end
