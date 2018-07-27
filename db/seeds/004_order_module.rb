@@ -21,6 +21,7 @@ SalesOrder.all.each do |sales_order|
   SalesOrderItem.create!(
     sales_order: sales_order,
     discount: sales_order.discount * 0.4,
+    quantity: rand(1...10),
     price: sales_order.amount * 0.4,
     sku: skus.sample
   )
@@ -29,6 +30,7 @@ SalesOrder.all.each do |sales_order|
     sales_order: sales_order,
     discount: sales_order.discount * 0.6,
     price: sales_order.amount * 0.6,
+    quantity: rand(1...10),
     sku: skus.sample
   )
 end

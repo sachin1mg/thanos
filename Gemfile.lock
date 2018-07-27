@@ -52,6 +52,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (8.0.0)
+    awesome_print (1.8.0)
     bcrypt (3.1.12)
     brakeman (4.3.1)
     builder (3.2.3)
@@ -292,6 +293,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.7)
+  awesome_print
   brakeman (~> 4.2)
   bullet (~> 5.7, >= 5.7.5)
   byebug

@@ -7,6 +7,7 @@ module Rendor
   class PreProcessor
     META_TOTAL_PAGES_KEY = 'total_pages'
     META_TOTAL_COUNT_KEY = 'total_count'
+    META_PAGE_KEY = 'page'
 
     attr_accessor :scope, # Scope for processing
                   :meta, # Meta hash
@@ -114,7 +115,8 @@ module Rendor
       if @enable_pagination_meta
         meta.merge!(
           META_TOTAL_PAGES_KEY => total_pages,
-          META_TOTAL_COUNT_KEY => total_count
+          META_TOTAL_COUNT_KEY => total_count,
+          META_PAGE_KEY => page
         )
       end
     end

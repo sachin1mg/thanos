@@ -12,6 +12,7 @@ class PurchaseOrder < ApplicationRecord
   has_many :purchase_order_items
   has_many :purchase_receipts
   belongs_to :supplier
+  belongs_to :vendor
 
   validates_presence_of :code, :status
 
