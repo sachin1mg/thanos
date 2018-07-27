@@ -29,10 +29,10 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :id, Integer, blank: false
-      param! :status, String, in: SalesOrder.statuses.keys, blank: false
-      param! :order_reference_id, String, blank: false
-      param! :customer_name, String, blank: false
+      param! :id, Integer
+      param! :status, String, in: SalesOrder.statuses.keys
+      param! :order_reference_id, String
+      param! :customer_name, String
       param! :from_date, String, transform: :to_date
       param! :to_date, String, transform: :to_date
 

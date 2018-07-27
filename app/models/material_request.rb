@@ -27,6 +27,11 @@ class MaterialRequest < ApplicationRecord
 
   def init
     self.status ||= :draft
+    self.code ||= generate_code
     self.metadata ||= {}
+  end
+
+  def generate_code
+    Time.now.to_i.to_s
   end
 end
