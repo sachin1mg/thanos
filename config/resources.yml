@@ -9,8 +9,22 @@ login permission:
   # Feed Calls
   - 'api/public/v1/batches#*'
   - 'api/public/v1/inventories#*'
+  - 'api/public/v1/inventory_pickups#*'
+  - 'api/public/v1/invoices#*'
   - 'api/public/v1/locations#*'
+  - 'api/public/v1/material_request_items#*'
+  - 'api/public/v1/material_requests#*'
+  - 'api/public/v1/purchase_order_items#*'
+  - 'api/public/v1/purchase_orders#*'
+  - 'api/public/v1/purchase_receipt_items#*'
+  - 'api/public/v1/purchase_receipts#*'
+  - 'api/public/v1/sales_order_items#*'
+  - 'api/public/v1/sales_orders#*'
+  - 'api/public/v1/schemes#*'
   - 'api/public/v1/skus#*'
+  - 'api/public/v1/supplier_skus#*'
+  - 'api/public/v1/suppliers#*'
+  - 'api/public/v1/vendor_supplier_contracts#*'
   - 'api/public/v1/vendors#*'
 
 #####################################
