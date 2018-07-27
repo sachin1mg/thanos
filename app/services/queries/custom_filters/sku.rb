@@ -1,7 +1,7 @@
 module Queries::CustomFilters
   class Sku < ::Queries::Filters
     def sku_name_filter(sku_name)
-      scope.joins(:sku).where("sku_name like ?", "%#{sku_name.downcase}%")
+      scope.where("sku_name like ?", "%#{sku_name.downcase}%")
     end
 
     def manufacturer_name_filter(manufacturer_name)

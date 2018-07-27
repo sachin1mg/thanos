@@ -35,10 +35,10 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :onemg_sku_id_filter, String, blank: false, transform: :strip
-      param! :manufacturer_name_filter, String, blank: false, transform: :strip
-      param! :sku_name_filter, String, blank: false, transform: :strip
-      param! :item_group_filter, String, blank: false, transform: :strip
+      param! :onemg_sku_id_filter, String, transform: :strip
+      param! :manufacturer_name_filter, String, transform: :strip
+      param! :sku_name_filter, String, transform: :strip
+      param! :item_group_filter, String, transform: :strip
 
       params.permit(:onemg_sku_id_filter, :sku_name_filter, :manufacturer_name_filter, :item_group_filter)
     end
