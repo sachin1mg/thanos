@@ -58,7 +58,7 @@ module Api::Public::V1
       param! :cost_price, Float
       param! :selling_price, Float
       param! :quantity, Integer
-      param! :sku_name, String
+      param! :sku_name, String, transform: :strip
 
       params.permit(:quantity, :selling_price, :cost_price, :sku_name,
                     sku_ids: [], batch_ids: [], location_ids: [])

@@ -40,7 +40,10 @@ module Api::Public::V1
     end
 
     def filter_params
-      params.permit(:sku_id, :supplier_id)
+      param! :sku_name, String, transform: :strip
+      param! :supplier_name, String, transform: :strip
+
+      params.permit(:sku_id, :supplier_id, :sku_name, :supplier_name)
     end
 
     def valid_create?
