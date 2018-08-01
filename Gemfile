@@ -49,6 +49,11 @@ group :development do
   gem 'awesome_print'
 end
 
+group :test do
+  gem 'json_spec', '~> 1.1', '>= 1.1.5' # RSpec matchers for testing JSON content
+  gem 'simplecov', '~> 0.15.1', require: false # Code coverage for Ruby 1.9+ with a powerful configuration library and automatic merging of coverage across test suites
+end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 

@@ -32,7 +32,7 @@ module Api::Public::V1
     private
 
     def location_params
-      params.require(:location).permit(:aisle, :rack, :slab, :bin)
+      params.permit(:aisle, :rack, :slab, :bin)
     end
 
     def locations
@@ -61,21 +61,17 @@ module Api::Public::V1
     end
 
     def valid_create?
-      param! :location, Hash, required: true, blank: false do |p|
-        p.param! :aisle, String, required: true, blank: false
-        p.param! :rack, String, required: true, blank: false
-        p.param! :slab, String, required: true, blank: false
-        p.param! :bin, String, required: true, blank: false
-      end
+      param! :aisle, String, required: true, blank: false
+      param! :rack, String, required: true, blank: false
+      param! :slab, String, required: true, blank: false
+      param! :bin, String, required: true, blank: false
     end
 
     def valid_update?
-      param! :location, Hash, required: true, blank: false do |p|
-        p.param! :aisle, String, blank: false
-        p.param! :rack, String, blank: false
-        p.param! :slab, String, blank: false
-        p.param! :bin, String, blank: false
-      end
+      param! :aisle, String, blank: false
+      param! :rack, String, blank: false
+      param! :slab, String, blank: false
+      param! :bin, String, blank: false
     end
   end
 end
