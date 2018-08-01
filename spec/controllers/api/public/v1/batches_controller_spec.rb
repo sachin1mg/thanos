@@ -1,4 +1,4 @@
-RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_auth: true do
+RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth: true do
   let(:location) { FactoryBot.create(:location, vendor: Vendor.first) }
 
   describe '#show' do
@@ -108,48 +108,38 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          location: {
-            ailse: 'Aisle',
-            rack: 'Rack',
-            slab: 'Slab'
-          }
+          ailse: 'Aisle',
+          rack: 'Rack',
+          slab: 'Slab'
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          location: {
-            ailse: 'Aisle',
-            rack: 'Rack',
-            bin: 'Bin'
-          }
+          ailse: 'Aisle',
+          rack: 'Rack',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          location: {
-            ailse: 'Aisle',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          ailse: 'Aisle',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          location: {
-            rack: 'Rack',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          rack: 'Rack',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          location: {
-            aisle: '',
-            rack: '',
-            slab: '',
-            bin: ''
-          }
+          aisle: '',
+          rack: '',
+          slab: '',
+          bin: ''
         }
         expect(response).to have_http_status(:bad_request)
       end
@@ -159,12 +149,10 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
       it 'should create location' do
         old_location_count = Location.count
         post :create, params: {
-          location: {
-            aisle: 'Aisle',
-            rack: 'Rack',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          aisle: 'Aisle',
+          rack: 'Rack',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:ok)
         expect(response.body).to be_json_eql(Location.last.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at).to_json).at_path('data')
@@ -179,45 +167,37 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
       it 'should raise bad request' do
         put :update, params: {
           id: location.id,
-          location: {
-            ailse: 'Aisle',
-            rack: 'Rack',
-            slab: 'Slab',
-            bin: ''
-          }
+          ailse: 'Aisle',
+          rack: 'Rack',
+          slab: 'Slab',
+          bin: ''
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
           id: location.id,
-          location: {
-            ailse: 'Aisle',
-            rack: 'Rack',
-            slab: '',
-            bin: 'Bin'
-          }
+          ailse: 'Aisle',
+          rack: 'Rack',
+          slab: '',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
           id: location.id,
-          location: {
-            ailse: 'Aisle',
-            rack: '',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          ailse: 'Aisle',
+          rack: '',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
           id: location.id,
-          location: {
-            aisle: '',
-            rack: 'Rack',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          aisle: '',
+          rack: 'Rack',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:bad_request)
       end
@@ -227,12 +207,10 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
       it 'should update location' do
         put :update, params: {
           id: location.id,
-          location: {
-            aisle: 'Aisle',
-            rack: 'Rack',
-            slab: 'Slab',
-            bin: 'Bin'
-          }
+          aisle: 'Aisle',
+          rack: 'Rack',
+          slab: 'Slab',
+          bin: 'Bin'
         }
         expect(response).to have_http_status(:ok)
         expected_location = location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
