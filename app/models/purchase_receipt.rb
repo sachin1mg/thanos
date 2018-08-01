@@ -10,7 +10,7 @@ class PurchaseReceipt < ApplicationRecord
   }
 
   has_many :purchase_receipt_items
-  belongs_to :purchase_order
+  belongs_to :purchase_order, optional: true
   belongs_to :supplier
   belongs_to :vendor
 
