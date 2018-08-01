@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :purchase_order_items do
+  factory :purchase_order_item do
     purchase_order
     material_request_item
     sku
