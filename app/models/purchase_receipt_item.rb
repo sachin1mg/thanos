@@ -9,7 +9,7 @@ class PurchaseReceiptItem < ApplicationRecord
     cancelled: 'cancelled'
   }
 
-  belongs_to :purchase_order_item
+  belongs_to :purchase_order_item, optional: true
   belongs_to :purchase_receipt
   belongs_to :sku
   belongs_to :batch
