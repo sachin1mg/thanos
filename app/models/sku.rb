@@ -7,12 +7,17 @@ class Sku < ApplicationRecord
     ml: 'ml'
   }
 
+  # Inventory Module
   has_many :supplier_skus
   has_many :inventories
   has_many :vendor_supplier_schemes
   has_many :batches
+
+  # Order Module
   has_many :sales_order_items
   has_many :material_request_items
+
+  # Procurement Module
   has_many :purchase_order_items
   has_many :purchase_receipt_items
 
