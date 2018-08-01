@@ -24,6 +24,7 @@ class Vendor < ApplicationRecord
   before_validation :init
 
   def init
+    self.status ||= :active
     self.metadata ||= {}
   end
 end

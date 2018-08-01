@@ -1,8 +1,7 @@
 FactoryBot.define do
-  factory :vendor_supplier_contract do
-    vendor
-    supplier
-    priority { [1, 2, nil].sample }
+  factory :supplier do
+    name { Faker::Name.name }
+    types { [Faker::Lorem.word, Faker::Lorem.word] }
 
     trait :active do
       status :active
