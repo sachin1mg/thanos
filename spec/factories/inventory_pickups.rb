@@ -3,7 +3,7 @@ FactoryBot.define do
     sales_order_item
     inventory
     quantity { Faker::Number.number(2) }
-    status 'draft'
+    status 'pending'
     metadata '{}'
   end
 end

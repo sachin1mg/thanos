@@ -4,6 +4,7 @@ FactoryBot.define do
     code { Faker::Lorem.characters(10) }
     delivery_date { Faker::Date.between(Date.today, 3.days.from_now) }
     status 'draft'
+    type 'bulk'
     metadata '{}'
 
     trait :jit do
