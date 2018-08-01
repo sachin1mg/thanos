@@ -7,6 +7,7 @@ class Vendor < ApplicationRecord
     inactive: 'inactive'
   }
 
+  has_many :users
   has_many :locations
   has_many :inventories
   has_many :sales_orders
