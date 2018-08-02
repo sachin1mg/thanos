@@ -46,9 +46,6 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
       end
     end
 
-
-# :manufacturer_name,
-# :sku_name,
     context 'when no filters are applied' do
       it 'should return valid batches' do
         FactoryBot.create_list(:batch, 5)
