@@ -1,5 +1,6 @@
 RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth: true do
-  let(:location) { FactoryBot.create(:location, vendor: Vendor.first) }
+  let(:batch) { FactoryBot.create(:batch) }
+  let(:sku) { FactoryBot.create(:sku) }
 
   describe '#show' do
     context 'when id is invalid' do
@@ -10,10 +11,21 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
     end
 
     context 'when id is valid' do
-      it 'should return location instance' do
-        get :show, params: { id: location.id }
+      it 'should return batch instance' do
+        get :show, params: { id: batch.id }
 
-        expected_data = location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
+        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'when id is valid and sku details is included' do
+      it 'should return bacth instance with sku details' do
+        get :show, params: { id: batch.id, include: 'sku' }
+
+        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+        expected_data[:sku] = batch.sku.slice(:id, :sku_name, :manufacturer_name)
         expect(response).to have_http_status(:ok)
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
@@ -23,28 +35,28 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
   describe '#index' do
     context 'when given invalid parameters' do
       it 'should return bad request' do
-        get :index, params: { aisle: '' }
+        get :index, params: { manufacturing_date: '' }
         expect(response).to have_http_status(:bad_request)
 
-        get :index, params: { rack: '' }
+        get :index, params: { expiry_date: '' }
         expect(response).to have_http_status(:bad_request)
 
-        get :index, params: { slab: '' }
-        expect(response).to have_http_status(:bad_request)
-
-        get :index, params: { bin: '' }
+        get :index, params: { mrp: '' }
         expect(response).to have_http_status(:bad_request)
       end
     end
 
+
+# :manufacturer_name,
+# :sku_name,
     context 'when no filters are applied' do
-      it 'should return valid locations' do
-        FactoryBot.create_list(:location, 5, vendor: Vendor.first)
-        locations = Location.all
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 5)
+        batches = Batch.all
         get :index, params: {}
 
-        expected_data = locations.map do |location|
-                          location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
+        expected_data = batches.map do |batch|
+                          batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
                         end
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
@@ -52,48 +64,73 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
       end
     end
 
-    context 'when aisle filter is applied' do
-      it 'should return valid locations' do
-        FactoryBot.create_list(:location, 2, vendor: Vendor.first)
-        get :index, params: { aisle: Location.first.aisle }
+    context 'when manufacturing_date filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { manufacturing_date: Batch.first.manufacturing_date }
 
-        expected_data = [Location.first.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
 
-    context 'when rack filter is applied' do
-      it 'should return valid locations' do
-        FactoryBot.create_list(:location, 2, vendor: Vendor.first)
-        get :index, params: { rack: Location.second.rack }
+    context 'when expiry_date filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { expiry_date: Batch.second.expiry_date }
 
-        expected_data = [Location.second.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
 
-    context 'when slab filter is applied' do
-      it 'should return valid locations' do
-        FactoryBot.create_list(:location, 2, vendor: Vendor.first)
-        get :index, params: { slab: Location.first.slab }
+    context 'when sku_ids filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { sku_ids: [Batch.first.sku_id.to_i
+        ] }
 
-        expected_data = [Location.first.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
 
-    context 'when bin filter is applied' do
-      it 'should return valid locations' do
-        FactoryBot.create_list(:location, 2, vendor: Vendor.first)
-        get :index, params: { bin: Location.second.bin }
+    context 'when mrp filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { mrp: Batch.second.mrp }
 
-        expected_data = [Location.second.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'when sku_name filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { sku_name: Batch.second.sku.sku_name }
+
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'when manufacturer_name filter is applied' do
+      it 'should return valid batches' do
+        FactoryBot.create_list(:batch, 2)
+        get :index, params: { manufacturer_name: Batch.second.sku.manufacturer_name }
+
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -108,56 +145,85 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          ailse: 'Aisle',
-          rack: 'Rack',
-          slab: 'Slab'
+          sku_id: sku.id,
+          batch: {
+            mrp: 100,
+            manufacturing_date: Date.today,
+            expiry_date: Date.today
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          ailse: 'Aisle',
-          rack: 'Rack',
-          bin: 'Bin'
+          sku_id: sku.id,
+          batch: {
+            name: 'Batch123',
+            manufacturing_date: Date.today,
+            expiry_date: Date.today
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          ailse: 'Aisle',
-          slab: 'Slab',
-          bin: 'Bin'
+          sku_id: sku.id,
+          batch: {
+            name: 'Batch123',
+            mrp: 100,
+            expiry_date: Date.today
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          rack: 'Rack',
-          slab: 'Slab',
-          bin: 'Bin'
+          sku_id: sku.id,
+          batch: {
+            name: 'Batch123',
+            mrp: 100,
+            manufacturing_date: Date.today,
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          aisle: '',
-          rack: '',
-          slab: '',
-          bin: ''
+          sku_id: nil,
+          batch: {
+            name: 'Batch123',
+            mrp: 100,
+            manufacturing_date: Date.today,
+            expiry_date: Date.today
+          }
+        }
+        expect(response).to have_http_status(:not_found)
+
+        post :create, params: {
+          sku_id: sku.id,
+          batch: {
+            name: nil,
+            mrp: nil,
+            manufacturing_date: nil,
+            expiry_date: nil
+          }
         }
         expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when parameters are valid' do
-      it 'should create location' do
-        old_location_count = Location.count
+      it 'should create batch' do
+        old_batch_count = Batch.count
         post :create, params: {
-          aisle: 'Aisle',
-          rack: 'Rack',
-          slab: 'Slab',
-          bin: 'Bin'
+          sku_id: sku.id,
+          batch: {
+            name: 'Batch123',
+            mrp: 100,
+            manufacturing_date: Date.today,
+            expiry_date: Date.today
+          }
         }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to be_json_eql(Location.last.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at).to_json).at_path('data')
-        new_location_count = Location.count
-        expect(new_location_count - old_location_count).to be 1
+        expect(response.body).to be_json_eql(Batch.last.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at).to_json).at_path('data')
+        new_batch_count = Batch.count
+        expect(new_batch_count - old_batch_count).to be 1
       end
     end
   end
@@ -166,79 +232,94 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
     context 'when parameters are not valid' do
       it 'should raise bad request' do
         put :update, params: {
-          id: location.id,
-          ailse: 'Aisle',
-          rack: 'Rack',
-          slab: 'Slab',
-          bin: ''
+          id: batch.id,
+          sku_id: batch.sku_id,
+          batch: {
+            name: nil,
+            mrp: 100,
+            manufacturing_date: Date.tomorrow,
+            expiry_date: Date.tomorrow
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
-          id: location.id,
-          ailse: 'Aisle',
-          rack: 'Rack',
-          slab: '',
-          bin: 'Bin'
+          id: batch.id,
+          sku_id: batch.sku_id,
+          batch: {
+            name: 'BatchABC',
+            mrp: nil,
+            manufacturing_date: Date.tomorrow,
+            expiry_date: Date.tomorrow
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
-          id: location.id,
-          ailse: 'Aisle',
-          rack: '',
-          slab: 'Slab',
-          bin: 'Bin'
+          id: batch.id,
+          sku_id: batch.sku_id,
+          batch: {
+            name: 'BatchABC',
+            mrp: 100,
+            manufacturing_date: nil,
+            expiry_date: Date.tomorrow
+          }
         }
         expect(response).to have_http_status(:bad_request)
 
         put :update, params: {
-          id: location.id,
-          aisle: '',
-          rack: 'Rack',
-          slab: 'Slab',
-          bin: 'Bin'
+          id: batch.id,
+          sku_id: batch.sku_id,
+          batch: {
+            name: 'BatchABC',
+            mrp: 100,
+            manufacturing_date: Date.tomorrow,
+            expiry_date: nil
+          }
         }
         expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when parameters are valid' do
-      it 'should update location' do
+      it 'should update batch' do
         put :update, params: {
-          id: location.id,
-          aisle: 'Aisle',
-          rack: 'Rack',
-          slab: 'Slab',
-          bin: 'Bin'
+          id: batch.id,
+          sku_id: batch.sku_id,
+          batch: {
+            name: 'BatchABC',
+            mrp: 200.0,
+            manufacturing_date: Date.tomorrow,
+            expiry_date: Date.tomorrow
+          }
         }
         expect(response).to have_http_status(:ok)
-        expected_location = location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
-        expected_location[:aisle] = 'Aisle'
-        expected_location[:rack] = 'Rack'
-        expected_location[:slab] = 'Slab'
-        expected_location[:bin] = 'Bin'
-        expect(response.body).to be_json_eql(expected_location.to_json).at_path('data')
+        expected_batch = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+        expected_batch[:name] = 'BatchABC'
+        expected_batch[:mrp] = '200.0'
+        expected_batch[:manufacturing_date] = Date.tomorrow
+        expected_batch[:expiry_date] = Date.tomorrow
+        expect(response.body).to be_json_eql(expected_batch.to_json).at_path('data')
       end
     end
 
     describe '#destroy' do
       context 'when id is invalid' do
         it 'should return not found' do
-          delete :destroy, params: { id: 0 }
+          delete :destroy, params: { id: 0, sku_id: batch.sku_id }
           expect(response).to have_http_status(:not_found)
         end
       end
   
       context 'when id is valid' do
-        it 'should soft delete location instance' do
-          location
-          old_location_count = Location.count
-          delete :destroy, params: { id: location.id }
-          new_location_count = Location.count
+        it 'should soft delete batch instance' do
+          batch
+          old_batch_count = Batch.count
+          delete :destroy, params: { id: batch.id, sku_id: batch.sku_id }
+          new_batch_count = Batch.count
   
           expect(response).to have_http_status(:ok)
-          expect(old_location_count - new_location_count).to be 1
+          expect(old_batch_count - new_batch_count).to be 1
         end
       end
     end
