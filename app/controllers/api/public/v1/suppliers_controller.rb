@@ -25,26 +25,40 @@ module Api::Public::V1
     private
 
     def params_attributes
-      params.require(:supplier).permit(:name, :status, :metadata, types: [])
+      params.permit(:name, :status, metadata: {}, types: [])
     end
 
+    #
+    # @return [Supplier]
+    #
     def supplier
       @supplier ||= Supplier.find(params[:id])
     end
 
+    #
+    # @return [String] Name search query
+    #
     def search_query
       params[:name]&.strip
     end
 
+    ######################
+    #### VALIDATIONS ####
+    ######################
+
+    #
+    # Validate create action params
+    #
     def valid_create?
-      param! :supplier, Hash, required: true, blank: false do |s|
-        s.param! :name, String
-        s.param! :status, String
-        s.param! :metadata, Hash
-        s.param! :types, Array
-      end
+      param! :name, String, required: true, blank: false
+      param! :status, String, in: ['active', 'inactive'], default: 'active'
+      param! :metadata, Hash
+      param! :types, Array
     end
 
+    #
+    # Validate update action params
+    #
     def valid_update?
       param! :supplier, Hash, required: true, blank: false do |s|
         s.param! :name, String
