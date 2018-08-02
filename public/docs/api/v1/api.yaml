@@ -60,6 +60,11 @@ components:
         name:
           type: string
           example: "Vendor Name 1"
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
         invoice_number_template:
           type: string
           example: ada7834n
@@ -69,6 +74,9 @@ components:
         updated:
           type: string
           example: "2016-06-15 13:39:09.36251"
+        metadata:
+          type: object
+          example: {}
     Meta:
       type: object
       required:
