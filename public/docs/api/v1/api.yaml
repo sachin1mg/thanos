@@ -19,7 +19,7 @@ paths:
       tags:
         - Health Check
       summary: Just check application is running
-      operationId: checkHelath
+      operationId: checkHealth
       description: |
         Just check application is running
       responses:
