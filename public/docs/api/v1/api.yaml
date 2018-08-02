@@ -11,13 +11,13 @@ info:
   contact:
     email: anubhav.singh@1mg.com
 tags:
-  - name: helath
+  - name: Health Check
     description: To check system is up or not
 paths:
   /health:
     get:
       tags:
-        - system health
+        - Health Check
       summary: Just check application is running
       operationId: checkHelath
       description: |
@@ -51,8 +51,6 @@ components:
       required:
         - id
         - name
-        - status
-        - metadata
         - invoice_number_template
       properties:
         id:
@@ -62,11 +60,6 @@ components:
         name:
           type: string
           example: "Vendor Name 1"
-        status:
-          type: string
-          enum:
-            - active
-            - inactive
         invoice_number_template:
           type: string
           example: ada7834n
@@ -76,9 +69,6 @@ components:
         updated:
           type: string
           example: "2016-06-15 13:39:09.36251"
-        metadata:
-          type: object
-          example: {}
     Meta:
       type: object
       required:
