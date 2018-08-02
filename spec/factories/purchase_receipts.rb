@@ -5,7 +5,5 @@ FactoryBot.define do
     vendor
     code { Faker::Lorem.characters(10) }
     total_amount { Faker::Number.decimal(3) }
-    status 'draft'
-    metadata '{}'
   end
 end

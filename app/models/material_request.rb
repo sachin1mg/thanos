@@ -27,6 +27,7 @@ class MaterialRequest < ApplicationRecord
 
   def init
     self.status ||= :draft
+    self.type ||= :bulk
     self.code ||= generate_code
     self.metadata ||= {}
   end

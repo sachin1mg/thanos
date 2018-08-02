@@ -3,17 +3,11 @@ FactoryBot.define do
     vendor
     code { Faker::Lorem.characters(10) }
     delivery_date { Faker::Date.between(Date.today, 3.days.from_now) }
-    status 'draft'
-    type 'bulk'
-    metadata '{}'
+    type :bulk
 
     trait :jit do
-      type 'jit'
+      type :jit
       sales_order
-    end
-  
-    trait :bulk do
-      type 'bulk'
     end
   end
 end
