@@ -10,11 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 28) do
+ActiveRecord::Schema.define(version: 29) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "citext"
+
+  create_table "adjustments", force: :cascade do |t|
+    t.bigint "inventory_id"
+    t.integer "quantity_changed"
+    t.citext "reason"
+    t.jsonb "metadata"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_adjustments_on_deleted_at"
+    t.index ["inventory_id"], name: "index_adjustments_on_inventory_id"
+  end
 
   create_table "batches", force: :cascade do |t|
     t.bigint "sku_id"
@@ -411,6 +423,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "adjustments", "inventories"
   add_foreign_key "batches", "skus"
   add_foreign_key "inventories", "batches"
   add_foreign_key "inventories", "locations"

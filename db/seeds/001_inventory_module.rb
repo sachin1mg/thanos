@@ -50,5 +50,12 @@ skus.each do |sku|
     cost_price: rand(1.0...100.0).round(2),
     selling_price: rand(1.0...100.0).round(2)
   )
+
+  sku.inventories.each do |inventory|
+    inventory.adjustments.create!(
+      quantity_changed: rand(1...10) * [1, -1].sample,
+      reason: Faker::Movie.quote
+    )
+  end
 end
 

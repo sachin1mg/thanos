@@ -7,6 +7,7 @@ class Inventory < ApplicationRecord
   belongs_to :sku
   belongs_to :batch
   has_many :inventory_pickups
+  has_many :adjustments
 
   validates_presence_of :quantity, :cost_price, :selling_price
   validates_numericality_of :quantity, greater_than_or_equal_to: 0
