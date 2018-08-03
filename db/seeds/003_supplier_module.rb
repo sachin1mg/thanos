@@ -7,10 +7,12 @@ puts 'Seeding supplier module'
 end
 
 Vendor.limit(10).each do |vendor|
+  priority = 1
   Supplier.limit(10).each do |supplier|
     VendorSupplierContract.create!(vendor: vendor,
                                    supplier: supplier,
-                                   priority: [1, 2, nil].sample)
+                                   priority: priority)
+    priority = rand(2...10)
   end
 end
 

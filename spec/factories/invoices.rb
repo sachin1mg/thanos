@@ -6,6 +6,5 @@ FactoryBot.define do
     attachment_file_name { 10.times.map{ ('a'..'z').to_a.sample }.join('') + '.pdf' }
     attachment_content_type { 'application/pdf' }
     attachment_file_size { 1024 }
-    metadata '{}'
   end
 end

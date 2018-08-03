@@ -12,8 +12,8 @@ FactoryBot.define do
       status :inactive
     end
 
-    before :create do |vendor_supplier_scheme|
-      vendor_supplier_scheme.expiry_at = vendor_supplier_scheme.scheme.expiry_at
+    before :create do |vendor_supplier_scheme, evaluator|
+      vendor_supplier_scheme.expiry_at = evaluator.scheme.expiry_at
     end
   end
 end
