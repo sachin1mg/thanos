@@ -1,6 +1,6 @@
 module Api::Public::V1
   class VendorsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?
+    skip_before_action :valid_action?, only: [:show, :destroy]
 
     # GET /vendors
     def index
@@ -34,7 +34,7 @@ module Api::Public::V1
     private
 
     def vendor_params
-      params.require(:vendor).permit(:name, :status, :metadata, :invoice_number_template)
+      params.require(:vendor).permit(:name, :invoice_number_template)
     end
 
     def index_filters
@@ -54,8 +54,6 @@ module Api::Public::V1
     def valid_create?
       param! :vendor, Hash, required: true, blank: false do |p|
         p.param! :name, String, required: true, blank: false
-        p.param! :status, String, blank: false
-        p.param! :metadata, Hash, blank: false
         p.param! :invoice_number_template, String, required: true, blank: false
       end
     end
@@ -63,8 +61,6 @@ module Api::Public::V1
     def valid_update?
       param! :vendor, Hash, required: true, blank: false do |p|
         p.param! :name, String, blank: false
-        p.param! :status, String, blank: false
-        p.param! :metadata, Hash, blank: false
         p.param! :invoice_number_template, String, blank: false
       end
     end
