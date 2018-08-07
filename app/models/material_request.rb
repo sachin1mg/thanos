@@ -15,7 +15,7 @@ class MaterialRequest < ApplicationRecord
   belongs_to :vendor
   has_many :purchase_order_items
 
-  validates_presence_of :code, :status, :type
+  validates_presence_of :code, :status
 
   before_validation :init
 
