@@ -10,7 +10,7 @@ class PurchaseOrderItem < ApplicationRecord
   }
 
   belongs_to :sku
-  belongs_to :material_request_item, optional: true
+  belongs_to :material_request, optional: true
   belongs_to :purchase_order
   has_many :purchase_receipt_items
 

@@ -23,9 +23,7 @@ module PublicRoutes
           resources :purchase_orders, except: [:new, :edit] do
             resources :purchase_order_items, except: [:new, :edit]
           end
-          resources :material_requests, except: [:new, :edit] do
-            resources :material_request_items, except: [:new, :edit]
-          end
+          resources :material_requests, except: [:new, :edit]
           resources :purchase_receipts, except: [:new, :edit] do
             resources :purchase_receipt_items, except: [:new, :edit]
           end

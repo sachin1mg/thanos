@@ -10,7 +10,7 @@ class Sku < ApplicationRecord
   has_many :inventories
   has_many :batches
   has_many :sales_order_items
-  has_many :material_request_items
+  has_many :material_requests
   has_many :purchase_order_items
   has_many :purchase_receipt_items
 
