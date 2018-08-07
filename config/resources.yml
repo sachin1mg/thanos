@@ -12,7 +12,6 @@ login permission:
   - 'api/public/v1/inventory_pickups#*'
   - 'api/public/v1/invoices#*'
   - 'api/public/v1/locations#*'
-  - 'api/public/v1/material_request_items#*'
   - 'api/public/v1/material_requests#*'
   - 'api/public/v1/purchase_order_items#*'
   - 'api/public/v1/purchase_orders#*'
