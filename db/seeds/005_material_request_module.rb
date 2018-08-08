@@ -11,22 +11,21 @@ sales_orders.each do |sales_order|
   supplier = suppliers.sample
   vendor = vendors.sample
 
-  material_request = sales_order.create_material_request!(
+  material_request = MaterialRequest.create!(
+    user: User.first,
     code: Faker::Code.nric,
     delivery_date: rand(1...100).days.from_now,
-    type: [:jit, :bulk].sample,
-    vendor: vendor
-  )
-
-  material_request_item = material_request.material_request_items.create!(
+    vendor: vendor,
+    sales_order_item_ids: [sales_order.sales_order_items.ids],
     quantity: rand(1...100),
     sku: sku,
     schedule_date: rand(1...100).days.from_now
   )
 
   purchase_order = PurchaseOrder.create!(
+    user: User.first,
     supplier: supplier,
-    material_request_ids: [material_request.id],
+    type: [:jit, :bulk].sample,
     code: Faker::Code.nric,
     delivery_date: rand(1...100).days.from_now,
     vendor: vendor
@@ -40,7 +39,7 @@ sales_orders.each do |sales_order|
   )
 
   purchase_order_item = purchase_order.purchase_order_items.create!(
-    material_request_item: material_request_item,
+    material_request: material_request,
     sku: sku,
     quantity: rand(1...100),
     price: rand(1.0...100.0).round(2),
