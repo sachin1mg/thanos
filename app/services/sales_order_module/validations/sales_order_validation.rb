@@ -18,8 +18,9 @@ module SalesOrderModule::Validations
     #
     # Run set of validation suite
     #
-    def validate
+    def validate(sku_ids)
       validate_vendor
+      validate_skus(sku_ids)
     end
 
     def validate_vendor
@@ -27,6 +28,10 @@ module SalesOrderModule::Validations
       if sales_order.vendor.blank? || sales_order.vendor.inactive?
         raise ::ValidationFailed.new('Invalid vendor')
       end
+    end
+
+    def validate_skus(sku_ids)
+      raise ::ValidationFailed.new('Invalid skus') if Sku.where(id: sku_ids).count != sku_ids.count
     end
   end
 end

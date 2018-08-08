@@ -12,7 +12,7 @@ module Api::Public::V1
     end
 
     def create
-      sales_order = SalesOrderModule::SalesOrderManager.create!(param_attributes)
+      sales_order = SalesOrderModule::SalesOrderManager.create!(current_user, param_attributes)
       render_serializer scope: sales_order
     end
 
@@ -40,7 +40,7 @@ module Api::Public::V1
     end
 
     ######################
-    #### VALIDATIONS ####
+    #### VALIDATIONS #####
     ######################
 
     #
