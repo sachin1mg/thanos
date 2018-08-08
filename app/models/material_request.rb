@@ -3,10 +3,9 @@ class MaterialRequest < ApplicationRecord
   acts_as_paranoid
 
   enum status: {
-    draft: 'draft',
-    pending: 'pending',
+    created: 'created',
+    downloaded: 'downloaded',
     ordered: 'ordered',
-    partially_ordered: 'partially_ordered',
     cancelled: 'cancelled'
   }
 
@@ -23,6 +22,7 @@ class MaterialRequest < ApplicationRecord
     self.status ||= :draft
     self.code ||= generate_code
     self.metadata ||= {}
+    self.sales_order_item_ids ||= []
   end
 
   def generate_code
