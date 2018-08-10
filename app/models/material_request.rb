@@ -24,7 +24,6 @@ class MaterialRequest < ApplicationRecord
     self.status ||= :created
     self.code ||= generate_code
     self.metadata ||= {}
-    self.sales_order_item_ids ||= []
   end
 
   def generate_code

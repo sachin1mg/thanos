@@ -14,7 +14,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
       it 'should return batch instance' do
         get :show, params: { id: batch.id }
 
-        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)
         expect(response).to have_http_status(:ok)
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
@@ -24,7 +24,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
       it 'should return bacth instance with sku details' do
         get :show, params: { id: batch.id, include: 'sku' }
 
-        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+        expected_data = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)
         expected_data[:sku] = batch.sku.slice(:id, :sku_name, :manufacturer_name)
         expect(response).to have_http_status(:ok)
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -53,7 +53,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         get :index, params: {}
 
         expected_data = batches.map do |batch|
-                          batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
+                          batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)
                         end
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
@@ -66,7 +66,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         FactoryBot.create_list(:batch, 2)
         get :index, params: { manufacturing_date: Batch.first.manufacturing_date }
 
-        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -78,7 +78,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         FactoryBot.create_list(:batch, 2)
         get :index, params: { expiry_date: Batch.second.expiry_date }
 
-        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -88,10 +88,9 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
     context 'when sku_ids filter is applied' do
       it 'should return valid batches' do
         FactoryBot.create_list(:batch, 2)
-        get :index, params: { sku_ids: [Batch.first.sku_id.to_i
-        ] }
+        get :index, params: { sku_ids: [Batch.first.sku_id.to_i] }
 
-        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.first.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -103,7 +102,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         FactoryBot.create_list(:batch, 2)
         get :index, params: { mrp: Batch.second.mrp }
 
-        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -115,7 +114,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         FactoryBot.create_list(:batch, 2)
         get :index, params: { sku_name: Batch.second.sku.sku_name }
 
-        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -127,7 +126,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         FactoryBot.create_list(:batch, 2)
         get :index, params: { manufacturer_name: Batch.second.sku.manufacturer_name }
 
-        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)]
+        expected_data = [Batch.second.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -138,9 +137,6 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
   describe '#create' do
     context 'when parameters are not valid' do
       it 'should raise bad request' do
-        post :create
-        expect(response).to have_http_status(:bad_request)
-
         post :create, params: {
           sku_id: sku.id,
           batch: {
@@ -154,7 +150,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         post :create, params: {
           sku_id: sku.id,
           batch: {
-            name: 'Batch123',
+            code: 'Batch123',
             manufacturing_date: Date.today,
             expiry_date: Date.today
           }
@@ -164,7 +160,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         post :create, params: {
           sku_id: sku.id,
           batch: {
-            name: 'Batch123',
+            code: 'Batch123',
             mrp: 100,
             expiry_date: Date.today
           }
@@ -174,7 +170,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         post :create, params: {
           sku_id: sku.id,
           batch: {
-            name: 'Batch123',
+            code: 'Batch123',
             mrp: 100,
             manufacturing_date: Date.today,
           }
@@ -182,20 +178,9 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         expect(response).to have_http_status(:bad_request)
 
         post :create, params: {
-          sku_id: nil,
-          batch: {
-            name: 'Batch123',
-            mrp: 100,
-            manufacturing_date: Date.today,
-            expiry_date: Date.today
-          }
-        }
-        expect(response).to have_http_status(:not_found)
-
-        post :create, params: {
           sku_id: sku.id,
           batch: {
-            name: nil,
+            code: nil,
             mrp: nil,
             manufacturing_date: nil,
             expiry_date: nil
@@ -211,14 +196,14 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
         post :create, params: {
           sku_id: sku.id,
           batch: {
-            name: 'Batch123',
+            code: 'Batch123',
             mrp: 100,
             manufacturing_date: Date.today,
             expiry_date: Date.today
           }
         }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to be_json_eql(Batch.last.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at).to_json).at_path('data')
+        expect(response.body).to be_json_eql(Batch.last.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at).to_json).at_path('data')
         new_batch_count = Batch.count
         expect(new_batch_count - old_batch_count).to be 1
       end
@@ -232,7 +217,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
           id: batch.id,
           sku_id: batch.sku_id,
           batch: {
-            name: nil,
+            code: nil,
             mrp: 100,
             manufacturing_date: Date.tomorrow,
             expiry_date: Date.tomorrow
@@ -244,7 +229,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
           id: batch.id,
           sku_id: batch.sku_id,
           batch: {
-            name: 'BatchABC',
+            code: 'BatchABC',
             mrp: nil,
             manufacturing_date: Date.tomorrow,
             expiry_date: Date.tomorrow
@@ -256,7 +241,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
           id: batch.id,
           sku_id: batch.sku_id,
           batch: {
-            name: 'BatchABC',
+            code: 'BatchABC',
             mrp: 100,
             manufacturing_date: nil,
             expiry_date: Date.tomorrow
@@ -268,7 +253,7 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
           id: batch.id,
           sku_id: batch.sku_id,
           batch: {
-            name: 'BatchABC',
+            code: 'BatchABC',
             mrp: 100,
             manufacturing_date: Date.tomorrow,
             expiry_date: nil
@@ -284,15 +269,15 @@ RSpec.describe Api::Public::V1::BatchesController, type: :controller, skip_auth:
           id: batch.id,
           sku_id: batch.sku_id,
           batch: {
-            name: 'BatchABC',
+            code: 'BatchABC',
             mrp: 200.0,
             manufacturing_date: Date.tomorrow,
             expiry_date: Date.tomorrow
           }
         }
         expect(response).to have_http_status(:ok)
-        expected_batch = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :name, :created_at, :updated_at)
-        expected_batch[:name] = 'BatchABC'
+        expected_batch = batch.slice(:id, :mrp, :manufacturing_date, :expiry_date, :code, :created_at, :updated_at)
+        expected_batch[:code] = 'BatchABC'
         expected_batch[:mrp] = '200.0'
         expected_batch[:manufacturing_date] = Date.tomorrow
         expected_batch[:expiry_date] = Date.tomorrow

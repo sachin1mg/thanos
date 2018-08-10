@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "location_id"
     t.integer "quantity"
     t.integer "blocked_quantity"
-    t.integer "reserved_quantity"
     t.decimal "cost_price", precision: 8, scale: 2
     t.decimal "selling_price", precision: 8, scale: 2
     t.jsonb "metadata"

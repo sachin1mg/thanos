@@ -296,13 +296,13 @@ RSpec.describe Api::Public::V1::SalesOrdersController, type: :controller, skip_a
       end
     end
 
-    context 'when parameters are valid and quantity is more than inventory and MR exists' do
-      it 'should create sales order and update previous material request' do
+    context 'when parameters are valid and quantity is more than inventory and mr_po_mapping exists' do
+      it 'should create sales order and material request with same mr_po_mapping' do
         inventory = FactoryBot.create(:inventory)
         FactoryBot.create(:material_request, sku: inventory.sku, vendor: Vendor.first)
         old_sales_order_count = SalesOrder.count
         inventory_quantity = inventory.quantity
-        old_material_request_quanity = MaterialRequest.last.quantity
+        mr_po_mapping_id = MaterialRequest.last.mr_po_mapping_id
 
         post :create, params: {
           sales_order: {
@@ -328,8 +328,10 @@ RSpec.describe Api::Public::V1::SalesOrdersController, type: :controller, skip_a
                                                                    :discount, :barcode, :source, :shipping_label_url, :status,
                                                                    :metadata, :deleted_at, :created_at, :updated_at).to_json).at_path('data')
         new_sales_order_count = SalesOrder.count
+        last_material_request = MaterialRequest.last
         expect(new_sales_order_count - old_sales_order_count).to be 1
-        expect(MaterialRequest.last.quantity - old_material_request_quanity).to be (103 - inventory_quantity)
+        expect(last_material_request.quantity).to be (103 - inventory_quantity)
+        expect(last_material_request.mr_po_mapping_id).to be (mr_po_mapping_id)
       end
     end
   end

@@ -8,16 +8,16 @@ module ProcurementModule
       material_requests = []
 
       skus_params.each do |sku_params|
-        material_request = MaterialRequest.find_or_initialize_by(status: :created, vendor: vendor, sku_id: sku_params['sku_id'])
+        mr_po_mapping = MaterialRequest.where(vendor: vendor, sku_id: sku_params['sku_id'], status: :created).first&.mr_po_mapping
+        mr_po_mapping = MrPoMapping.create! if mr_po_mapping.blank?
 
-        if material_request.new_record?
-          material_request.user = user
-          material_request.sales_order_item_ids = [sku_params['sales_order_item_id']]
-          material_request.quantity = sku_params['quantity']
-        else
-          material_request.sales_order_item_ids.append(sku_params['sales_order_item_id'])
-          material_request.quantity += sku_params['quantity']
-        end
+        material_request = MaterialRequest.new(user: user,
+                                               vendor: vendor,
+                                               sku_id: sku_params['sku_id'],
+                                               quantity: sku_params['quantity'],
+                                               sales_order_item_id: sku_params['sales_order_item_id'],
+                                               mr_po_mapping: mr_po_mapping)
+
         material_requests << material_request
       end
 
