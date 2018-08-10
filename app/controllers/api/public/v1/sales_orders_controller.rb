@@ -12,7 +12,9 @@ module Api::Public::V1
     end
 
     def create
-      sales_order = SalesOrderModule::SalesOrderManager.create!(current_user, param_attributes)
+      sales_order = SalesOrderModule::SalesOrderManager.create!(user: current_user,
+                                                                vendor: current_vendor,
+                                                                create_params: param_attributes)
       render_serializer scope: sales_order
     end
 
@@ -24,8 +26,9 @@ module Api::Public::V1
     private
 
     def param_attributes
-      params.permit(:order_reference_id, :customer_name, :amount, :discount, :source,
-                    :barcode, :shipping_label_url, :vendor_id, sales_order_items: [:price, :quantity, :discount, :sku_id])
+      params.require(:sales_order).permit(:order_reference_id, :customer_name, :amount,
+                                          :discount, :source, :shipping_label_url, :vendor_id,
+                                          sales_order_items: [:price, :quantity, :discount, :sku_id])
     end
 
     def index_filters
@@ -65,18 +68,20 @@ module Api::Public::V1
     # Validate create action params
     #
     def valid_create?
-      param! :order_reference_id, String, required: true, blank: false
-      param! :customer_name, String, blank: false
-      param! :amount, Float, blank: false
-      param! :discount, Float, blank: false
-      param! :source, String, blank: false
-      param! :barcode, String, blank: false
-      param! :shipping_label_url, String, blank: false
-      param! :sales_order_items, Array, blank: false, required: true do |array|
-        array.param! :sku_id, Integer, required: true, blank: false
-        array.param! :quantity, Integer, required: true, blank: false
-        array.param! :price, Float, required: true, blank: false
-        array.param! :discount, Float, required: true, blank: false
+      param! :sales_order, Hash, required: true, blank: false do |h|
+        h.param! :order_reference_id, String, required: true, blank: false
+        h.param! :customer_name, String, required: true, blank: false
+        h.param! :amount, Float, required: true, blank: false
+        h.param! :discount, Float, required: true, blank: false
+        h.param! :source, String, required: true, blank: false
+        h.param! :barcode, String, required: true, blank: false
+        h.param! :shipping_label_url, String, required: true, blank: false
+        h.param! :sales_order_items, Array, blank: false, required: true do |array|
+          array.param! :sku_id, Integer, required: true, blank: false
+          array.param! :quantity, Integer, required: true, blank: false
+          array.param! :price, Float, required: true, blank: false
+          array.param! :discount, Float, required: true, blank: false
+        end
       end
     end
   end
