@@ -7,6 +7,7 @@ class Vendor < ApplicationRecord
     inactive: 'inactive'
   }
 
+  has_many :users
   has_many :locations
   has_many :inventories
   has_many :sales_orders
@@ -24,6 +25,7 @@ class Vendor < ApplicationRecord
   before_validation :init
 
   def init
+    self.status ||= :active
     self.metadata ||= {}
   end
 end

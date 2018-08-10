@@ -17,11 +17,11 @@ class MaterialRequest < ApplicationRecord
     cancelled: 'cancelled'
   }
 
-  belongs_to :sales_order
-  has_many :material_request_items
+  belongs_to :sales_order, optional: true
   belongs_to :vendor
+  has_many :material_request_items
 
-  validates_presence_of :code, :status
+  validates_presence_of :code, :status, :type
 
   before_validation :init
 
