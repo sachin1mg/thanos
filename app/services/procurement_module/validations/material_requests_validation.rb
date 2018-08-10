@@ -17,8 +17,9 @@ module ProcurementModule::Validations
     #
     # Run set of validation suite
     #
-    def validate(sales_order_item_ids)
-      sku_ids = material_requests.pluck(:sku_id)
+    def validate(skus_params)
+      sales_order_item_ids = skus_params.pluck('sales_order_item_id')
+      sku_ids = skus_params.pluck('sku_id')
       vendor = material_requests.first.vendor
 
       validate_vendor(vendor)

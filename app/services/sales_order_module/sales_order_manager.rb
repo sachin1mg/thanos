@@ -14,9 +14,9 @@ module SalesOrderModule
       self.user = user
     end
 
-    def self.create!(user, create_params)
+    def self.create!(user:, vendor:, create_params:)
       sales_order_items = create_params[:sales_order_items]
-      sales_order = SalesOrder.new(create_params.except(:sales_order_items))
+      sales_order = SalesOrder.new(create_params.except(:sales_order_items).merge(vendor_id: vendor.id))
 
       sales_order_manager = self.new(sales_order, user)
       sales_order_manager.save!(sales_order_items)
@@ -72,9 +72,7 @@ module SalesOrderModule
     end
 
     def create_material_request(mr_sku_quantity)
-      ProcurementModule::MaterialRequestsManager.create!(user: user,
-                                                         vendor: sales_order.vendor,
-                                                         skus_params: mr_sku_quantity)
+      ::ProcurementModule::MaterialRequestWorker.perform_async(user.id, sales_order.vendor.id, mr_sku_quantity.to_json)
     end
 
     #

@@ -8,7 +8,7 @@ FactoryBot.define do
     quantity { rand(1...10) }
     delivery_date { Faker::Date.between(Date.today, 3.days.from_now) }
     schedule_date { Faker::Date.between(Date.today, 3.days.from_now) }
-    status 'draft'
+    status 'created'
     metadata '{}'
   end
 end
