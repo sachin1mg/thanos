@@ -6,7 +6,7 @@ class Batch < ApplicationRecord
   has_many :purchase_receipt_items
   belongs_to :sku
 
-  validates_presence_of :manufacturing_date, :expiry_date, :name
+  validates_presence_of :manufacturing_date, :expiry_date, :code
   validates_numericality_of :mrp, greater_than: 0
 
   before_validation :init

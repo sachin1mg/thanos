@@ -1,19 +1,12 @@
 FactoryBot.define do
   factory :material_request do
     vendor
+    sku
+    user
+    sales_order_item_ids { [FactoryBot.create(:sales_order_item).id] }
     code { Faker::Lorem.characters(10) }
+    quantity { rand(1...10) }
     delivery_date { Faker::Date.between(Date.today, 3.days.from_now) }
-    status 'draft'
-    type 'bulk'
-    metadata '{}'
-
-    trait :jit do
-      type 'jit'
-      sales_order
-    end
-  
-    trait :bulk do
-      type 'bulk'
-    end
+    schedule_date { Faker::Date.between(Date.today, 3.days.from_now) }
   end
 end

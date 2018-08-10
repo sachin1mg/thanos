@@ -11,7 +11,12 @@ class Invoice < ApplicationRecord
 
   belongs_to :sales_order
 
+  before_validation :init
   after_create :set_number
+  
+  def init
+    self.metadata ||= {}
+  end
 
   private
 
