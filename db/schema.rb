@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "supplier_id"
     t.bigint "vendor_id"
     t.citext "code"
-    t.citext "type"
+    t.citext "po_type"
     t.citext "status"
     t.date "delivery_date"
     t.jsonb "metadata"

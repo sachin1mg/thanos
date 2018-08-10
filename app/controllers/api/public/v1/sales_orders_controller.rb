@@ -27,7 +27,7 @@ module Api::Public::V1
 
     def param_attributes
       params.require(:sales_order).permit(:order_reference_id, :customer_name, :amount,
-                                          :discount, :source, :shipping_label_url, :vendor_id,
+                                          :discount, :source, :shipping_label_url,
                                           sales_order_items: [:price, :quantity, :discount, :sku_id])
     end
 

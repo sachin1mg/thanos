@@ -32,13 +32,13 @@ module Api::Public::V1
     private
 
     def material_request_create_params
-      params.require(:material_request).permit(:code, :type, :delivery_date,
-        metadata: params[:material_request][:metadata]&.keys)
+      params.require(:material_request).permit(:code, :delivery_date,
+                                               metadata: params[:material_request][:metadata]&.keys)
     end
 
     def material_request_update_params
       params.require(:material_request).permit(:delivery_date,
-        metadata: params[:material_request][:metadata]&.keys)
+                                               metadata: params[:material_request][:metadata]&.keys)
     end
 
     def material_requests
@@ -51,11 +51,10 @@ module Api::Public::V1
 
     def index_filters
       param! :sales_order_id, Integer, blank: false
-      param! :type, String, blank: false
       param! :to_delivery_date, Date, blank: false
       param! :from_delivery_date, Date, blank: false
 
-      params.permit(:sales_order_id, :type, :to_delivery_date, :from_delivery_date)
+      params.permit(:sales_order_id, :to_delivery_date, :from_delivery_date)
     end
 
     #####################
