@@ -25,13 +25,14 @@ module Api::Public::V1
 
     # DELETE /skus/1
     def destroy
-      sku.destroy
+      sku.destroy!
+      api_render json: {}
     end
 
     private
 
     def sku_params
-      params.permit(:onemg_sku_id, :sku_name, :manufacturer_name, :item_group, :uom, :pack_size)
+      params.require(:sku).permit(:onemg_sku_id, :sku_name, :manufacturer_name, :item_group, :uom, :pack_size)
     end
 
     def index_filters

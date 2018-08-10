@@ -1,6 +1,13 @@
 class PurchaseOrder < ApplicationRecord
+  self.inheritance_column = nil
+
   has_paper_trail
   acts_as_paranoid
+
+  enum type: {
+    jit: 'jit',
+    bulk: 'bulk'
+  }
 
   enum status: {
     draft: 'draft',
@@ -13,8 +20,9 @@ class PurchaseOrder < ApplicationRecord
   has_many :purchase_receipts
   belongs_to :supplier
   belongs_to :vendor
+  belongs_to :user
 
-  validates_presence_of :code, :status
+  validates_presence_of :code, :status, :type
 
   before_validation :init
 
