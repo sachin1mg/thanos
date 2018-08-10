@@ -7,7 +7,6 @@ class CreateInventories < ActiveRecord::Migration[5.1]
       t.references :location, foreign_key: true
       t.integer :quantity
       t.integer :blocked_quantity
-      t.integer :reserved_quantity
       t.decimal :cost_price, precision: 8, scale: 2
       t.decimal :selling_price, precision: 8, scale: 2
       t.jsonb :metadata

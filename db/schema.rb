@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 27) do
+ActiveRecord::Schema.define(version: 28) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,7 +99,8 @@ ActiveRecord::Schema.define(version: 27) do
     t.bigint "user_id"
     t.bigint "vendor_id"
     t.bigint "sku_id"
-    t.integer "sales_order_item_ids", array: true
+    t.bigint "sales_order_item_id"
+    t.bigint "mr_po_mapping_id"
     t.integer "quantity"
     t.citext "code"
     t.citext "status"
@@ -111,10 +112,21 @@ ActiveRecord::Schema.define(version: 27) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_material_requests_on_code"
     t.index ["deleted_at"], name: "index_material_requests_on_deleted_at"
+    t.index ["mr_po_mapping_id"], name: "index_material_requests_on_mr_po_mapping_id"
+    t.index ["sales_order_item_id"], name: "index_material_requests_on_sales_order_item_id"
     t.index ["sku_id"], name: "index_material_requests_on_sku_id"
     t.index ["status"], name: "index_material_requests_on_status"
     t.index ["user_id"], name: "index_material_requests_on_user_id"
     t.index ["vendor_id"], name: "index_material_requests_on_vendor_id"
+  end
+
+  create_table "mr_po_mappings", force: :cascade do |t|
+    t.bigint "purchase_order_item_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_mr_po_mappings_on_deleted_at"
+    t.index ["purchase_order_item_id"], name: "index_mr_po_mappings_on_purchase_order_item_id"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -136,7 +148,6 @@ ActiveRecord::Schema.define(version: 27) do
 
   create_table "purchase_order_items", force: :cascade do |t|
     t.bigint "purchase_order_id"
-    t.bigint "material_request_id"
     t.bigint "sku_id"
     t.integer "quantity"
     t.decimal "price", precision: 8, scale: 2
@@ -147,7 +158,6 @@ ActiveRecord::Schema.define(version: 27) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_purchase_order_items_on_deleted_at"
-    t.index ["material_request_id"], name: "index_purchase_order_items_on_material_request_id"
     t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
     t.index ["sku_id"], name: "index_purchase_order_items_on_sku_id"
     t.index ["status"], name: "index_purchase_order_items_on_status"
@@ -409,12 +419,14 @@ ActiveRecord::Schema.define(version: 27) do
   add_foreign_key "inventory_pickups", "sales_order_items"
   add_foreign_key "invoices", "sales_orders"
   add_foreign_key "locations", "vendors"
+  add_foreign_key "material_requests", "mr_po_mappings"
+  add_foreign_key "material_requests", "sales_order_items"
   add_foreign_key "material_requests", "skus"
   add_foreign_key "material_requests", "users"
   add_foreign_key "material_requests", "vendors"
+  add_foreign_key "mr_po_mappings", "purchase_order_items"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
-  add_foreign_key "purchase_order_items", "material_requests"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "skus"
   add_foreign_key "purchase_orders", "suppliers"

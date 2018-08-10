@@ -13,6 +13,8 @@ class MaterialRequest < ApplicationRecord
   belongs_to :user
   belongs_to :sku
   belongs_to :vendor
+  belongs_to :sales_order_item
+  belongs_to :mr_po_mapping
   has_many :purchase_order_items
 
   validates_presence_of :code, :status

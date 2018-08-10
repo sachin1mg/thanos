@@ -11,12 +11,15 @@ sales_orders.each do |sales_order|
   supplier = suppliers.sample
   vendor = vendors.sample
 
+  mr_po_mapping = MrPoMapping.create!
+
   material_request = MaterialRequest.create!(
     user: User.first,
     code: Faker::Code.nric,
     delivery_date: rand(1...100).days.from_now,
     vendor: vendor,
-    sales_order_item_ids: [sales_order.sales_order_items.ids],
+    mr_po_mapping: mr_po_mapping,
+    sales_order_item_id: sales_order.sales_order_items.first.id,
     quantity: rand(1...100),
     sku: sku,
     schedule_date: rand(1...100).days.from_now
@@ -39,12 +42,13 @@ sales_orders.each do |sales_order|
   )
 
   purchase_order_item = purchase_order.purchase_order_items.create!(
-    material_request: material_request,
     sku: sku,
     quantity: rand(1...100),
     price: rand(1.0...100.0).round(2),
     schedule_date: rand(1...100).days.from_now
   )
+
+  mr_po_mapping.update_attributes!(purchase_order_item: purchase_order_item)
 
   purchase_receipt_item = purchase_receipt.purchase_receipt_items.create!(
     purchase_order_item: purchase_order_item,
