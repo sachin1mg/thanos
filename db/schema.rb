@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 28) do
+ActiveRecord::Schema.define(version: 27) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,28 +95,15 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["vendor_id"], name: "index_locations_on_vendor_id"
   end
 
-  create_table "material_request_items", force: :cascade do |t|
-    t.bigint "material_request_id"
+  create_table "material_requests", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "vendor_id"
     t.bigint "sku_id"
+    t.integer "sales_order_item_ids", array: true
     t.integer "quantity"
+    t.citext "code"
     t.citext "status"
     t.date "schedule_date"
-    t.jsonb "metadata"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_material_request_items_on_deleted_at"
-    t.index ["material_request_id"], name: "index_material_request_items_on_material_request_id"
-    t.index ["sku_id"], name: "index_material_request_items_on_sku_id"
-    t.index ["status"], name: "index_material_request_items_on_status"
-  end
-
-  create_table "material_requests", force: :cascade do |t|
-    t.bigint "sales_order_id"
-    t.bigint "vendor_id"
-    t.citext "code"
-    t.citext "type"
-    t.citext "status"
     t.date "delivery_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
@@ -124,9 +111,9 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_material_requests_on_code"
     t.index ["deleted_at"], name: "index_material_requests_on_deleted_at"
-    t.index ["sales_order_id"], name: "index_material_requests_on_sales_order_id"
+    t.index ["sku_id"], name: "index_material_requests_on_sku_id"
     t.index ["status"], name: "index_material_requests_on_status"
-    t.index ["type"], name: "index_material_requests_on_type"
+    t.index ["user_id"], name: "index_material_requests_on_user_id"
     t.index ["vendor_id"], name: "index_material_requests_on_vendor_id"
   end
 
@@ -149,7 +136,7 @@ ActiveRecord::Schema.define(version: 28) do
 
   create_table "purchase_order_items", force: :cascade do |t|
     t.bigint "purchase_order_id"
-    t.bigint "material_request_item_id"
+    t.bigint "material_request_id"
     t.bigint "sku_id"
     t.integer "quantity"
     t.decimal "price", precision: 8, scale: 2
@@ -160,20 +147,20 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_purchase_order_items_on_deleted_at"
-    t.index ["material_request_item_id"], name: "index_purchase_order_items_on_material_request_item_id"
+    t.index ["material_request_id"], name: "index_purchase_order_items_on_material_request_id"
     t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
     t.index ["sku_id"], name: "index_purchase_order_items_on_sku_id"
     t.index ["status"], name: "index_purchase_order_items_on_status"
   end
 
   create_table "purchase_orders", force: :cascade do |t|
+    t.bigint "user_id"
     t.bigint "supplier_id"
     t.bigint "vendor_id"
-    t.citext "material_request_ids", array: true
     t.citext "code"
+    t.citext "type"
     t.citext "status"
     t.date "delivery_date"
-    t.date "schedule_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -181,6 +168,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["deleted_at"], name: "index_purchase_orders_on_deleted_at"
     t.index ["status"], name: "index_purchase_orders_on_status"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
+    t.index ["user_id"], name: "index_purchase_orders_on_user_id"
     t.index ["vendor_id"], name: "index_purchase_orders_on_vendor_id"
   end
 
@@ -421,16 +409,16 @@ ActiveRecord::Schema.define(version: 28) do
   add_foreign_key "inventory_pickups", "sales_order_items"
   add_foreign_key "invoices", "sales_orders"
   add_foreign_key "locations", "vendors"
-  add_foreign_key "material_request_items", "material_requests"
-  add_foreign_key "material_request_items", "skus"
-  add_foreign_key "material_requests", "sales_orders"
+  add_foreign_key "material_requests", "skus"
+  add_foreign_key "material_requests", "users"
   add_foreign_key "material_requests", "vendors"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
-  add_foreign_key "purchase_order_items", "material_request_items"
+  add_foreign_key "purchase_order_items", "material_requests"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "skus"
   add_foreign_key "purchase_orders", "suppliers"
+  add_foreign_key "purchase_orders", "users"
   add_foreign_key "purchase_orders", "vendors"
   add_foreign_key "purchase_receipt_items", "batches"
   add_foreign_key "purchase_receipt_items", "purchase_order_items"

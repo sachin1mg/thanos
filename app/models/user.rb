@@ -9,6 +9,8 @@ class User < ApplicationRecord
   belongs_to :vendor
   has_and_belongs_to_many :roles
   has_many :permissions, through: :roles
+  has_many :material_requests
+  has_many :purchase_orders
 
   #
   # Add given role to user

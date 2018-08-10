@@ -1,13 +1,6 @@
 class MaterialRequest < ApplicationRecord
-  self.inheritance_column = nil
-
   has_paper_trail
   acts_as_paranoid
-
-  enum type: {
-    jit: 'jit',
-    bulk: 'bulk'
-  }
 
   enum status: {
     draft: 'draft',
@@ -17,11 +10,12 @@ class MaterialRequest < ApplicationRecord
     cancelled: 'cancelled'
   }
 
-  belongs_to :sales_order, optional: true
+  belongs_to :user
+  belongs_to :sku
   belongs_to :vendor
-  has_many :material_request_items
+  has_many :purchase_order_items
 
-  validates_presence_of :code, :status, :type
+  validates_presence_of :code, :status
 
   before_validation :init
 
