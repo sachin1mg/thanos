@@ -19,7 +19,7 @@ class MaterialRequest < ApplicationRecord
   before_validation :init
 
   def init
-    self.status ||= :draft
+    self.status ||= :created
     self.code ||= generate_code
     self.metadata ||= {}
     self.sales_order_item_ids ||= []

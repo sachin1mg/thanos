@@ -32,14 +32,13 @@ module Api::Public::V1
     private
 
     def purchase_order_create_params
-      params.require(:purchase_order).permit(:code, :delivery_date,
-        metadata: params[:purchase_order][:metadata]&.keys, material_request_ids: [])
+      params.require(:purchase_order).permit(:code, :delivery_date, :po_type,
+                                             metadata: params[:purchase_order][:metadata]&.keys)
     end
 
     def purchase_order_update_params
       params.require(:purchase_order).permit(
-        metadata: params[:purchase_order][:metadata]&.keys,
-        material_request_ids: []
+        metadata: params[:purchase_order][:metadata]&.keys
       )
     end
 
@@ -56,12 +55,12 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :type, String, blank: false
+      param! :po_type, String, blank: false
       param! :supplier_id, Integer, blank: false
       param! :to_delivery_date, Date, blank: false
       param! :from_delivery_date, Date, blank: false
 
-      params.permit(:type, :to_delivery_date, :from_delivery_date, :supplier_id)
+      params.permit(:po_type, :to_delivery_date, :from_delivery_date, :supplier_id)
     end
 
     #####################
@@ -77,14 +76,12 @@ module Api::Public::V1
         p.param! :code, String, blank: false
         p.param! :delivery_date, Date, blank: false
         p.param! :metadata, Hash, blank: false
-        p.param! :material_request_ids, Array, blank: false
       end
     end
 
     def valid_update?
       param! :purchase_order, Hash, required: true, blank: false do |p|
         p.param! :metadata, Hash, blank: false
-        p.param! :material_request_ids, blank: false
       end
     end
   end

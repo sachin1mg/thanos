@@ -25,7 +25,7 @@ sales_orders.each do |sales_order|
   purchase_order = PurchaseOrder.create!(
     user: User.first,
     supplier: supplier,
-    type: [:jit, :bulk].sample,
+    po_type: [:jit, :bulk].sample,
     code: Faker::Code.nric,
     delivery_date: rand(1...100).days.from_now,
     vendor: vendor
