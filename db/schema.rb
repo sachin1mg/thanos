@@ -19,13 +19,14 @@ ActiveRecord::Schema.define(version: 28) do
   create_table "batches", force: :cascade do |t|
     t.bigint "sku_id"
     t.decimal "mrp", precision: 8, scale: 2
-    t.citext "name"
+    t.citext "code"
     t.date "manufacturing_date"
     t.date "expiry_date"
     t.jsonb "metadata"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["sku_id", "code"], name: "index_batches_on_sku_id_code", unique: true, where: "(deleted_at IS NULL)"
     t.index ["sku_id"], name: "index_batches_on_sku_id"
   end
 

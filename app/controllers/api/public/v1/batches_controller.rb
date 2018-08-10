@@ -34,7 +34,7 @@ module Api::Public::V1
     private
 
     def batch_params
-      params.require(:batch).permit(:name, :mrp, :manufacturing_date, :expiry_date, :metadata)
+      params.require(:batch).permit(:code, :mrp, :manufacturing_date, :expiry_date, :metadata)
     end
 
     ######################
@@ -47,7 +47,7 @@ module Api::Public::V1
 
     def valid_create?
       param! :batch, Hash, required: true, blank: false do |p|
-        p.param! :name, String, required: true, blank: false
+        p.param! :code, String, required: true, blank: false
         p.param! :mrp, Float, required: true, blank: false
         p.param! :manufacturing_date, Date, required: true, blank: false
         p.param! :expiry_date, Date, required: true, blank: false
@@ -56,7 +56,7 @@ module Api::Public::V1
 
     def valid_update?
       param! :batch, Hash, required: true, blank: false do |p|
-        p.param! :name, String, required: true, blank: false
+        p.param! :code, String, required: true, blank: false
         p.param! :mrp, Float, blank: false
         p.param! :manufacturing_date, Date, blank: false
         p.param! :expiry_date, Date, blank: false
