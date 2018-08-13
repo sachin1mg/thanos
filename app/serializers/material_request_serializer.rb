@@ -1,5 +1,5 @@
 class MaterialRequestSerializer < ApplicationSerializer
-  attributes :id, :sales_order_id, :code, :status, :delivery_date, :vendor_id,
+  attributes :id, :sales_order_item_id, :code, :status, :delivery_date, :vendor_id,
              :created_at, :updated_at
 
   #
@@ -7,6 +7,6 @@ class MaterialRequestSerializer < ApplicationSerializer
   #
   # @return [Array] Array of symbolize attributes
   def self.default_attributes
-    [:id, :sales_order_id, :code, :status, :delivery_date, :vendor_id, :created_at, :updated_at]
+    [:id, :sales_order_item_id, :code, :status, :delivery_date, :vendor_id, :created_at, :updated_at]
   end
 end

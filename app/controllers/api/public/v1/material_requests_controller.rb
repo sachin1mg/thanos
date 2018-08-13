@@ -50,11 +50,15 @@ module Api::Public::V1
     end
 
     def index_filters
+      param! :ids, Array, blank: false do |id, index|
+        id.param! index, Integer
+      end
       param! :sales_order_id, Integer, blank: false
+      param! :order_reference_id, String, blank: false
       param! :to_delivery_date, Date, blank: false
       param! :from_delivery_date, Date, blank: false
 
-      params.permit(:sales_order_id, :to_delivery_date, :from_delivery_date)
+      params.permit(:sales_order_id, :order_reference_id, :to_delivery_date, :from_delivery_date, ids: [])
     end
 
     #####################
