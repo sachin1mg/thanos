@@ -1,4 +1,4 @@
-puts 'Material Request Seeder start'
+puts 'Material Request Seeder start.'
 
 sales_orders = SalesOrder.all
 skus = Sku.includes(:batches)
@@ -13,13 +13,9 @@ sales_orders.each do |sales_order|
 
   material_request = MaterialRequest.create!(
     user: User.first,
-    code: Faker::Code.nric,
-    delivery_date: rand(1...100).days.from_now,
     vendor: vendor,
-    sales_order_item_ids: [sales_order.sales_order_items.ids],
     quantity: rand(1...100),
     sku: sku,
-    schedule_date: rand(1...100).days.from_now
   )
 
   purchase_order = PurchaseOrder.create!(
@@ -39,14 +35,13 @@ sales_orders.each do |sales_order|
   )
 
   purchase_order_item = purchase_order.purchase_order_items.create!(
-    material_request: material_request,
     sku: sku,
     quantity: rand(1...100),
     price: rand(1.0...100.0).round(2),
     schedule_date: rand(1...100).days.from_now
   )
 
-  purchase_receipt_item = purchase_receipt.purchase_receipt_items.create!(
+  purchase_receipt.purchase_receipt_items.create!(
     purchase_order_item: purchase_order_item,
     batch: sku.batches.last,
     sku: sku,
@@ -57,4 +52,4 @@ sales_orders.each do |sales_order|
   )
 end
 
-puts 'Material Request Seeder end'
+puts 'Material Request Seeder end.'

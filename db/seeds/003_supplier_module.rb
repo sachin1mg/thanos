@@ -1,4 +1,4 @@
-puts 'Seeding supplier module'
+puts 'Supplier module seeder start.'
 
 20.times do
   Supplier.create(name: Faker::Name.name,
@@ -39,4 +39,4 @@ VendorSupplierContract.limit(10).each do |vendor_supplier_contract|
   end
 end
 
-puts 'Supplier module seeding done'
+puts 'Supplier module seeder end.'

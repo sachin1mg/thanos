@@ -15,13 +15,12 @@ class MaterialRequest < ApplicationRecord
   belongs_to :vendor
   has_many :purchase_order_items
 
-  validates_presence_of :code, :status
+  validates_presence_of :status
 
   before_validation :init
 
   def init
     self.status ||= :draft
-    self.code ||= generate_code
     self.metadata ||= {}
   end
 
