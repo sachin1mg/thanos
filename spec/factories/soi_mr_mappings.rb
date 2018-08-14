@@ -1,9 +1,19 @@
 FactoryBot.define do
   factory :soi_mr_mapping do
     sales_order_item
-    material_request
 
     before :create do |soi_mr_mapping, evaluator|
+      vendor = evaluator.sales_order_item.sales_order.vendor
+      sku = evaluator.sales_order_item.sku
+
+      material_request = MaterialRequest.find_by(vendor: vendor, sku: sku, status: :draft)
+      material_request ||= MaterialRequest.create!(
+                            vendor: vendor,
+                            user: vendor.users.sample || FactoryBot.create(:user, vendor: vendor),
+                            sku: sku
+                          )
+
+      soi_mr_mapping.material_request = material_request
       soi_mr_mapping.quantity = rand(1...evaluator.sales_order_item.quantity)
     end
 
