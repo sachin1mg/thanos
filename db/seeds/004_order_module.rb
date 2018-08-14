@@ -1,4 +1,4 @@
-puts 'Sales Order Seeder start'
+puts 'Sales Order Seeder start.'
 
 vendors = Vendor.all
 skus = Sku.all
@@ -47,9 +47,9 @@ SalesOrder.all.each do |sales_order|
   )
 end
 
-puts 'Sales Order Item Seeder end'
+puts 'Sales Order Item Seeder end.'
 
-puts 'Invoices Seeder Start'
+puts 'Invoices Seeder start.'
 
 SalesOrder.all.each do |sales_order|
   [1, 2].sample.times do |n|
@@ -65,4 +65,4 @@ SalesOrder.all.each do |sales_order|
   end
 end
 
-puts 'Invoices Seeder End'
+puts 'Invoices Seeder end.'

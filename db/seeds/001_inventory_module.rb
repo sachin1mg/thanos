@@ -1,3 +1,5 @@
+puts 'Inventory module seeder start.'
+
 100.times do
   Vendor.create(
     name: Faker::Name.name,
@@ -52,3 +54,4 @@ skus.each do |sku|
   )
 end
 
+puts 'Inventory module seeder end.'
