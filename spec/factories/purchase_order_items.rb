@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :purchase_order_item do
     purchase_order
-    material_request
     sku
     quantity { Faker::Number.number(2) }
     price { Faker::Number.decimal(2) }

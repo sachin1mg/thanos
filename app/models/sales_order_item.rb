@@ -14,6 +14,8 @@ class SalesOrderItem < ApplicationRecord
   belongs_to :sales_order
   belongs_to :sku
   has_many :inventory_pickups
+  has_many :soi_mr_mappings
+  has_many :material_requests, through: :soi_mr_mappings
 
   before_validation :init
 
