@@ -14,5 +14,8 @@ module Concerns::Errors
     rescue_from InterService::Model::RecordNotFound, with: :render_not_found
     rescue_from InterService::Model::InvalidRequest, with: :render_bad_request
     rescue_from InterService::Model::RecordNotSaved, with: :render_unprocessable_entity
+
+    # To rescue invalid state transitions raised by aasm gem.
+    rescue_from AASM::InvalidTransition, with: :render_unprocessable_entity
   end
 end

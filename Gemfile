@@ -57,6 +57,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+gem 'aasm', '~> 5.0' # AASM is a continuation of the acts-as-state-machine rails plugin, built for plain Ruby objects.
 gem 'active_model_serializers', '~> 0.10.7' # ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.
 gem 'activerecord-import', '~> 0.25.0' # A library for bulk inserting data using ActiveRecord.
 gem 'config', '~> 1.7' # Easiest way to manage multi-environment settings
