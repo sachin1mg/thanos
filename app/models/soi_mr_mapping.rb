@@ -4,7 +4,7 @@ class SoiMrMapping < ApplicationRecord
 
   validates_presence_of :sales_order_item, :material_request, :quantity
   validates_numericality_of :quantity, greater_than_or_equal_to: 0
-  validate_uniqueness_of :sales_order_item, scope: :material_request
+  validates_uniqueness_of :sales_order_item, scope: :material_request
 
   belongs_to :sales_order_item
   belongs_to :material_request
