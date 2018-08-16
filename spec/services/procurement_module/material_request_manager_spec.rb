@@ -7,7 +7,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
       it 'should raise RecordNotFound error' do
         shortages = [ { sales_order_item_id: sales_order_item.id + 10, unavailable_quantity: 10 } ]
         expect{ ProcurementModule::MaterialRequestManager.create!(
-          current_user: user,
+          user: user,
           shortages: shortages
         ) }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -19,7 +19,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
         unavailable_quantity = rand(1...sales_order_item.quantity)
         shortages = [ { sales_order_item_id: sales_order_item.id, unavailable_quantity: unavailable_quantity } ]
         expect{ ProcurementModule::MaterialRequestManager.create!(
-          current_user: user,
+          user: user,
           shortages: shortages
         ) }.to raise_error(ValidationFailed, 'Material request cannot be created after sales order item is processed')
       end
@@ -30,7 +30,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
         unavailable_quantity = sales_order_item.quantity + 1
         shortages = [ { sales_order_item_id: sales_order_item.id, unavailable_quantity: unavailable_quantity } ]
         expect{ ProcurementModule::MaterialRequestManager.create!(
-          current_user: user,
+          user: user,
           shortages: shortages
         ) }.to raise_error(ValidationFailed, 'Unavailable Quantity cannot be more than ordered quantity')
       end
@@ -48,7 +48,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
         old_mr_count = MaterialRequest.count
         unavailable_quantity = rand(1...sales_order_item.quantity)
         shortages = [ { sales_order_item_id: sales_order_item.id, unavailable_quantity: unavailable_quantity } ]
-        ProcurementModule::MaterialRequestManager.create!(current_user: user, shortages: shortages)
+        ProcurementModule::MaterialRequestManager.create!(user: user, shortages: shortages)
 
         created_mr = MaterialRequest.last
 
@@ -68,7 +68,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
 
         unavailable_quantity = rand(1...sales_order_item.quantity)
         shortages = [ { sales_order_item_id: sales_order_item.id, unavailable_quantity: unavailable_quantity } ]
-        ProcurementModule::MaterialRequestManager.create!(current_user: user, shortages: shortages)
+        ProcurementModule::MaterialRequestManager.create!(user: user, shortages: shortages)
 
         expect(MaterialRequest.count).to eq(old_mr_count)
         expect(existing_mr.sales_order_items.last).to eq(sales_order_item)
@@ -89,7 +89,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
                       { sales_order_item_id: sales_order_item_2.id, unavailable_quantity: 2 } ]
 
         expect{ ProcurementModule::MaterialRequestManager.create!(
-          current_user: user,
+          user: user,
           shortages: shortages
         ) }.to raise_error(ValidationFailed, 'Material request cannot be created after sales order item is processed')
         expect(MaterialRequest.count).to eq(old_mr_count)
