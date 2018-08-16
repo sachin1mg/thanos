@@ -58,6 +58,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'active_model_serializers', '~> 0.10.7' # ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.
+gem 'activerecord-import', '~> 0.25.0' # A library for bulk inserting data using ActiveRecord.
 gem 'config', '~> 1.7' # Easiest way to manage multi-environment settings
 gem 'ddtrace', '~> 0.11.4', '>= 0.11.4' # Tracking the application metrics in datadog
 gem 'devise', '~> 4.4', '>= 4.4.1' # Flexible authentication solution for Rails with Warden
