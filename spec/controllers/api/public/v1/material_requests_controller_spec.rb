@@ -1,0 +1,106 @@
+RSpec.describe Api::Public::V1::MaterialRequestsController, type: :controller do
+  let!(:default_attributes) { MaterialRequestSerializer.default_attributes }
+  let!(:current_vendor) { Api::Public::BaseController.new.current_vendor }
+  let!(:current_user) { ApplicationController.new.current_user }
+  
+  describe 'GET #index' do
+    before(:each) do
+      FactoryBot.create_list(:material_request, 5, vendor: current_vendor, user: current_user)
+    end
+
+    context 'Invalid filters applied' do
+      it 'should return bad request' do
+        get :index, params: { status: '' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { created_from: 'invalid date' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { created_to: 'invalid date' }
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'No filters applied' do
+      it 'should return material_requests for current vendor only' do
+        FactoryBot.create_list(:material_request, 5)
+        material_requests = MaterialRequest.where(vendor: current_vendor)
+        expected_data = material_requests.map { |material_request| material_request.slice(default_attributes) }
+
+        get :index, params: {}
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'Filter by id' do
+      it 'should return material_requests filtered by id' do
+        random_id = current_vendor.material_requests.pluck(:id).sample
+        expected_data = current_vendor.material_requests.where(id: random_id).map do |material_request|
+                          material_request.slice(default_attributes)
+                        end
+
+        get :index, params: { id: random_id }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'Filter by status' do
+      it 'should return material_requests filtered by status' do
+        random_id = current_vendor.material_requests.pluck(:id).sample
+        MaterialRequest.find(random_id).pending!
+
+        expected_data = current_vendor.material_requests.where(status: :pending).map do |material_request|
+                          material_request.slice(default_attributes)
+                        end
+
+        get :index, params: { status: :pending }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'Filter by created_from' do
+      it 'should return material_requests created after provided date' do
+        FactoryBot.create_list(:material_request, 5, vendor: current_vendor, user: current_user, created_at: 10.days.ago)
+        created_from = 3.day.ago
+        expected_data = current_vendor.material_requests.
+                        where('created_at >= ?', created_from.to_date.beginning_of_day).
+                        map do |material_request|
+                          material_request.slice(default_attributes)
+                        end
+
+        get :index, params: { created_from: created_from.to_date.to_s }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'Filter by created_to' do
+      it 'should return material_requests created before provided date' do
+        FactoryBot.create_list(:material_request, 5, vendor: current_vendor, user: current_user, created_at: 10.days.ago)
+        created_to = 3.day.ago
+        expected_data = current_vendor.material_requests.
+                        where('created_at <= ?', created_to.to_date.end_of_day).
+                        map do |material_request|
+                          material_request.slice(default_attributes)
+                        end
+
+        get :index, params: { created_to: created_to.to_date.to_s }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+  end
+end

@@ -1,6 +1,6 @@
 module Api::Public::V1
   class MaterialRequestsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: :show
 
     # GET /material_requests
     def index
@@ -13,33 +13,7 @@ module Api::Public::V1
       render_serializer scope: material_request
     end
 
-    def create
-      material_request = material_requests.create!(material_request_create_params)
-      render_serializer scope: material_request
-    end
-
-    def update
-      material_request.update_attributes!(material_request_update_params)
-      render_serializer scope: material_request
-    end
-
-    # DELETE /material_requests/1
-    def destroy
-      material_request.destroy!
-      api_render json: {}
-    end
-
     private
-
-    def material_request_create_params
-      params.require(:material_request).permit(:code, :type, :delivery_date,
-        metadata: params[:material_request][:metadata]&.keys)
-    end
-
-    def material_request_update_params
-      params.require(:material_request).permit(:delivery_date,
-        metadata: params[:material_request][:metadata]&.keys)
-    end
 
     def material_requests
       current_vendor.material_requests
@@ -50,12 +24,12 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :sales_order_id, Integer, blank: false
-      param! :type, String, blank: false
-      param! :to_delivery_date, Date, blank: false
-      param! :from_delivery_date, Date, blank: false
+      param! :id, Integer, blank: false
+      param! :status, String, blank: false
+      param! :created_from, Date, blank: false
+      param! :created_to, Date, blank: false
 
-      params.permit(:sales_order_id, :type, :to_delivery_date, :from_delivery_date)
+      params.permit(:id, :status, :created_from, :created_to)
     end
 
     #####################
@@ -64,21 +38,6 @@ module Api::Public::V1
 
     def valid_index?
       param! :sort_by, String, default: 'id:asc'
-    end
-
-    def valid_create?
-      param! :material_request, Hash, required: true, blank: false do |p|
-        p.param! :code, String, blank: false
-        p.param! :delivery_date, Date, blank: false
-        p.param! :metadata, Hash, blank: false
-      end
-    end
-
-    def valid_update?
-      param! :material_request, Hash, required: true, blank: false do |p|
-        p.param! :delivery_date, Date, blank: false
-        p.param! :metadata, Hash, blank: false
-      end
     end
   end
 end
