@@ -6,7 +6,7 @@ FactoryBot.define do
       vendor = evaluator.sales_order_item.sales_order.vendor
       sku = evaluator.sales_order_item.sku
 
-      material_request = MaterialRequest.find_by(vendor: vendor, sku: sku, status: :draft)
+      material_request = MaterialRequest.find_by(vendor: vendor, sku: sku, status: :created)
       material_request ||= MaterialRequest.create!(
                             vendor: vendor,
                             user: vendor.users.sample || FactoryBot.create(:user, vendor: vendor),

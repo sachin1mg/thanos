@@ -27,7 +27,7 @@ module ProcurementModule
             unavailable_quantity: unavailable_quantity
           ).validate!
   
-          material_request = MaterialRequest.find_by(vendor: vendor, sku: sales_order_item.sku, status: :draft)
+          material_request = MaterialRequest.find_by(vendor: vendor, sku: sales_order_item.sku, status: :created)
           material_request ||= MaterialRequest.create!(
                                 user: user,
                                 vendor: vendor,

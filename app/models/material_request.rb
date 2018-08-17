@@ -3,11 +3,12 @@ class MaterialRequest < ApplicationRecord
   acts_as_paranoid
 
   enum status: {
-    draft: 'draft',
+    created: 'created',
     pending: 'pending',
     ordered: 'ordered',
     partially_ordered: 'partially_ordered',
-    cancelled: 'cancelled'
+    cancelled: 'cancelled',
+    closed: 'closed'
   }
 
   validates_presence_of :user, :vendor, :sku, :quantity, :status
@@ -24,7 +25,7 @@ class MaterialRequest < ApplicationRecord
 
   def init
     self.quantity ||= 0
-    self.status ||= :draft
+    self.status ||= :created
     self.metadata ||= {}
   end
 end
