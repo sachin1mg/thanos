@@ -10,17 +10,30 @@ module Api::Public::V1
 
     # GET /purchase_orders/1
     def show
-      render_serializer scope: purchase_order
+      respond_to do |format|
+        format.json { render_serializer scope: purchase_order }
+        format.csv do
+          send_data(
+            ProcurementModule::PurchaseOrderManager.new(purchase_order).to_csv,
+            filename: "purchase_order-#{purchase_order.id}.csv"
+          )
+        end
+      end
     end
 
+    #
+    # This api will create only bulk purchase orders.
+    #
     def create
-      purchase_order = purchase_orders.create!(purchase_order_create_params)
+      purchase_order = ProcurementModule::PurchaseOrderManager.create!(user: current_user,
+                                                                       params: purchase_order_create_params)
+
       render_serializer scope: purchase_order
     end
 
     def update
-      purchase_order.update_attributes!(purchase_order_update_params)
-      render_serializer scope: purchase_order
+      updated_purchase_order = ProcurementModule::PurchaseOrderManager.new(purchase_order).update(purchase_order_update_params)
+      render_serializer scope: updated_purchase_order
     end
 
     # DELETE /material_requests/1
@@ -32,15 +45,12 @@ module Api::Public::V1
     private
 
     def purchase_order_create_params
-      params.require(:purchase_order).permit(:code, :delivery_date,
-        metadata: params[:purchase_order][:metadata]&.keys, material_request_ids: [])
+      params.require(:purchase_order).permit(:code, :supplier_id,
+             purchase_order_items: [:sku_id, :quantity, :price, :schedule_date])
     end
 
     def purchase_order_update_params
-      params.require(:purchase_order).permit(
-        metadata: params[:purchase_order][:metadata]&.keys,
-        material_request_ids: []
-      )
+      params.require(:purchase_order).permit(:status)
     end
 
     def purchase_orders
@@ -56,12 +66,13 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :type, String, blank: false
-      param! :supplier_id, Integer, blank: false
-      param! :to_delivery_date, Date, blank: false
-      param! :from_delivery_date, Date, blank: false
+      param! :id, Integer, blank: false
+      param! :status, String, blank: false
+      param! :supplier_name, String, transform: ->(supplier_name){ supplier_name.strip }, blank: false
+      param! :to_created_date, Date, blank: false
+      param! :from_created_date, Date, blank: false
 
-      params.permit(:type, :to_delivery_date, :from_delivery_date, :supplier_id)
+      params.permit(:id, :status, :supplier_name, :to_created_date, :from_created_date)
     end
 
     #####################
@@ -74,17 +85,20 @@ module Api::Public::V1
 
     def valid_create?
       param! :purchase_order, Hash, required: true, blank: false do |p|
-        p.param! :code, String, blank: false
-        p.param! :delivery_date, Date, blank: false
-        p.param! :metadata, Hash, blank: false
-        p.param! :material_request_ids, Array, blank: false
+        p.param! :supplier_id, Integer, required: true, blank: false
+        p.param! :code, String, required: true, blank: false
+        p.param! :purchase_order_items, Array, required: true, blank: false do |s|
+          s.param! :sku_id, Integer, required: true, blank: false
+          s.param! :quantity, Integer, min: 0, required: true, blank: false
+          s.param! :price, Float, min: 0, required: true, blank: false
+          s.param! :schedule_date, Date, required: true, blank: false
+        end
       end
     end
 
     def valid_update?
       param! :purchase_order, Hash, required: true, blank: false do |p|
-        p.param! :metadata, Hash, blank: false
-        p.param! :material_request_ids, blank: false
+        p.param! :status, String, in: %w(cancelled closed), required: true, blank: false
       end
     end
   end
