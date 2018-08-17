@@ -2,17 +2,17 @@ openapi: 3.0.0
 servers:
   - description: SwaggerHub API Auto Mocking
     url: http://localhost:3000/api/v1
-  - description: Health Api
-    url: http://localhost:3000
 info:
-  description: Inverntory management System
-  version: "1.0.0"
-  title: Complete management system for Inventory Management
+  version: '1.0.0'
+  title: API Documentation for ODIN Backend
+  description: API Documentation for ODIN Backend
   contact:
     email: anubhav.singh@1mg.com
 tags:
   - name: Health Check
     description: To check system is up or not
+  - name: Material Requests
+    description: Material Requests related API's
 paths:
   /health:
     get:
@@ -42,6 +42,114 @@ paths:
                   status_code:
                     type: string
                     example: 200
+  /material_requests:
+    get:
+      tags:
+        - Material Requests
+      summary: Get Material Requests information
+      operationId: getMRDetails
+      description: |
+        Get Material Requests for given filters
+        ---
+        ---
+        1. id => /material_requests?id=3
+        2. status => /material_requests?status=pending
+        3. created_from => /material_requests?created_from=2018-08-12 (Format - YYYY-MM-DD)
+        4. created_to => /material_requests?created_to=2018-08-18 (Format - YYYY-MM-DD)
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Material Requests fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MaterialRequest'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      parameters:
+        - name: id
+          in: query
+          description: Filter Material Requests by id
+          schema:
+            type: integer
+            format: int32
+            example: 21
+        - name: status
+          in: query
+          description: Filter Material Requests by status
+          schema:
+            type: string
+            example: 'pending'
+        - name: created_from
+          in: query
+          description: Filter Material Requests created after the provided date
+          schema:
+            type: string
+            example: '2018-08-12'
+        - name: created_to
+          in: query
+          description: Filter Material Requests created before the provided date
+          schema:
+            type: string
+            example: '2018-08-18'
+  /material_requests/{material_request_id}:
+    get:
+      tags:
+        - Material Requests
+      summary: Get Material Request information
+      operationId: getMRInformation
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Material Request fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/MaterialRequest'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+  
 components:
   schemas:
     Health:
@@ -59,7 +167,7 @@ components:
           example: 1
         name:
           type: string
-          example: "Vendor Name 1"
+          example: 'Vendor Name 1'
         status:
           type: string
           enum:
@@ -70,13 +178,76 @@ components:
           example: ada7834n
         created:
           type: string
-          example: "2016-06-15 13:39:09.36251"
+          example: '2016-06-15 13:39:09.36251'
         updated:
           type: string
-          example: "2016-06-15 13:39:09.36251"
+          example: '2016-06-15 13:39:09.36251'
         metadata:
           type: object
           example: {}
+    MaterialRequest:
+      type: object
+      required:
+        - id
+        - sku_id
+        - quantity
+        - status
+        - created_at
+        - sku
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 56
+        sku_id:
+          type: integer
+          format: int32
+          example: 42123
+        quantity:
+          type: integer
+          example: 100
+        status:
+          type: string
+          example: 'pending'
+        created_at:
+          type: string
+          example: '2018-08-17T15:11:14.222+05:30'
+        sku:
+          type: object
+          $ref: '#/components/schemas/Sku'
+    Sku:
+      type: object
+      required:
+        - id
+        - onemg_sku_id
+        - sku_name
+        - manufacturer_name
+        - item_group
+        - uom
+        - pack_size
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 56
+        onemg_sku_id:
+          type: string
+          example: '543-09-9627'
+        sku_name:
+          type: string
+          example: 'Combiflam'
+        manufacturer_name:
+          type: string
+          example: 'Zydus'
+        item_group:
+          type: string
+          example: 'Allopathy'
+        uom:
+          type: string
+          example: 'ml'
+        pack_size:
+          type: integer
+          example: 10
     Meta:
       type: object
       required:
