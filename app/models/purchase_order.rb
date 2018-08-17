@@ -1,19 +1,14 @@
 class PurchaseOrder < ApplicationRecord
   self.inheritance_column = nil
 
+  include StateTransitions::PurchaseOrder
+
   has_paper_trail
   acts_as_paranoid
 
   enum type: {
     jit: 'jit',
     bulk: 'bulk'
-  }
-
-  enum status: {
-    draft: 'draft',
-    pending: 'pending',
-    cancelled: 'cancelled',
-    closed: 'closed'
   }
 
   has_many :purchase_order_items

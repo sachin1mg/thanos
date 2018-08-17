@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   include Concerns::ThreadUserable
   include Concerns::Cacheable
   include Concerns::ParamValidator
+  include ActionController::MimeResponds
 
   before_action :authenticate_user!
   before_action :set_raven_context
