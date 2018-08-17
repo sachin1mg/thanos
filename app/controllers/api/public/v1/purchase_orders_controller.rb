@@ -1,11 +1,11 @@
 module Api::Public::V1
   class PurchaseOrdersController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: [:show]
 
     # GET /purchase_orders
     def index
       resources = purchase_orders.filter(index_filters)
-      render_serializer scope: resources
+      render_serializer scope: resources.includes(:supplier)
     end
 
     # GET /purchase_orders/1
@@ -38,12 +38,6 @@ module Api::Public::V1
       render_serializer scope: updated_purchase_order
     end
 
-    # DELETE /material_requests/1
-    def destroy
-      purchase_order.destroy!
-      api_render json: {}
-    end
-
     private
 
     def purchase_order_create_params
@@ -71,10 +65,10 @@ module Api::Public::V1
       param! :id, Integer, blank: false
       param! :status, String, blank: false
       param! :supplier_name, String, transform: ->(supplier_name){ supplier_name.strip }, blank: false
-      param! :to_created_date, Date, blank: false
-      param! :from_created_date, Date, blank: false
+      param! :created_from, Date, blank: false
+      param! :created_to, Date, blank: false
 
-      params.permit(:id, :status, :supplier_name, :to_created_date, :from_created_date)
+      params.permit(:id, :status, :supplier_name, :created_from, :created_to)
     end
 
     #####################

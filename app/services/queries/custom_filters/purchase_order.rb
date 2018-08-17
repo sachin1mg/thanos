@@ -3,15 +3,15 @@ module Queries::CustomFilters
     #
     # @param from_created_date [Date]
     #
-    def from_created_date(from_created_date)
-      scope.where('purchase_orders.created_at >= ?', from_created_date)
+    def created_from(created_from)
+      scope.where('purchase_orders.created_at >= ?', created_from)
     end
 
     #
     # @param to_created_date [Date]
     #
-    def to_created_date(to_created_date)
-      scope.where('purchase_orders.created_at <= ?', to_created_date)
+    def created_to(created_to)
+      scope.where('purchase_orders.created_at <= ?', created_to)
     end
 
     #

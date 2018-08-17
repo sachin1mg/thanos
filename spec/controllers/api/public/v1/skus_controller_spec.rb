@@ -79,7 +79,9 @@ RSpec.describe Api::Public::V1::SkusController, type: :controller, skip_auth: tr
 
     context 'when mrp item_group_filter is applied' do
       it 'should return valid skus' do
-        FactoryBot.create_list(:sku, 2)
+        FactoryBot.create(:sku, item_group: 'itg1')
+        FactoryBot.create(:sku, item_group: 'itg2')
+
         get :index, params: { item_group_filter: Sku.second.item_group }
 
         expected_data = [Sku.second.slice(:id, :onemg_sku_id, :sku_name, :manufacturer_name, 
