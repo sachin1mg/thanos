@@ -7,6 +7,9 @@ RSpec.describe Api::Public::V1::MaterialRequestsController, type: :controller do
   describe 'GET #index' do
     before(:each) do
       FactoryBot.create_list(:material_request, 5, vendor: current_vendor, user: current_user)
+      request.headers.merge!({
+        "ACCEPT" => 'application/json'
+      })
     end
 
     context 'Invalid filters applied' do
