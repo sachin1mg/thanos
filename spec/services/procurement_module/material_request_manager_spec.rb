@@ -60,7 +60,7 @@ RSpec.describe ProcurementModule::MaterialRequestManager, type: :service do
       end
     end
 
-    context 'MR for the SKU is already present in draft state' do
+    context 'MR for the SKU is already present in created state' do
       it 'should not create a new MR' do
         existing_mr = FactoryBot.create(:material_request, sku: sales_order_item.sku, user: user)
         old_quantity = existing_mr.quantity

@@ -1,3 +1,5 @@
+require 'csv'
+
 module ProcurementModule
   #
   # This class contains all the bussiness logic regarding creation, updation
@@ -27,7 +29,7 @@ module ProcurementModule
             unavailable_quantity: unavailable_quantity
           ).validate!
   
-          material_request = MaterialRequest.find_by(vendor: vendor, sku: sales_order_item.sku, status: :draft)
+          material_request = MaterialRequest.find_by(vendor: vendor, sku: sales_order_item.sku, status: :created)
           material_request ||= MaterialRequest.create!(
                                 user: user,
                                 vendor: vendor,
@@ -42,6 +44,22 @@ module ProcurementModule
         end
 
         SoiMrMapping.import!(soi_mr_mappings, validate: true, on_duplicate_key_ignore: true)
+      end
+    end
+
+    #
+    # @param material_requests [MaterialRequest::ActiveRecord_Relation] Material Requests for which csv is required
+    # @param csv_options [Hash] Extra options for downloading csv
+    # @return [String] CSV String generated
+    #
+    def self.index_csv(material_requests, csv_options = {})
+      CSV.generate(csv_options) do |csv|
+        csv << ['ID', 'Company', 'Item Name', 'Pack', 'Shortage']
+        material_requests.each do |material_request|
+          sku = material_request.sku
+          csv << [ material_request.id, sku.manufacturer_name, sku.sku_name, sku.pack_size, 
+                  material_request.quantity]
+        end
       end
     end
   end

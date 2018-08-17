@@ -7,7 +7,7 @@ sales_orders.each do |sales_order|
   next if [true, false].sample
 
   sales_order.sales_order_items.each do |so_item|
-    material_request = MaterialRequest.find_by(vendor: vendor, sku: so_item.sku, status: :draft)
+    material_request = MaterialRequest.find_by(vendor: vendor, sku: so_item.sku, status: :created)
     material_request ||= MaterialRequest.create!(
                             vendor: vendor,
                             user: vendor.users.sample,
