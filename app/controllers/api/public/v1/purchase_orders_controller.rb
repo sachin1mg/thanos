@@ -32,7 +32,9 @@ module Api::Public::V1
     end
 
     def update
-      updated_purchase_order = ProcurementModule::PurchaseOrderManager.new(purchase_order).update(purchase_order_update_params)
+      updated_purchase_order = ProcurementModule::PurchaseOrderManager
+                                 .new(purchase_order)
+                                 .update(purchase_order_update_params)
       render_serializer scope: updated_purchase_order
     end
 
