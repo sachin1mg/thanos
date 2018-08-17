@@ -4,7 +4,7 @@ module Api::Public::V1
 
     # GET /material_requests
     def index
-      resources = material_requests.filter(index_filters)
+      resources = material_requests.filter(index_filters).includes(:sku)
       render_serializer scope: resources
     end
 
