@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "sku_id"
     t.decimal "mrp", precision: 8, scale: 2
     t.citext "code"
+    t.citext "name"
     t.date "manufacturing_date"
     t.date "expiry_date"
     t.jsonb "metadata"

@@ -14,7 +14,9 @@ module ProcurementModule
     #
     def self.create!(user: , params:)
       vendor = user.vendor
-      purchase_order = vendor.purchase_orders.new(params.except(:purchase_order_items).merge({type: 'bulk', user: user}))
+      purchase_order_params = params.except(:purchase_order_items)
+                                    .merge(type: :bulk, user: user)
+      purchase_order = vendor.purchase_orders.new(purchase_order_params)
 
       ActiveRecord::Base.transaction do
         purchase_order_items = []
