@@ -1,4 +1,4 @@
-RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller, skip_auth: true do
+RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   let(:supplier) { FactoryBot.create(:supplier) }
   let(:sku) { FactoryBot.create(:sku) }
 
