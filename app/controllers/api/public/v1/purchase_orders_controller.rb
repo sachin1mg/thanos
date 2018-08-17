@@ -10,7 +10,15 @@ module Api::Public::V1
 
     # GET /purchase_orders/1
     def show
-      render_serializer scope: purchase_order
+      respond_to do |format|
+        format.json { render_serializer scope: purchase_order }
+        format.csv do
+          send_data(
+            ProcurementModule::PurchaseOrderManager.new(purchase_order).to_csv,
+            filename: "purchase_order-#{purchase_order.id}.csv"
+          )
+        end
+      end
     end
 
     #
@@ -82,7 +90,7 @@ module Api::Public::V1
         p.param! :purchase_order_items, Array, required: true, blank: false do |s|
           s.param! :sku_id, Integer, required: true, blank: false
           s.param! :quantity, Integer, min: 0, required: true, blank: false
-          s.param! :price, Float, required: true, blank: false
+          s.param! :price, Float, min: 0, required: true, blank: false
           s.param! :schedule_date, Date, required: true, blank: false
         end
       end
@@ -90,7 +98,7 @@ module Api::Public::V1
 
     def valid_update?
       param! :purchase_order, Hash, required: true, blank: false do |p|
-        p.param! :status, String, blank: false
+        p.param! :status, String, in: %w(cancelled closed), required: true, blank: false
       end
     end
   end
