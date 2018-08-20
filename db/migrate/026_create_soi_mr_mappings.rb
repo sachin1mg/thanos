@@ -1,8 +1,8 @@
 class CreateSoiMrMappings < ActiveRecord::Migration[5.1]
   def change
     create_table :soi_mr_mappings do |t|
-      t.references :sales_order_item, foreign_key: true
-      t.references :material_request, foreign_key: true
+      t.references :sales_order_item
+      t.references :material_request
       t.integer :quantity
 
       t.datetime :deleted_at, index: true

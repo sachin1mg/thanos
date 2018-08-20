@@ -1,10 +1,10 @@
 class CreatePurchaseReceiptItems < ActiveRecord::Migration[5.1]
   def change
     create_table :purchase_receipt_items do |t|
-      t.references :purchase_receipt, foreign_key: true
-      t.references :purchase_order_item, foreign_key: true
-      t.references :sku, foreign_key: true
-      t.references :batch, foreign_key: true
+      t.references :purchase_receipt
+      t.references :purchase_order_item
+      t.references :sku
+      t.references :batch
       t.integer :received_quantity
       t.integer :returned_quantity
       t.decimal :price, precision: 8, scale: 2
