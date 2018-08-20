@@ -1,7 +1,7 @@
 class CreateBatches < ActiveRecord::Migration[5.1]
   def change
     create_table :batches do |t|
-      t.references :sku, foreign_key: true
+      t.references :sku
       t.decimal :mrp, precision: 8, scale: 2
       t.citext :code
       t.citext :name

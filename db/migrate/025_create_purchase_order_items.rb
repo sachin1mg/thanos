@@ -1,9 +1,9 @@
 class CreatePurchaseOrderItems < ActiveRecord::Migration[5.1]
   def change
     create_table :purchase_order_items do |t|
-      t.references :material_request, foreign_key: true
-      t.references :purchase_order, foreign_key: true
-      t.references :sku, foreign_key: true
+      t.references :material_request
+      t.references :purchase_order
+      t.references :sku
       t.integer :quantity
       t.decimal :price, precision: 8, scale: 2
       t.citext :status, index: true

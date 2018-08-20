@@ -1,9 +1,9 @@
 class CreateMaterialRequests < ActiveRecord::Migration[5.1]
   def change
     create_table :material_requests do |t|
-      t.references :user, foreign_key: true
-      t.references :vendor, foreign_key: true
-      t.references :sku, foreign_key: true
+      t.references :user
+      t.references :vendor
+      t.references :sku
       t.integer :quantity
       t.citext :status, index: true
       t.jsonb :metadata

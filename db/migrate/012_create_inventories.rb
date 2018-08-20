@@ -1,10 +1,10 @@
 class CreateInventories < ActiveRecord::Migration[5.1]
   def change
     create_table :inventories do |t|
-      t.references :vendor, foreign_key: true
-      t.references :sku, foreign_key: true
-      t.references :batch, foreign_key: true
-      t.references :location, foreign_key: true
+      t.references :vendor
+      t.references :sku
+      t.references :batch
+      t.references :location
       t.integer :quantity
       t.integer :blocked_quantity
       t.integer :reserved_quantity
