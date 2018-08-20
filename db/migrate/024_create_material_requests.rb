@@ -4,7 +4,6 @@ class CreateMaterialRequests < ActiveRecord::Migration[5.1]
       t.references :user, foreign_key: true
       t.references :vendor, foreign_key: true
       t.references :sku, foreign_key: true
-      t.references :purchase_order_item, foreign_key: true
       t.integer :quantity
       t.citext :status, index: true
       t.jsonb :metadata

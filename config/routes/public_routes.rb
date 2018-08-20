@@ -7,7 +7,7 @@ module PublicRoutes
             resources :batches
           end
 
-          resources :vendors
+          resources :vendors, only: [:create, :update, :index, :show]
           resources :locations
           resources :inventories
 
