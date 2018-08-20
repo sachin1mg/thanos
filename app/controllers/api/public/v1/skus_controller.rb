@@ -13,8 +13,7 @@ module Api::Public::V1
     end
 
     def create
-      sku = Sku.build(sku_params)
-      sku = InventoryModule::SkuManager.new(sku).create
+      sku = Sku.create!(sku_params)
       render_serializer scope: sku
     end
 

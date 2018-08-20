@@ -1,4 +1,4 @@
-puts 'Sales Order Seeder start'
+puts 'Sales Order Seeder start.'
 
 vendors = Vendor.all
 skus = Sku.all
@@ -21,7 +21,7 @@ SalesOrder.all.each do |sales_order|
   item1 = SalesOrderItem.create!(
     sales_order: sales_order,
     discount: sales_order.discount * 0.4,
-    quantity: rand(1...10),
+    quantity: rand(3...10),
     price: sales_order.amount * 0.4,
     sku: skus.sample
   )
@@ -36,7 +36,7 @@ SalesOrder.all.each do |sales_order|
     sales_order: sales_order,
     discount: sales_order.discount * 0.6,
     price: sales_order.amount * 0.6,
-    quantity: rand(1...10),
+    quantity: rand(3...10),
     sku: skus.sample
   )
 
@@ -47,9 +47,9 @@ SalesOrder.all.each do |sales_order|
   )
 end
 
-puts 'Sales Order Item Seeder end'
+puts 'Sales Order Item Seeder end.'
 
-puts 'Invoices Seeder Start'
+puts 'Invoices Seeder start.'
 
 SalesOrder.all.each do |sales_order|
   [1, 2].sample.times do |n|
@@ -65,4 +65,4 @@ SalesOrder.all.each do |sales_order|
   end
 end
 
-puts 'Invoices Seeder End'
+puts 'Invoices Seeder end.'

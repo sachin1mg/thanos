@@ -1,12 +1,13 @@
 class MaterialRequestSerializer < ApplicationSerializer
-  attributes :id, :sales_order_id, :code, :type, :status, :delivery_date, :vendor_id,
-             :created_at, :updated_at
+  attributes :id, :sku_id, :quantity, :status, :created_at
+
+  has_one :sku
 
   #
   # Default attributes for serializer
   #
   # @return [Array] Array of symbolize attributes
   def self.default_attributes
-    [:id, :sales_order_id, :code, :type, :status, :delivery_date, :vendor_id, :created_at, :updated_at]
+    [:id, :sku_id, :quantity, :status, :created_at]
   end
 end

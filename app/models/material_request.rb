@@ -2,30 +2,32 @@ class MaterialRequest < ApplicationRecord
   has_paper_trail
   acts_as_paranoid
 
+  include StateTransitions::MaterialRequest
+
   enum status: {
-    draft: 'draft',
+    created: 'created',
     pending: 'pending',
     ordered: 'ordered',
     partially_ordered: 'partially_ordered',
-    cancelled: 'cancelled'
+    cancelled: 'cancelled',
+    closed: 'closed'
   }
 
-  belongs_to :user
-  belongs_to :sku
-  belongs_to :vendor
-  has_many :purchase_order_items
+  validates_presence_of :user, :vendor, :sku, :quantity, :status
+  validates_numericality_of :quantity, greater_than_or_equal_to: 0
 
-  validates_presence_of :code, :status
+  belongs_to :user
+  belongs_to :vendor
+  belongs_to :sku
+  belongs_to :purchase_order_item, optional: true
+  has_many :soi_mr_mappings
+  has_many :sales_order_items, through: :soi_mr_mappings
 
   before_validation :init
 
   def init
-    self.status ||= :draft
-    self.code ||= generate_code
+    self.quantity ||= 0
+    self.status ||= :created
     self.metadata ||= {}
-  end
-
-  def generate_code
-    Time.now.to_i.to_s
   end
 end

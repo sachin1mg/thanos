@@ -1,17 +1,18 @@
 module Queries::CustomFilters
   class MaterialRequest < ::Queries::Filters
+
     #
-    # @param from_delivery_date [Date]
+    # @param created_from [Date]
     #
-    def from_delivery_date(from_delivery_date)
-     scope.where('material_requests.delivery_date >= ?', from_delivery_date)
+    def created_from(created_from)
+      scope.where('material_requests.created_at >= ?', created_from.to_date.beginning_of_day)
     end
 
     #
-    # @param to_delivery_date [Date]
+    # @param created_to [Date]
     #
-    def to_delivery_date(to_delivery_date)
-     scope.where('material_requests.delivery_date <= ?', to_delivery_date)
+    def created_to(created_to)
+      scope.where('material_requests.created_at <= ?', created_to.to_date.end_of_day)
     end
   end
 end

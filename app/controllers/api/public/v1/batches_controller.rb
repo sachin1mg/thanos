@@ -34,7 +34,7 @@ module Api::Public::V1
     private
 
     def batch_params
-      params.require(:batch).permit(:code, :mrp, :manufacturing_date, :expiry_date, :metadata)
+      params.require(:batch).permit(:code, :name, :mrp, :manufacturing_date, :expiry_date, :metadata)
     end
 
     ######################
