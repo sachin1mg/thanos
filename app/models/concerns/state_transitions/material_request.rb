@@ -1,5 +1,5 @@
 module StateTransitions
-  module PurchaseOrder
+  module MaterialRequest
     extend ::ActiveSupport::Concern
 
     included do
@@ -8,6 +8,8 @@ module StateTransitions
       aasm column: 'status' do
         state :created, initial: true
         state :pending
+        state :ordered
+        state :partially_ordered
         state :cancelled
         state :closed
 

@@ -2,6 +2,8 @@ class MaterialRequest < ApplicationRecord
   has_paper_trail
   acts_as_paranoid
 
+  include StateTransitions::MaterialRequest
+
   enum status: {
     created: 'created',
     pending: 'pending',
