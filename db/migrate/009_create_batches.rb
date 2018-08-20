@@ -16,7 +16,6 @@ class CreateBatches < ActiveRecord::Migration[5.1]
     add_index :batches,
               [:sku_id, :code],
               unique: true,
-              name: 'index_batches_on_sku_id_code',
-              where: 'deleted_at IS NULL'
+              name: 'index_batches_on_sku_id_code'
   end
 end

@@ -14,6 +14,6 @@ class CreateSchemes < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :schemes, [:name, :schemable_id, :schemable_type], unique: true, where: 'deleted_at is null'
+    add_index :schemes, [:name, :schemable_id, :schemable_type], unique: true
   end
 end

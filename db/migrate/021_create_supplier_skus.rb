@@ -9,6 +9,6 @@ class CreateSupplierSkus < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :supplier_skus, [:supplier_id, :sku_id], unique: true, where: 'deleted_at is null'
+    add_index :supplier_skus, [:supplier_id, :sku_id], unique: true
   end
 end
