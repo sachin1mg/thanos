@@ -1,6 +1,6 @@
 module Api::Public::V1
   class VendorsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: [:show]
 
     # GET /vendors
     def index
@@ -23,12 +23,6 @@ module Api::Public::V1
     def update
       vendor.update_attributes!(vendor_params)
       render_serializer scope: vendor
-    end
-
-    # DELETE /vendors/1
-    def destroy
-      vendor.destroy!
-      api_render json: {}
     end
 
     private

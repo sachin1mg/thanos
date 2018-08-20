@@ -144,26 +144,5 @@ RSpec.describe Api::Public::V1::VendorsController, type: :controller, skip_auth:
         expect(response.body).to be_json_eql(expected_vendor.to_json).at_path('data')
       end
     end
-
-    describe '#destroy' do
-      context 'when id is invalid' do
-        it 'should return not found' do
-          delete :destroy, params: { id: 0 }
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-  
-      context 'when id is valid' do
-        it 'should soft delete vendor instance' do
-          vendor
-          old_vendor_count = Vendor.count
-          delete :destroy, params: { id: vendor.id }
-          new_vendor_count = Vendor.count
-  
-          expect(response).to have_http_status(:ok)
-          expect(old_vendor_count - new_vendor_count).to be 1
-        end
-      end
-    end
   end
 end
