@@ -13,6 +13,8 @@ tags:
     description: To check system is up or not
   - name: Material Requests
     description: Material Requests related API's
+  - name: Suppliers
+    description: Supplier related API's
 paths:
   /health:
     get:
@@ -293,6 +295,130 @@ paths:
                     example: 200
       requestBody:
         $ref: '#/components/requestBodies/PurchaseOrder'
+  /suppliers:
+    get:
+      tags:
+        - Suppliers
+      summary: Get Suppliers Information
+      operationId: getSupplierDetails
+      description: |
+        Get Suppliers for given filters
+        ---
+        ---
+        1. name => /suppliers?name=han
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Suppliers fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Supplier'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      parameters:
+        - name: name
+          in: query
+          description: Filter Suppliers by name
+          schema:
+            type: string
+            example: 'han'
+    post:
+      tags:
+        - Suppliers
+      summary: Create Supplier based on parameters
+      operationId: createSupplier
+      description: |
+        Create a new supplier based on given parameters.
+        ---
+        ---
+        1. /suppliers
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Suppliers created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Supplier'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      requestBody:
+        $ref: '#/components/requestBodies/Supplier'
+  /suppliers/{supplier_id}:
+    get:
+      tags:
+        - Suppliers
+      summary: Get Supplier Information
+      operationId: getSupplierInformation
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Supplier fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Supplier'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
 components:
   schemas:
     Health:
@@ -430,6 +556,37 @@ components:
         pack_size:
           type: integer
           example: 10
+    Supplier:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - types
+        - metadata
+        - created_at
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 34
+        name:
+          type: string
+          example: 'Cadila Pharmaceuticals'
+        status:
+          type: string
+          example: 'active'
+        types:
+          type: array
+          items:
+            type: string
+            example: 'one'
+        metadata:
+          type: object
+          example: {}
+        created_at:
+          type: string
+          example: '2018-08-20T15:34:26.678+05:30'
     Meta:
       type: object
       required:
@@ -488,5 +645,32 @@ components:
                   status:
                     type: string
                     example: 'cancelled'
+    Supplier:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - supplier
+            properties:
+              supplier:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                    example: 'Supplier Name 101'
+                  status:
+                    type: string
+                    example: 'active'
+                  types:
+                    type: array
+                    items:
+                      type: string
+                      example: 'one'
+                  metadata:
+                    type: object
+                    example: {}
 
 
