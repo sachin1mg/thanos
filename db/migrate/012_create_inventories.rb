@@ -19,7 +19,6 @@ class CreateInventories < ActiveRecord::Migration[5.1]
     add_index :inventories,
               [:vendor_id, :sku_id, :batch_id, :location_id],
               unique: true,
-              name: 'index_inventories_on_vendor_id_sku_id_batch_id_and_location_id',
-              where: 'deleted_at IS NULL'
+              name: 'index_inventories_on_vendor_id_sku_id_batch_id_and_location_id'
   end
 end

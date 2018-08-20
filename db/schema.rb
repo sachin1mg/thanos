@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["sku_id", "code"], name: "index_batches_on_sku_id_code", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["sku_id", "code"], name: "index_batches_on_sku_id_code", unique: true
     t.index ["sku_id"], name: "index_batches_on_sku_id"
   end
 
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["batch_id"], name: "index_inventories_on_batch_id"
     t.index ["location_id"], name: "index_inventories_on_location_id"
     t.index ["sku_id"], name: "index_inventories_on_sku_id"
-    t.index ["vendor_id", "sku_id", "batch_id", "location_id"], name: "index_inventories_on_vendor_id_sku_id_batch_id_and_location_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["vendor_id", "sku_id", "batch_id", "location_id"], name: "index_inventories_on_vendor_id_sku_id_batch_id_and_location_id", unique: true
     t.index ["vendor_id"], name: "index_inventories_on_vendor_id"
   end
 
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_invoices_on_deleted_at"
-    t.index ["number"], name: "index_invoices_on_number", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["sales_order_id"], name: "index_invoices_on_sales_order_id"
   end
 
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_schemes_on_deleted_at"
     t.index ["expiry_at"], name: "index_schemes_on_expiry_at"
-    t.index ["name", "schemable_id", "schemable_type"], name: "index_schemes_on_name_and_schemable_id_and_schemable_type", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["name", "schemable_id", "schemable_type"], name: "index_schemes_on_name_and_schemable_id_and_schemable_type", unique: true
     t.index ["schemable_type", "schemable_id"], name: "index_schemes_on_schemable_type_and_schemable_id"
     t.index ["status"], name: "index_schemes_on_status"
   end
@@ -307,7 +307,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_soi_mr_mappings_on_deleted_at"
     t.index ["material_request_id"], name: "index_soi_mr_mappings_on_material_request_id"
-    t.index ["sales_order_item_id", "material_request_id"], name: "index_on_sales_order_item_id_and_material_request_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["sales_order_item_id", "material_request_id"], name: "index_on_sales_order_item_id_and_material_request_id", unique: true
     t.index ["sales_order_item_id"], name: "index_soi_mr_mappings_on_sales_order_item_id"
   end
 
@@ -319,7 +319,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sku_id"], name: "index_supplier_skus_on_sku_id"
-    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["supplier_id", "sku_id"], name: "index_supplier_skus_on_supplier_id_and_sku_id", unique: true
     t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
   end
 
@@ -366,7 +366,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["deleted_at"], name: "index_vendor_supplier_contracts_on_deleted_at"
     t.index ["status"], name: "index_vendor_supplier_contracts_on_status"
     t.index ["supplier_id"], name: "index_vendor_supplier_contracts_on_supplier_id"
-    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["vendor_id", "supplier_id"], name: "index_vendor_supplier_contracts_on_vendor_id_and_supplier_id", unique: true
     t.index ["vendor_id"], name: "index_vendor_supplier_contracts_on_vendor_id"
   end
 
@@ -384,7 +384,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.index ["scheme_id"], name: "index_vendor_supplier_schemes_on_scheme_id"
     t.index ["sku_id"], name: "index_vendor_supplier_schemes_on_sku_id"
     t.index ["status"], name: "index_vendor_supplier_schemes_on_status"
-    t.index ["vendor_supplier_contract_id", "sku_id", "scheme_id"], name: "unique_vendor_supplier_contract_id_sku_id_scheme_id", unique: true, where: "(deleted_at IS NULL)"
+    t.index ["vendor_supplier_contract_id", "sku_id", "scheme_id"], name: "unique_vendor_supplier_contract_id_sku_id_scheme_id", unique: true
     t.index ["vendor_supplier_contract_id"], name: "index_vendor_supplier_schemes_on_vendor_supplier_contract_id"
   end
 

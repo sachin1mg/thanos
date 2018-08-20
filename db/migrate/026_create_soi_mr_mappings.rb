@@ -12,7 +12,6 @@ class CreateSoiMrMappings < ActiveRecord::Migration[5.1]
     add_index :soi_mr_mappings,
               [:sales_order_item_id, :material_request_id],
               unique: true,
-              name: 'index_on_sales_order_item_id_and_material_request_id',
-              where: 'deleted_at IS NULL'
+              name: 'index_on_sales_order_item_id_and_material_request_id'
   end
 end

@@ -10,6 +10,6 @@ class CreateVendorSupplierContracts < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :vendor_supplier_contracts, [:vendor_id, :supplier_id], unique: true, where: 'deleted_at is null'
+    add_index :vendor_supplier_contracts, [:vendor_id, :supplier_id], unique: true
   end
 end
