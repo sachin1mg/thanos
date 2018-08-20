@@ -1,61 +1,75 @@
-puts 'Material Request Seeder start'
+puts 'Material Request Seeder start.'
 
 sales_orders = SalesOrder.all
-skus = Sku.includes(:batches)
-suppliers = Supplier.all
-vendors = Vendor.all
+vendor = Vendor.first
 
 sales_orders.each do |sales_order|
+  next if [true, false].sample
 
-  sku = skus.sample
-  supplier = suppliers.sample
-  vendor = vendors.sample
+  sales_order.sales_order_items.each do |so_item|
+    material_request = MaterialRequest.find_by(vendor: vendor, sku: so_item.sku, status: :created)
+    material_request ||= MaterialRequest.create!(
+                            vendor: vendor,
+                            user: vendor.users.sample,
+                            sku: so_item.sku,
+                            quantity: 0
+                         )
 
-  material_request = sales_order.create_material_request!(
-    code: Faker::Code.nric,
-    delivery_date: rand(1...100).days.from_now,
-    type: [:jit, :bulk].sample,
-    vendor: vendor
-  )
+    unavailable_quantity = rand(1...so_item.quantity)
 
-  material_request_item = material_request.material_request_items.create!(
-    quantity: rand(1...100),
-    sku: sku,
-    schedule_date: rand(1...100).days.from_now
-  )
+    SoiMrMapping.create!(
+      sales_order_item: so_item,
+      material_request: material_request,
+      quantity: unavailable_quantity
+    )
+    
+    material_request.quantity += unavailable_quantity
+    material_request.save!
+  end
 
-  purchase_order = PurchaseOrder.create!(
-    supplier: supplier,
-    material_request_ids: [material_request.id],
-    code: Faker::Code.nric,
-    delivery_date: rand(1...100).days.from_now,
-    vendor: vendor
-  )
+  # sku = skus.sample
+  # supplier = suppliers.sample
+  # vendor = vendors.sample
 
-  purchase_receipt = purchase_order.purchase_receipts.create!(
-    supplier: supplier,
-    code: Faker::Code.nric,
-    total_amount: rand(1.0...100.0).round(2),
-    vendor: vendor
-  )
+  # material_request = MaterialRequest.create!(
+  #   user: User.first,
+  #   vendor: vendor,
+  #   quantity: rand(1...100),
+  #   sku: sku,
+  # )
 
-  purchase_order_item = purchase_order.purchase_order_items.create!(
-    material_request_item: material_request_item,
-    sku: sku,
-    quantity: rand(1...100),
-    price: rand(1.0...100.0).round(2),
-    schedule_date: rand(1...100).days.from_now
-  )
+  # purchase_order = PurchaseOrder.create!(
+  #   user: User.first,
+  #   supplier: supplier,
+  #   type: [:jit, :bulk].sample,
+  #   code: Faker::Code.nric,
+  #   delivery_date: rand(1...100).days.from_now,
+  #   vendor: vendor
+  # )
 
-  purchase_receipt_item = purchase_receipt.purchase_receipt_items.create!(
-    purchase_order_item: purchase_order_item,
-    batch: sku.batches.last,
-    sku: sku,
-    received_quantity: rand(1...100),
-    returned_quantity: rand(1...100),
-    price: rand(1.0...100.0).round(2),
-    schedule_date: rand(1...100).days.from_now
-  )
+  # purchase_receipt = purchase_order.purchase_receipts.create!(
+  #   supplier: supplier,
+  #   code: Faker::Code.nric,
+  #   total_amount: rand(1.0...100.0).round(2),
+  #   vendor: vendor
+  # )
+
+  # purchase_order_item = purchase_order.purchase_order_items.create!(
+  #   sku: sku,
+  #   quantity: rand(1...100),
+  #   price: rand(1.0...100.0).round(2),
+  #   schedule_date: rand(1...100).days.from_now
+  # )
+
+  # purchase_receipt.purchase_receipt_items.create!(
+  #   purchase_order_item: purchase_order_item,
+  #   batch: sku.batches.last,
+  #   sku: sku,
+  #   received_quantity: rand(1...100),
+  #   returned_quantity: rand(1...100),
+  #   price: rand(1.0...100.0).round(2),
+  #   schedule_date: rand(1...100).days.from_now
+  # )
 end
 
-puts 'Material Request Seeder end'
+puts 'Material Request Seeder end.'

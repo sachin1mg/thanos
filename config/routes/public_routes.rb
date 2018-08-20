@@ -15,7 +15,6 @@ module PublicRoutes
             resources :invoices
             resources :sales_order_items
             resources :inventory_pickups
-            resources :material_requests, except: [:new, :edit]
           end
           resources :suppliers, only: [:create, :update, :index, :show] do
             resources :purchase_orders, except: [:new, :edit]
@@ -23,9 +22,7 @@ module PublicRoutes
           resources :purchase_orders, except: [:new, :edit] do
             resources :purchase_order_items, except: [:new, :edit]
           end
-          resources :material_requests, except: [:new, :edit] do
-            resources :material_request_items, except: [:new, :edit]
-          end
+          resources :material_requests, only: [:index, :show]
           resources :purchase_receipts, except: [:new, :edit] do
             resources :purchase_receipt_items, except: [:new, :edit]
           end
@@ -33,7 +30,7 @@ module PublicRoutes
           resources :vendor_supplier_contracts, only: [:create, :update, :index, :show]
           resources :supplier_skus, only: [:create, :update, :index, :show]
           resources :vendor_supplier_schemes, only: [:create, :update, :index, :show]
-          resources :batches, only: [:create, :update, :index, :show]
+          resources :batches, only: [:update, :index, :show]
         end
       end
     end

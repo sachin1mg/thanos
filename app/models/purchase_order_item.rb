@@ -10,8 +10,8 @@ class PurchaseOrderItem < ApplicationRecord
   }
 
   belongs_to :sku
-  belongs_to :material_request_item, optional: true
   belongs_to :purchase_order
+  has_many :material_requests
   has_many :purchase_receipt_items
 
   validates_presence_of :price, :quantity, :status

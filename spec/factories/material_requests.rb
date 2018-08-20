@@ -1,16 +1,21 @@
 FactoryBot.define do
   factory :material_request do
-    vendor
-    code { Faker::Lorem.characters(10) }
-    delivery_date { Faker::Date.between(Date.today, 3.days.from_now) }
+    user
+    sku
+    quantity { rand(1...10) }
+    downloaded_at { rand(1..3).hours.ago }
 
-    trait :jit do
-      type :jit
-      sales_order
+    before :create do |material_request, evaluator|
+      material_request.vendor = evaluator.user.vendor
     end
 
-    trait :bulk do
-      type :bulk
+    trait :with_purchase_order_item do
+      after :create do |material_request, evaluator|
+        purchase_order_item = FactoryBot.create(:purchase_order_item,
+                                                sku: evaluator.sku,
+                                                quantity: evaluator.quantity)
+        material_request.update!(purchase_order_item: purchase_order_item)
+      end
     end
   end
 end

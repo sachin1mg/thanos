@@ -1,3 +1,5 @@
+puts 'Inventory module seeder start.'
+
 100.times do
   Vendor.create(
     name: Faker::Name.name,
@@ -35,8 +37,9 @@ skus.each do |sku|
   location = locations.sample
 
   batch = sku.batches.create(
-    name: Faker::Lorem.word,
+    code: Faker::Lorem.word,
     mrp: rand(1.0...100.0).round(2),
+    name: Faker::Lorem.word,
     manufacturing_date: rand(1...100).days.ago,
     expiry_date: rand(1...100).days.from_now
   )
@@ -52,3 +55,4 @@ skus.each do |sku|
   )
 end
 
+puts 'Inventory module seeder end.'
