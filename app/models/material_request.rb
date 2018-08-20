@@ -19,7 +19,7 @@ class MaterialRequest < ApplicationRecord
   belongs_to :user
   belongs_to :vendor
   belongs_to :sku
-  belongs_to :purchase_order_item, optional: true
+  has_many :purchase_order_items
   has_many :soi_mr_mappings
   has_many :sales_order_items, through: :soi_mr_mappings
 
