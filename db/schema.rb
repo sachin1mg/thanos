@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(version: 28) do
     t.bigint "user_id"
     t.bigint "vendor_id"
     t.bigint "sku_id"
-    t.bigint "purchase_order_item_id"
     t.integer "quantity"
     t.citext "status"
     t.jsonb "metadata"
@@ -109,7 +108,6 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_material_requests_on_deleted_at"
-    t.index ["purchase_order_item_id"], name: "index_material_requests_on_purchase_order_item_id"
     t.index ["sku_id"], name: "index_material_requests_on_sku_id"
     t.index ["status"], name: "index_material_requests_on_status"
     t.index ["user_id"], name: "index_material_requests_on_user_id"
@@ -134,6 +132,7 @@ ActiveRecord::Schema.define(version: 28) do
   end
 
   create_table "purchase_order_items", force: :cascade do |t|
+    t.bigint "material_request_id"
     t.bigint "purchase_order_id"
     t.bigint "sku_id"
     t.integer "quantity"
@@ -145,6 +144,7 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_purchase_order_items_on_deleted_at"
+    t.index ["material_request_id"], name: "index_purchase_order_items_on_material_request_id"
     t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
     t.index ["sku_id"], name: "index_purchase_order_items_on_sku_id"
     t.index ["status"], name: "index_purchase_order_items_on_status"
@@ -419,12 +419,12 @@ ActiveRecord::Schema.define(version: 28) do
   add_foreign_key "inventory_pickups", "sales_order_items"
   add_foreign_key "invoices", "sales_orders"
   add_foreign_key "locations", "vendors"
-  add_foreign_key "material_requests", "purchase_order_items"
   add_foreign_key "material_requests", "skus"
   add_foreign_key "material_requests", "users"
   add_foreign_key "material_requests", "vendors"
   add_foreign_key "permissions_roles", "permissions"
   add_foreign_key "permissions_roles", "roles"
+  add_foreign_key "purchase_order_items", "material_requests"
   add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "purchase_order_items", "skus"
   add_foreign_key "purchase_orders", "suppliers"
