@@ -13,7 +13,8 @@ class Supplier < ApplicationRecord
   has_many :purchase_orders
   has_many :purchase_receipts
 
-  validates_presence_of :name, :status, :types
+  validates_presence_of :name, :status
+  validates_presence_of :types, allow_blank: true
 
   before_validation :init
 
