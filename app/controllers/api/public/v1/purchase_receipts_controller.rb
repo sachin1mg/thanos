@@ -1,6 +1,6 @@
 module Api::Public::V1
   class PurchaseReceiptsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: [:show]
 
     # GET /purchase_receipts
     def index
@@ -21,12 +21,6 @@ module Api::Public::V1
     def update
       purchase_receipt.update_attributes!(purchase_receipt_update_params)
       render_serializer scope: purchase_receipt
-    end
-
-    # DELETE /purchase_receipts/1
-    def destroy
-      purchase_receipt.destroy!
-      api_render json: {}
     end
 
     private
