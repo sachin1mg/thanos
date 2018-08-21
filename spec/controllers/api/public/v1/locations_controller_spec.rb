@@ -1,5 +1,6 @@
 RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_auth: true do
   let(:location) { FactoryBot.create(:location, vendor: Vendor.first) }
+  let(:default_attributes) { [:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at] }
 
   describe '#show' do
     context 'when id is invalid' do
@@ -13,7 +14,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
       it 'should return location instance' do
         get :show, params: { id: location.id }
 
-        expected_data = location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
+        expected_data = location.slice(default_attributes)
         expect(response).to have_http_status(:ok)
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
@@ -44,7 +45,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         get :index, params: {}
 
         expected_data = locations.map do |location|
-                          location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
+                          location.slice(default_attributes)
                         end
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
@@ -57,7 +58,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         FactoryBot.create_list(:location, 2, vendor: Vendor.first)
         get :index, params: { aisle: Location.first.aisle }
 
-        expected_data = [Location.first.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Location.first.slice(default_attributes)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -69,7 +70,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         FactoryBot.create_list(:location, 2, vendor: Vendor.first)
         get :index, params: { rack: Location.second.rack }
 
-        expected_data = [Location.second.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Location.second.slice(default_attributes)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -81,7 +82,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         FactoryBot.create_list(:location, 2, vendor: Vendor.first)
         get :index, params: { slab: Location.first.slab }
 
-        expected_data = [Location.first.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Location.first.slice(default_attributes)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -93,7 +94,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         FactoryBot.create_list(:location, 2, vendor: Vendor.first)
         get :index, params: { bin: Location.second.bin }
 
-        expected_data = [Location.second.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)]
+        expected_data = [Location.second.slice(default_attributes)]
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
@@ -167,7 +168,7 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
           }
         }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to be_json_eql(Location.last.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at).to_json).at_path('data')
+        expect(response.body).to be_json_eql(Location.last.slice(default_attributes).to_json).at_path('data')
         new_location_count = Location.count
         expect(new_location_count - old_location_count).to be 1
       end
@@ -235,33 +236,12 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
           }
         }
         expect(response).to have_http_status(:ok)
-        expected_location = location.slice(:id, :vendor_id, :aisle, :rack, :slab, :bin, :created_at, :updated_at)
+        expected_location = location.slice(default_attributes)
         expected_location[:aisle] = 'Aisle'
         expected_location[:rack] = 'Rack'
         expected_location[:slab] = 'Slab'
         expected_location[:bin] = 'Bin'
         expect(response.body).to be_json_eql(expected_location.to_json).at_path('data')
-      end
-    end
-
-    describe '#destroy' do
-      context 'when id is invalid' do
-        it 'should return not found' do
-          delete :destroy, params: { id: 0 }
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-  
-      context 'when id is valid' do
-        it 'should soft delete location instance' do
-          location
-          old_location_count = Location.count
-          delete :destroy, params: { id: location.id }
-          new_location_count = Location.count
-  
-          expect(response).to have_http_status(:ok)
-          expect(old_location_count - new_location_count).to be 1
-        end
       end
     end
   end
