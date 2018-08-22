@@ -6,7 +6,7 @@ class MaterialRequest < ApplicationRecord
 
   enum status: {
     created: 'created',
-    pending: 'pending',
+    downloaded: 'downloaded',
     ordered: 'ordered',
     partially_ordered: 'partially_ordered',
     cancelled: 'cancelled',

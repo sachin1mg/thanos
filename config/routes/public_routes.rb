@@ -21,6 +21,10 @@ module PublicRoutes
           end
           resources :purchase_orders, except: [:new, :edit] do
             resources :purchase_order_items, except: [:new, :edit]
+            collection do
+              post 'upload'
+              post 'force_upload'
+            end
           end
           resources :material_requests, only: [:index, :show]
           resources :purchase_receipts, except: [:new, :edit] do

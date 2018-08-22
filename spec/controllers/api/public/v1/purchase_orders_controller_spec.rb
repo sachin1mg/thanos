@@ -1,10 +1,13 @@
 RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   let(:supplier) { FactoryBot.create(:supplier) }
   let(:sku) { FactoryBot.create(:sku) }
+  let(:material_request) { FactoryBot.create(:material_request, status: :downloaded) }
   let(:current_vendor) { Api::Public::BaseController.new.current_vendor }
   let(:current_user) { ApplicationController.new.current_user }
   let(:purchase_order) { FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor) }
   let(:other_user_purchase_order) { FactoryBot.create(:purchase_order) }
+  let(:csv_headers) { ['Code', 'Company', 'Item Code', 'Item Name', 'Pack', 'Ordered Qty',
+                       'Available Qty', 'Shortage', 'Mrp', 'Location', 'Supplier Id'] }
 
   describe '#index' do
     context 'Invalid filters applied' do
@@ -362,6 +365,177 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
                                                         :created_at, :updated_at)
         expected_response[:supplier_name] = purchase_order.supplier.name
         expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+      end
+    end
+  end
+
+  describe '#upload' do
+    context 'when file has bad values' do
+      it 'should raise bad request' do
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
+        end
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
+        end
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << []
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'when file has valid values' do
+      it 'should trigger job and create Purchase Order' do
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        old_po_count = PurchaseOrder.count
+        old_poi_count = PurchaseOrderItem.count
+
+        Sidekiq::Testing.inline!
+        post :upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        Sidekiq::Testing.fake!
+        File.delete("/tmp/file.csv")
+
+        new_po_count = PurchaseOrder.count
+        new_poi_count = PurchaseOrderItem.count
+        expect(response).to have_http_status(:ok)
+        expect(new_po_count - old_po_count).to be 1
+        expect(new_poi_count - old_poi_count).to be 1
+      end
+    end
+  end
+
+  describe '#force_upload' do
+    context 'when file has invalid headers' do
+      it 'should raise bad request' do
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << []
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'when file has bad values' do
+      it 'should not raise bad request but skip rows' do
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:ok)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:ok)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
+        end
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:ok)
+
+
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
+        end
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        File.delete("/tmp/file.csv")
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when file has valid values' do
+      it 'should trigger job and create Purchase Order' do
+        CSV.open("/tmp/file.csv", "wb") do |csv|
+          csv << csv_headers
+          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
+        end
+        old_po_count = PurchaseOrder.count
+        old_poi_count = PurchaseOrderItem.count
+
+        Sidekiq::Testing.inline!
+        post :force_upload, params:{
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        }
+        Sidekiq::Testing.fake!
+        File.delete("/tmp/file.csv")
+
+        new_po_count = PurchaseOrder.count
+        new_poi_count = PurchaseOrderItem.count
+        expect(response).to have_http_status(:ok)
+        expect(new_po_count - old_po_count).to be 1
+        expect(new_poi_count - old_poi_count).to be 1
       end
     end
   end

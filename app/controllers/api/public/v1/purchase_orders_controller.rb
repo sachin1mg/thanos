@@ -38,6 +38,20 @@ module Api::Public::V1
       render_serializer scope: updated_purchase_order
     end
 
+    def upload
+      ProcurementModule::PurchaseOrderUploader.new(file: params[:file],
+                                                   user: current_user,
+                                                   raise_error: true).validate_and_upload
+      api_render json: {}
+    end
+
+    def force_upload
+      ProcurementModule::PurchaseOrderUploader.new(file: params[:file],
+                                                   user: current_user,
+                                                   raise_error: false).validate_and_upload
+      api_render json: {}
+    end
+
     private
 
     def purchase_order_create_params
@@ -96,6 +110,14 @@ module Api::Public::V1
       param! :purchase_order, Hash, required: true, blank: false do |p|
         p.param! :status, String, in: %w(cancelled closed), required: true, blank: false
       end
+    end
+
+    def valid_upload?
+      param! :file, ActionDispatch::Http::UploadedFile, required: true, blank: false
+    end
+
+    def valid_force_upload?
+      param! :file, ActionDispatch::Http::UploadedFile, required: true, blank: false
     end
   end
 end

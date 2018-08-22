@@ -7,7 +7,7 @@ module StateTransitions
 
       aasm column: 'status' do
         state :created, initial: true
-        state :pending
+        state :downloaded
         state :ordered
         state :partially_ordered
         state :cancelled
@@ -17,12 +17,12 @@ module StateTransitions
           transitions from: :created, to: :cancelled
         end
 
-        event :mark_pending do
-          transitions from: :created, to: :pending
+        event :download do
+          transitions from: :created, to: :downloaded
         end
 
         event :close do
-          transitions from: %i(created pending), to: :closed
+          transitions from: %i(created downloaded), to: :closed
         end
       end
     end

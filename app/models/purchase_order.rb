@@ -11,6 +11,13 @@ class PurchaseOrder < ApplicationRecord
     bulk: 'bulk'
   }
 
+  enum status: {
+    created: 'created',
+    pending: 'pending',
+    cancelled: 'cancelled',
+    closed: 'closed'
+  }
+
   has_many :purchase_order_items
   has_many :purchase_receipts
   belongs_to :supplier
@@ -24,5 +31,6 @@ class PurchaseOrder < ApplicationRecord
   def init
     self.status ||= :draft
     self.metadata ||= {}
+    self.code = 'random' #TODO change code
   end
 end
