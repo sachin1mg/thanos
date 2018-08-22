@@ -44,7 +44,7 @@ RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
       end
     end
 
-    context 'when id filter filter is applied' do
+    context 'when id filter is applied' do
       it 'should return valid purchase receipts' do
         FactoryBot.create_list(:purchase_receipt, 5, user: current_user, vendor: current_vendor)
         get :index, params: { id: PurchaseReceipt.first.id }
@@ -61,7 +61,7 @@ RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
       end
     end
 
-    context 'when supplier_name_filter filter is applied' do
+    context 'when supplier name filter is applied' do
       it 'should return valid purchase receipts' do
         FactoryBot.create(:supplier, name: 'kamal')
         FactoryBot.create(:supplier, name: 'Anubhav')
@@ -101,7 +101,7 @@ RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
       end
     end
 
-    context 'Filter by created_from' do
+    context 'when created_from filter is applied' do
       it 'should return purchase receipts created after provided date' do
         FactoryBot.create_list(:purchase_receipt, 5, user: current_user, vendor: current_vendor, created_at: 10.days.ago)
 
@@ -122,7 +122,7 @@ RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
       end
     end
 
-    context 'Filter by created_to' do
+    context 'when created_to filter is applied' do
       it 'should return purchase receipts created before provided date' do
         FactoryBot.create_list(:purchase_receipt, 5, user: current_user, vendor: current_vendor)
 
