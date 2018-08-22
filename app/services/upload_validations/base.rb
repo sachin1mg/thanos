@@ -1,7 +1,7 @@
 module UploadValidations
   class Base
     def is_integer?(value)
-      /\A\d+\z/ === value
+      /\A\d+\z/ === value.strip
     end
 
     def validate_required_columns

@@ -9,6 +9,17 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   let(:csv_headers) { ['Code', 'Company', 'Item Code', 'Item Name', 'Pack', 'Ordered Qty',
                        'Available Qty', 'Shortage', 'Mrp', 'Location', 'Supplier Id'] }
 
+  def create_csv(row)
+    CSV.open("/tmp/file.csv", "wb") do |csv|
+      csv << csv_headers
+      csv << row
+    end
+  end
+
+  def delete_csv
+    File.delete("/tmp/file.csv")
+  end
+
   describe '#index' do
     context 'Invalid filters applied' do
       it 'should return bad request' do
@@ -372,47 +383,35 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   describe '#upload' do
     context 'when file has bad values' do
       it 'should raise bad request' do
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
+        create_csv([100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         post :upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:bad_request)
 
 
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
-        post :upload, params: {
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csve")
-        }
-        File.delete("/tmp/file.csv")
-        expect(response).to have_http_status(:bad_request)
-
-
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
-        end
+        create_csv([material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         post :upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:bad_request)
 
 
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
-        end
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100])
         post :upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
+        expect(response).to have_http_status(:bad_request)
+
+
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id])
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
+        }
+        delete_csv
         expect(response).to have_http_status(:bad_request)
 
 
@@ -423,24 +422,21 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         post :upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when file has valid values' do
       it 'should trigger job and create Purchase Order' do
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         old_po_count = PurchaseOrder.count
         old_poi_count = PurchaseOrderItem.count
 
         post :upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
 
         new_po_count = PurchaseOrder.count
         new_poi_count = PurchaseOrderItem.count
@@ -461,71 +457,56 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when file has bad values' do
       it 'should not raise bad request but skip rows' do
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
+        create_csv([100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:ok)
 
 
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
+        create_csv([material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:ok)
 
 
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
-        end
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100])
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:ok)
 
 
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
-        end
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id])
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
         expect(response).to have_http_status(:ok)
       end
     end
 
     context 'when file has valid values' do
       it 'should trigger job and create Purchase Order' do
-        CSV.open("/tmp/file.csv", "wb") do |csv|
-          csv << csv_headers
-          csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
-        end
+        create_csv([material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id])
         old_po_count = PurchaseOrder.count
         old_poi_count = PurchaseOrderItem.count
 
         post :force_upload, params: {
           file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        File.delete("/tmp/file.csv")
+        delete_csv
 
         new_po_count = PurchaseOrder.count
         new_poi_count = PurchaseOrderItem.count

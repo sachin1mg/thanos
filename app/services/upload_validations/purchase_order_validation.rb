@@ -1,6 +1,5 @@
 module UploadValidations
   class PurchaseOrderValidation < Base
-    attr_accessor :file_headers, :file
 
     #
     # @param [Hash]
@@ -50,6 +49,8 @@ module UploadValidations
 
     private
 
+    attr_accessor :file_headers, :file
+
     #
     # Validates if sku is present
     #
@@ -91,7 +92,7 @@ module UploadValidations
     end
 
     def required_columns
-      Set['Code', 'Company', 'Item Code', 'Item Name',	'Pack', 'Ordered Qty',
+      Set['Code', 'Company', 'Item Code', 'Item Name', 'Pack', 'Ordered Qty',
           'Available Qty', 'Shortage', 'Mrp',	'Location', 'Supplier Id']
     end
   end

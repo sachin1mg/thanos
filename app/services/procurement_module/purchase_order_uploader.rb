@@ -5,7 +5,6 @@ module ProcurementModule
   # @author[virenchugh]
   #
   class PurchaseOrderUploader
-    attr_accessor :file, :user, :raise_error
 
     #
     # Initializer method
@@ -32,6 +31,8 @@ module ProcurementModule
     end
 
     private
+
+    attr_accessor :file, :user, :raise_error
 
     def upload_purchase_order(invalid_values = {})
       supplier_po_mapping = {}
