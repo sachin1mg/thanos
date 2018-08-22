@@ -8,12 +8,10 @@ sales_orders.each do |sales_order|
 
   sales_order.sales_order_items.each do |so_item|
     material_request = MaterialRequest.find_by(vendor: vendor, sku: so_item.sku, status: :created)
-    material_request ||= MaterialRequest.create!(
-                            vendor: vendor,
-                            user: vendor.users.sample,
-                            sku: so_item.sku,
-                            quantity: 0
-                         )
+    material_request ||= MaterialRequest.create!(vendor: vendor,
+                                                 user: vendor.users.sample,
+                                                 sku: so_item.sku,
+                                                 quantity: 0)
 
     unavailable_quantity = rand(1...so_item.quantity)
 
@@ -22,7 +20,7 @@ sales_orders.each do |sales_order|
       material_request: material_request,
       quantity: unavailable_quantity
     )
-    
+
     material_request.quantity += unavailable_quantity
     material_request.save!
   end
