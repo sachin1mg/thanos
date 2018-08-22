@@ -43,9 +43,13 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :supplier_id, Integer, blank: false
+      param! :id, Integer, blank: false
+      param! :status, String, blank: false
+      param! :supplier_name, String, blank: false
+      param! :created_from, Date, blank: false
+      param! :created_to, Date, blank: false
 
-      params.permit(:supplier_id)
+      params.permit(:id, :supplier_name, :status, :created_from, :created_to)
     end
 
     #####################
