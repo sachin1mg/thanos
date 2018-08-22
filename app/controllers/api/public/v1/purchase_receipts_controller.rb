@@ -1,11 +1,11 @@
 module Api::Public::V1
   class PurchaseReceiptsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: [:show]
 
     # GET /purchase_receipts
     def index
       resources = purchase_receipts.filter(index_filters)
-      render_serializer scope: resources
+      render_serializer scope: resources.includes(:supplier)
     end
 
     # GET /purchase_receipts/1
@@ -21,12 +21,6 @@ module Api::Public::V1
     def update
       purchase_receipt.update_attributes!(purchase_receipt_update_params)
       render_serializer scope: purchase_receipt
-    end
-
-    # DELETE /purchase_receipts/1
-    def destroy
-      purchase_receipt.destroy!
-      api_render json: {}
     end
 
     private
@@ -49,9 +43,13 @@ module Api::Public::V1
     end
 
     def index_filters
-      param! :supplier_id, Integer, blank: false
+      param! :id, Integer, blank: false
+      param! :status, String, blank: false
+      param! :supplier_name, String, blank: false
+      param! :created_from, Date, blank: false
+      param! :created_to, Date, blank: false
 
-      params.permit(:supplier_id)
+      params.permit(:id, :supplier_name, :status, :created_from, :created_to)
     end
 
     #####################

@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :permissions, through: :roles
   has_many :material_requests
   has_many :purchase_orders
+  has_many :purchase_receipts
 
   #
   # Add given role to user
