@@ -1,4 +1,4 @@
-RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller, skip_auth: true do
+RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
   let(:current_vendor) { Api::Public::BaseController.new.current_vendor }
   let(:current_user) { ApplicationController.new.current_user }
 
