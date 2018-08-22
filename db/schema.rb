@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 28) do
 
   create_table "purchase_receipts", force: :cascade do |t|
     t.bigint "supplier_id"
-    t.bigint "purchase_order_id"
+    t.bigint "user_id"
     t.bigint "vendor_id"
     t.citext "code"
     t.citext "status"
@@ -203,9 +203,9 @@ ActiveRecord::Schema.define(version: 28) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_purchase_receipts_on_deleted_at"
-    t.index ["purchase_order_id"], name: "index_purchase_receipts_on_purchase_order_id"
     t.index ["status"], name: "index_purchase_receipts_on_status"
     t.index ["supplier_id"], name: "index_purchase_receipts_on_supplier_id"
+    t.index ["user_id"], name: "index_purchase_receipts_on_user_id"
     t.index ["vendor_id"], name: "index_purchase_receipts_on_vendor_id"
   end
 

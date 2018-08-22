@@ -8,7 +8,7 @@ module PublicRoutes
           end
 
           resources :vendors, only: [:create, :update, :index, :show]
-          resources :locations
+          resources :locations, only: [:create, :update, :index, :show]
           resources :inventories
 
           resources :sales_orders do
@@ -17,15 +17,15 @@ module PublicRoutes
             resources :inventory_pickups
           end
           resources :suppliers, only: [:create, :update, :index, :show] do
-            resources :purchase_orders, except: [:new, :edit]
+            resources :purchase_orders, except: [:new, :edit, :destroy]
           end
-          resources :purchase_orders, except: [:new, :edit] do
-            resources :purchase_order_items, except: [:new, :edit]
+          resources :purchase_orders, except: [:new, :edit, :destroy] do
+            resources :purchase_order_items, except: [:new, :edit, :destroy]
           end
           resources :material_requests, only: [:index, :show]
-          resources :purchase_receipts, except: [:new, :edit] do
+          resources :purchase_receipts, except: [:new, :edit, :destroy] do
             post 'verify', on: :collection
-            resources :purchase_receipt_items, except: [:new, :edit]
+            resources :purchase_receipt_items, except: [:new, :edit, :destroy]
           end
           resources :schemes, only: [:create, :update, :index, :show]
           resources :vendor_supplier_contracts, only: [:create, :update, :index, :show]
