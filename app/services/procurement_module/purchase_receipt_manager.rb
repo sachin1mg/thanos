@@ -45,5 +45,20 @@ module ProcurementModule
 
       return result
     end
+
+    #
+    # This function parses the uploaded CSV file and validates the data with existing purchase orders in the system
+    # @param purchase_order_ids [Array] Array of purchase_order_ids for which the 
+    #                                   upload is initiated
+    # @param file [Rack::Test::UploadedFile] Uploaded CSV file
+    #
+    def self.validate_csv(purchase_order_ids:, file:)
+      sku_quantities = []
+      CSV.foreach(file.path, headers: true) do |row|
+        sku_quantities << { sku_id: row['Sku ID'].to_i, quantity: row['Quantity'].to_i }
+      end
+
+      verify_uploaded_data(purchase_order_ids: purchase_order_ids, sku_quantities: sku_quantities)
+    end
   end
 end

@@ -23,11 +23,23 @@ module Api::Public::V1
       render_serializer scope: purchase_receipt
     end
 
+    #
     # POST /purchase_receipts/verify
+    #
     def verify
       result = ProcurementModule::PurchaseReceiptManager.verify_uploaded_data(
                 purchase_order_ids: params[:purchase_order_ids],
-                sku_quantities: params[:sku_quantities]
+                sku_quantities: params[:sku_quantities])
+      api_render json: { purchase_order_ids: params[:purchase_order_ids], result: result }
+    end
+
+    #
+    # POST /purchase_receipts/verify_csv
+    #
+    def verify_csv
+      result = ProcurementModule::PurchaseReceiptManager.validate_csv(
+                purchase_order_ids: params[:purchase_order_ids],
+                file: params[:file]
               )
       api_render json: { purchase_order_ids: params[:purchase_order_ids], result: result }
     end
@@ -97,6 +109,16 @@ module Api::Public::V1
         sq.param! :sku_id, Integer, required: true, blank: false
         sq.param! :quantity, Integer, required: true, blank: false
       end
+    end
+
+    #
+    # Validate verify_csv action
+    #
+    def valid_verify_csv?
+      param! :purchase_order_ids, Array, required: true, blank: false do |p, i|
+        p.param! i, Integer, required: true, blank: false
+      end
+      param! :file, ActionDispatch::Http::UploadedFile, required: true, blank: false
     end
   end
 end

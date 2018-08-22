@@ -240,4 +240,75 @@ RSpec.describe Api::Public::V1::PurchaseReceiptsController, type: :controller do
       end
     end
   end
+
+  describe 'POST #verify_csv' do
+    before(:each) do
+      request.headers.merge!({
+        "CONTENT_TYPE" => 'application/json'
+      })
+    end
+
+    context 'Invalid Parameters' do
+      context 'purchase_order_ids' do
+        it 'should raise error if not present' do
+          post :verify_csv, params: {}
+          expect(response).to have_http_status(:bad_request)
+          expect(response.body).to be_json_eql({ 'message': 'Parameter purchase_order_ids is required' }.to_json).at_path('errors/0')
+        end
+
+        it 'should raise error if empty array' do
+          post :verify_csv, params: { purchase_order_ids: [] }
+          expect(response).to have_http_status(:bad_request)
+          expect(response.body).to be_json_eql({ 'message': 'Parameter purchase_order_ids cannot be blank' }.to_json).at_path('errors/0')
+        end
+
+        it 'should raise error if item in array is not an integer' do
+          post :verify_csv, params: { purchase_order_ids: ['invalid'] }
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
+
+      context 'file' do
+        it 'should raise error if not present' do
+          post :verify_csv, params: { purchase_order_ids: [3, 4] }
+          expect(response).to have_http_status(:bad_request)
+          expect(response.body).to be_json_eql({ 'message': 'Parameter file is required' }.to_json).at_path('errors/0')
+        end
+      end
+    end
+
+    context 'Valid Parameters' do
+      context 'sku: shortage, sku2: extra, sku3: not in PO, sku4: unavailable' do
+        it 'should provide required response' do
+          CSV.open("/tmp/file.csv", "wb") do |csv|
+            csv << ['Sku ID', 'Quantity']
+            csv << [sku.id, desired_quantity_sku - 5]
+            csv << [sku2.id, desired_quantity_sku2 + 15]
+            csv << [sku3.id, 100]
+            csv << [5000, 100]
+          end
+
+          post :verify_csv, params: {
+                                      purchase_order_ids: purchase_order_ids,
+                                      file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
+                                    }
+
+          expected_response = {
+                                purchase_order_ids: purchase_order_ids,
+                                result: {
+                                  unavailable: [ { sku_id: 5000, quantity: 100 } ],
+                                  shortages: [ { sku_id: sku.id, quantity: 5 } ],
+                                  extra: [ { sku_id: sku2.id, quantity: 15 } ],
+                                  not_in_po: [ { sku_id: sku3.id, quantity: 100 } ],
+                                  fulfilled: [ { sku_id: sku.id, quantity: desired_quantity_sku - 5 },
+                                              { sku_id: sku2.id, quantity: desired_quantity_sku2 } ]
+                                }
+                              }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+        end
+      end
+    end
+  end
 end

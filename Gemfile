@@ -61,6 +61,7 @@ gem 'aasm', '~> 5.0' # AASM is a continuation of the acts-as-state-machine rails
 gem 'active_model_serializers', '~> 0.10.7' # ActiveModel::Serializers allows you to generate your JSON in an object-oriented and convention-driven manner.
 gem 'activerecord-import', '~> 0.25.0' # A library for bulk inserting data using ActiveRecord.
 gem 'config', '~> 1.7' # Easiest way to manage multi-environment settings
+gem 'csv', '~> 1.0', '>= 1.0.1' # CSV provides interface to CSV files and data
 gem 'ddtrace', '~> 0.11.4', '>= 0.11.4' # Tracking the application metrics in datadog
 gem 'devise', '~> 4.4', '>= 4.4.1' # Flexible authentication solution for Rails with Warden
 gem 'jwt', '~> 1.5', '>= 1.5.4' # A pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.
