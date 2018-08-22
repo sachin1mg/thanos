@@ -8,7 +8,7 @@ module PublicRoutes
           end
 
           resources :vendors, only: [:create, :update, :index, :show]
-          resources :locations
+          resources :locations, only: [:create, :update, :index, :show]
           resources :inventories
 
           resources :sales_orders do

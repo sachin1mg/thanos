@@ -1,6 +1,6 @@
 module Api::Public::V1
   class LocationsController < ::Api::Public::AuthController
-    skip_before_action :valid_action?, only: [:show, :destroy]
+    skip_before_action :valid_action?, only: :show
 
     # GET /locations
     def index
@@ -13,36 +13,44 @@ module Api::Public::V1
       render_serializer scope: location
     end
 
+    # POST /locations
     def create
       location = locations.create!(location_params)
       render_serializer scope: location
     end
 
+    # PUT /locations/1
     def update
       location.update_attributes!(location_params)
       render_serializer scope: location
     end
 
-    # DELETE /locations/1
-    def destroy
-      location.destroy!
-      api_render json: {}
-    end
-
     private
 
+    #
+    # Strong parameters for create and update action
+    #
     def location_params
       params.require(:location).permit(:aisle, :rack, :slab, :bin)
     end
 
+    #
+    # @return [Location::ActiveRecord_Associations_CollectionProxy] Location for current vendor
+    #
     def locations
       @locations ||= current_vendor.locations
     end
 
+    #
+    # @return [Location] Location filtered by id in params
+    #
     def location
       @location ||= locations.find(params[:id])
     end
 
+    #
+    # Filters for index action
+    #
     def index_filters
       param! :aisle, String, blank: false
       param! :rack, String, blank: false
@@ -56,10 +64,16 @@ module Api::Public::V1
     #### VALIDATIONS ####
     #####################
 
+    #
+    # Validate index action
+    #
     def valid_index?
       param! :sort_by, String, default: 'id:asc'
     end
 
+    #
+    # Validate create action
+    #
     def valid_create?
       param! :location, Hash, required: true, blank: false do |p|
         p.param! :aisle, String, required: true, blank: false
@@ -69,6 +83,9 @@ module Api::Public::V1
       end
     end
 
+    #
+    # Validate update action
+    #
     def valid_update?
       param! :location, Hash, required: true, blank: false do |p|
         p.param! :aisle, String, blank: false
