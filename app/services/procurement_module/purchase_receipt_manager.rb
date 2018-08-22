@@ -25,21 +25,20 @@ module ProcurementModule
         sku = Sku.find_by(id: data[:sku_id])
         result[:unavailable] << data and next unless sku.present?
 
-        # TODO [nipunmanocha] Check for status here and corresponding changes in specs also
         purchase_order_items = PurchaseOrderItem.where(sku: sku, purchase_order_id: purchase_order_ids)
         result[:not_in_po] << data and next unless purchase_order_items.present?
 
-        given_quantity = data[:quantity]
-        desired_quantity = purchase_order_items.sum(:quantity)
+        received_quantity = data[:quantity]
+        ordered_quantity = purchase_order_items.where(status: :draft).sum(:quantity)
         
-        if desired_quantity === given_quantity
-          result[:fulfilled] << { sku_id: sku.id, quantity: desired_quantity }
-        elsif desired_quantity < given_quantity
-          result[:fulfilled] << { sku_id: sku.id, quantity: desired_quantity }
-          result[:extra] << { sku_id: sku.id, quantity: given_quantity - desired_quantity }
+        if ordered_quantity == received_quantity
+          result[:fulfilled] << { sku_id: sku.id, quantity: ordered_quantity }
+        elsif ordered_quantity < received_quantity
+          result[:fulfilled] << { sku_id: sku.id, quantity: ordered_quantity }
+          result[:extra] << { sku_id: sku.id, quantity: received_quantity - ordered_quantity }
         else
-          result[:fulfilled] << { sku_id: sku.id, quantity: given_quantity }
-          result[:shortages] << { sku_id: sku.id, quantity: desired_quantity - given_quantity }
+          result[:fulfilled] << { sku_id: sku.id, quantity: received_quantity }
+          result[:shortages] << { sku_id: sku.id, quantity: ordered_quantity - received_quantity }
         end
       end
 
