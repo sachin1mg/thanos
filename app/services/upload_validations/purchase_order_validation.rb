@@ -51,15 +51,6 @@ module UploadValidations
     private
 
     #
-    # Validates if all required columns are present
-    #
-    def validate_required_columns
-      required_columns = Set['Code', 'Company', 'Item Code', 'Item Name',	'Pack', 'Ordered Qty',
-                             'Available Qty', 'Shortage', 'Mrp',	'Location', 'Supplier Id']
-      raise BadRequest.new('Missing columns in uploaded file') unless required_columns.subset?(file_headers)
-    end
-
-    #
     # Validates if sku is present
     #
     def validate_skus(sku_ids)
@@ -97,6 +88,11 @@ module UploadValidations
       else
         return nil
       end
+    end
+
+    def required_columns
+      Set['Code', 'Company', 'Item Code', 'Item Name',	'Pack', 'Ordered Qty',
+          'Available Qty', 'Shortage', 'Mrp',	'Location', 'Supplier Id']
     end
   end
 end

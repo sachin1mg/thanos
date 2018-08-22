@@ -114,10 +114,12 @@ module Api::Public::V1
 
     def valid_upload?
       param! :file, ActionDispatch::Http::UploadedFile, required: true, blank: false
+      raise BadRequest.new("Invalid file type") if params[:file].content_type != 'text/csv'
     end
 
     def valid_force_upload?
       param! :file, ActionDispatch::Http::UploadedFile, required: true, blank: false
+      raise BadRequest.new("Invalid file type") if params[:file].content_type != 'text/csv'
     end
   end
 end

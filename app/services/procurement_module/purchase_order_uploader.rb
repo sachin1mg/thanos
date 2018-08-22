@@ -12,23 +12,16 @@ module ProcurementModule
     # @param file [ActionDispatch::Http::UploadedFile instance]
     #
     def initialize(file:, user:, raise_error:)
-      raise BadRequest.new('Need user to be present') unless user.present?
-      raise BadRequest.new('Need file to be present') unless file.present?
-      raise BadRequest.new('File should be CSV format') if file.path.split('.').last.downcase != 'csv'
-
       self.file = file
       self.user = user
       self.raise_error = raise_error
     end
 
     def validate_and_upload
-      validate
-      temp_file = File.open("/tmp/purchase_order_#{user.id}_#{Time.zone.now}.csv", "w")
-      temp_file.write(file.read)
-      file_path = temp_file.path
-      temp_file.close
-
-      ProcurementModule::PurchaseOrderUploadWorker.perform_async(user.id, file_path, raise_error)
+      invalid_values = validate
+      ActiveRecord::Base.transaction do
+        upload_purchase_order(invalid_values)
+      end
     end
 
     #
@@ -36,13 +29,6 @@ module ProcurementModule
     #
     def validate
       ::UploadValidations::PurchaseOrderValidation.new(file).validate(raise_error: raise_error)
-    end
-
-    def upload
-      invalid_values = validate
-      ActiveRecord::Base.transaction do
-        upload_purchase_order(invalid_values)
-      end
     end
 
     private

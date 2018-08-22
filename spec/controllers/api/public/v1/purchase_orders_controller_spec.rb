@@ -376,8 +376,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -387,8 +387,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csve")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -398,8 +398,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
         end
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -409,8 +409,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
         end
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -420,8 +420,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << []
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -437,11 +437,9 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         old_po_count = PurchaseOrder.count
         old_poi_count = PurchaseOrderItem.count
 
-        Sidekiq::Testing.inline!
-        post :upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        Sidekiq::Testing.fake!
         File.delete("/tmp/file.csv")
 
         new_po_count = PurchaseOrder.count
@@ -460,8 +458,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << []
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:bad_request)
@@ -474,8 +472,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [100, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:ok)
@@ -485,8 +483,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', 100, 'ABC', 1, 1, 1, 1, 1, 1, supplier.id]
         end
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:ok)
@@ -496,8 +494,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, 1, 1, 1, 100]
         end
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:ok)
@@ -507,8 +505,8 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
           csv << csv_headers
           csv << [material_request.id, 'ABC', sku.id, 'ABC', 1, 1, 1, -1, 1, 1, supplier.id]
         end
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
         File.delete("/tmp/file.csv")
         expect(response).to have_http_status(:ok)
@@ -524,11 +522,9 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         old_po_count = PurchaseOrder.count
         old_poi_count = PurchaseOrderItem.count
 
-        Sidekiq::Testing.inline!
-        post :force_upload, params:{
-          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "mime/type")
+        post :force_upload, params: {
+          file: Rack::Test::UploadedFile.new("/tmp/file.csv", "text/csv")
         }
-        Sidekiq::Testing.fake!
         File.delete("/tmp/file.csv")
 
         new_po_count = PurchaseOrder.count
