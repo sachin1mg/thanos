@@ -24,6 +24,7 @@ module PublicRoutes
           end
           resources :material_requests, only: [:index, :show]
           resources :purchase_receipts, except: [:new, :edit] do
+            post 'verify', on: :collection
             resources :purchase_receipt_items, except: [:new, :edit]
           end
           resources :schemes, only: [:create, :update, :index, :show]

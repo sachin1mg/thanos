@@ -29,6 +29,15 @@ module Api::Public::V1
       api_render json: {}
     end
 
+    # POST /purchase_receipts/verify
+    def verify
+      result = ProcurementModule::PurchaseReceiptManager.verify_uploaded_data(
+                purchase_order_ids: params[:purchase_order_ids],
+                sku_quantities: params[:sku_quantities]
+              )
+      api_render json: { purchase_order_ids: params[:purchase_order_ids], result: result }
+    end
+
     private
 
     def purchase_receipt_create_params
@@ -76,6 +85,19 @@ module Api::Public::V1
       param! :purchase_receipt, Hash, required: true, blank: false do |p|
         p.param! :total_amount, Float, blank: false
         p.param! :metadata, Hash, blank: false
+      end
+    end
+
+    #
+    # Validate verify action
+    #
+    def valid_verify?
+      param! :purchase_order_ids, Array, required: true, blank: false do |p, i|
+        p.param! i, Integer, required: true, blank: false
+      end
+      param! :sku_quantities, Array, required: true, blank: false do |sq|
+        sq.param! :sku_id, Integer, required: true, blank: false
+        sq.param! :quantity, Integer, required: true, blank: false
       end
     end
   end
