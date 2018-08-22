@@ -5,7 +5,7 @@ module Api::Public::V1
     # GET /purchase_receipts
     def index
       resources = purchase_receipts.filter(index_filters)
-      render_serializer scope: resources
+      render_serializer scope: resources.includes(:supplier)
     end
 
     # GET /purchase_receipts/1

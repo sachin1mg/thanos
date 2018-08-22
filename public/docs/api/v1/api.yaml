@@ -209,6 +209,12 @@ paths:
             schema:
               type: string
               example: 'pending'
+          - name: supplier_name
+            in: query
+            description: Filter Purchase Orders by supplier name
+            schema:
+              type: string
+              example: 'name'
           - name: created_from
             in: query
             description: Filter Purchase Orders created after the provided date
@@ -625,7 +631,83 @@ paths:
                     example: 200
       requestBody:
         $ref: '#/components/requestBodies/Location'
-
+  /purchase_receipts:
+      get:
+        tags:
+          - Purchase Receipts
+        summary: Get Purchase Receipts information
+        operationId: getPRDetails
+        description: |
+          Get Purchase Receipts for given filters
+          ---
+          ---
+          1. id => /purchase_receipts?id=3
+          2. status => /purchase_receipts?status=pending
+          3. created_from => /purchase_receipts?created_from=2018-08-12 (Format - YYYY-MM-DD)
+          4. created_to => /purchase_receipts?created_to=2018-08-18 (Format - YYYY-MM-DD)
+        responses:
+          400:
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject400'
+          200:
+            description: Purchase Receipts fetched successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - data
+                    - meta
+                    - is_success
+                    - status_code
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/PurchaseReceipt'
+                    meta:
+                      $ref: '#/components/schemas/Meta'
+                    is_success:
+                      type: boolean
+                      example: true
+                    status_code:
+                      type: string
+                      example: 200
+        parameters:
+          - name: id
+            in: query
+            description: Filter Purchase Receipts by id
+            schema:
+              type: integer
+              format: int32
+              example: 21
+          - name: status
+            in: query
+            description: Filter Purchase Receipts by status
+            schema:
+              type: string
+              example: 'pending'
+          - name: supplier_name
+            in: query
+            description: Filter Purchase Receipts by supplier name
+            schema:
+              type: string
+              example: 'name'
+          - name: created_from
+            in: query
+            description: Filter Purchase Receipts created after the provided date
+            schema:
+              type: string
+              example: '2018-08-12'
+          - name: created_to
+            in: query
+            description: Filter Purchase Receipts created before the provided date
+            schema:
+              type: string
+              example: '2018-08-18'
 components:
   schemas:
     Health:
@@ -730,6 +812,49 @@ components:
         created_at:
           type: string
           example: '2018-08-17T15:11:14.222+05:30'
+    PurchaseReceipt:
+          type: object
+          required:
+            - id
+            - supplier_id
+            - supplier_name
+            - vendor_id
+            - code
+            - status
+            - total_amount
+            - created_at
+            - updated_at
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 56
+            supplier_id:
+              type: integer
+              format: int32
+              example: 42123
+            supplier_name:
+              type: string
+              example: 'supplier name'
+            vendor_id:
+              type: integer
+              format: int32
+              example: 42
+            code:
+              type: string
+              example: 'code'
+            status:
+              type: string
+              example: 'cancelled'
+            total_amount:
+              type: float
+              example: 123.5
+            created_at:
+              type: string
+              example: '2018-08-17T15:11:14.222+05:30'
+            updated_at:
+              type: string
+              example: '2018-08-17T15:11:14.222+05:30'
     Sku:
       type: object
       required:
