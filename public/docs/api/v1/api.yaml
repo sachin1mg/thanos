@@ -19,6 +19,8 @@ tags:
     description: Location related API's
   - name: Batches
     description: Batch related API's
+  - name: Purchase Receipts
+    description: Purchase Receipt related API's
 paths:
   /health:
     get:
@@ -756,6 +758,44 @@ paths:
             schema:
               type: string
               example: '2018-08-18'
+  /purchase_receipts/verify:
+    post:
+      tags:
+        - Purchase Receipts
+      summary: Verify the Sku quantites against the PO's present in the system
+      operationId: verify
+      description:
+        This API verifies the entered data with the existing purchase orders in the system.
+        It returns the information regarding extra and deficient sku quantities
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/PRVerificationResponse'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      requestBody:
+        $ref: '#/components/requestBodies/PRVerifyFrontEnd'
   /batches:
     get:
       tags:
@@ -1279,6 +1319,58 @@ components:
         status_code:
           type: string
           example: 400
+    SkuQuantity:
+      type: object
+      required:
+        - sku_id
+        - quantity
+      properties:
+        sku_id:
+          type: integer
+          example: 7251
+        quantity:
+          type: integer
+          example: 1000
+    PRVerificationResponse:
+      type: object
+      required:
+        - purchase_order_ids
+        - result
+      properties:
+        purchase_order_ids:
+          type: array
+          items:
+            type: integer
+            example: 123
+        result:
+          type: object
+          required:
+            - unavailable
+            - shortages
+            - extra
+            - not_in_po
+            - fulfilled
+          properties:
+            unavailable:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkuQuantity'
+            shortages:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkuQuantity'
+            extra:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkuQuantity'
+            not_in_po:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkuQuantity'
+            fulfilled:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkuQuantity'
   requestBodies:
     PurchaseOrder:
       content:
@@ -1351,3 +1443,21 @@ components:
                   bin:
                     type: string
                     example: 'bin'
+    PRVerifyFrontEnd:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - purchase_order_ids
+              - sku_quantities
+            properties:
+              purchase_order_ids:
+                type: array
+                items:
+                  type: integer
+                  example: 123
+              sku_quantities:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkuQuantity'
