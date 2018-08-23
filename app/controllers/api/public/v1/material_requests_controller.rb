@@ -9,7 +9,7 @@ module Api::Public::V1
         format.json { render_serializer scope: resources }
         format.csv do
           send_data(
-            ProcurementModule::MaterialRequestManager.index_csv(resources),
+            ProcurementModule::MaterialRequestsManager.new(resources).index_csv,
             filename: "material-requests-#{Time.zone.now.to_i}.csv"
           )
         end

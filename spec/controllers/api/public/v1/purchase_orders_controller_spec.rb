@@ -6,7 +6,21 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   let(:purchase_order) { FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor) }
   let(:other_user_purchase_order) { FactoryBot.create(:purchase_order) }
 
-  describe '#index' do
+  def expected_csv_response(purchase_order)
+    purchase_order_item = purchase_order.purchase_order_items.first
+    expected_response = "ID,Supplier,Company,Item Name,Pack,Quantity\n"
+    expected_response += "#{purchase_order.id},#{purchase_order.supplier_id},#{purchase_order_item.sku.manufacturer_name},#{purchase_order_item.sku.sku_name},#{purchase_order_item.sku.pack_size},#{purchase_order_item.quantity}\n"
+  end
+
+  describe '#index json and csv format' do
+    before(:each) do
+      FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor)
+      FactoryBot.create(:purchase_order_item, purchase_order: PurchaseOrder.first)
+      request.headers.merge!({
+        "ACCEPT" => 'application/json'
+      })
+    end
+
     context 'Invalid filters applied' do
       it 'should return bad request' do
         get :index, params: { id: 'INVALID_ID' }
@@ -23,12 +37,26 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
         get :index, params: { created_to: 'invalid date' }
         expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { id: 'INVALID_ID', format: 'csv' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { status: '', format: 'csv' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { supplier_name: '', format: 'csv' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { created_from: 'invalid date', format: 'csv' }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { created_to: 'invalid date', format: 'csv' }
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when no filters are applied' do
       it 'should return valid purchase orders' do
-        FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor)
         purchase_orders = PurchaseOrder.all
         get :index, params: {}
 
@@ -41,12 +69,16 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_response.count).at_path('data')
         expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+
+
+        get :index, params: { format: 'csv' }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(expected_csv_response(purchase_orders.first))
       end
     end
 
     context 'when id filter is applied' do
       it 'should return valid purchase order' do
-        FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor)
         get :index, params: { id: PurchaseOrder.first.id }
 
         expected_response = [
@@ -58,6 +90,11 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_response.count).at_path('data')
         expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+
+
+        get :index, params: { id: PurchaseOrder.first.id, format: 'csv' }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(expected_csv_response(PurchaseOrder.first))
       end
     end
 
@@ -66,45 +103,56 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         FactoryBot.create(:supplier, name: 'kamal')
         FactoryBot.create(:supplier, name: 'Anubhav')
         FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, supplier: Supplier.first)
-        FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, supplier: Supplier.second)
+        purchase_order = FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, supplier: Supplier.last)
+        FactoryBot.create(:purchase_order_item, purchase_order: purchase_order)
 
-        get :index, params: { supplier_name: Supplier.first.name }
+        get :index, params: { supplier_name: 'Anubhav' }
+
 
         expected_response = [
-          PurchaseOrder.first.slice(:id, :supplier_id, :vendor_id,
+          PurchaseOrder.last.slice(:id, :supplier_id, :vendor_id,
                                     :code, :status, :type, :created_at, :updated_at)
-                                    .merge(supplier_name: PurchaseOrder.first.supplier.name)
+                                    .merge(supplier_name: PurchaseOrder.last.supplier.name)
         ]
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_response.count).at_path('data')
         expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+
+
+        get :index, params: {  supplier_name: 'Anubhav', format: 'csv' }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(expected_csv_response(PurchaseOrder.last))
       end
     end
 
     context 'when status filter is applied' do
       it 'should return valid purchase orders' do
         FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, status: :created)
-        FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, status: :pending)
+        purchase_order = FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor, status: :pending)
+        FactoryBot.create(:purchase_order_item, purchase_order: purchase_order)
 
-        get :index, params: { status: 'created' }
+        get :index, params: { status: 'pending' }
 
         expected_response = [
-          PurchaseOrder.first.slice(:id, :supplier_id, :vendor_id,
-                                    :code, :status, :type, :created_at, :updated_at)
-                                    .merge(supplier_name: PurchaseOrder.first.supplier.name)
+          purchase_order.slice(:id, :supplier_id, :vendor_id,
+                               :code, :status, :type, :created_at, :updated_at)
+                               .merge(supplier_name: purchase_order.supplier.name)
         ]
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_response.count).at_path('data')
         expect(response.body).to be_json_eql(expected_response.to_json).at_path('data')
+
+
+        get :index, params: { status: 'pending', format: 'csv' }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(expected_csv_response(purchase_order))
       end
     end
 
     context 'when created_from filter is applied' do
       it 'should return purchase orders created after provided date' do
-        FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor, created_at: 10.days.ago)
-
         created_from = 11.day.ago
         expected_data = current_vendor.purchase_orders
                           .where('created_at >= ?', created_from.to_date.beginning_of_day)
@@ -124,8 +172,6 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
     context 'when created_to filter is applied' do
       it 'should return purchase orders created before provided date' do
-        FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor)
-
         created_to = 3.day.ago
         expected_data = current_vendor.purchase_orders.
           where('created_at <= ?', created_to.to_date.end_of_day)

@@ -5,7 +5,15 @@ module Api::Public::V1
     # GET /purchase_orders
     def index
       resources = purchase_orders.filter(index_filters)
-      render_serializer scope: resources.includes(:supplier)
+      respond_to do |format|
+        format.json { render_serializer scope: resources.includes(:supplier) }
+        format.csv do
+          send_data(
+            ProcurementModule::PurchaseOrdersManager.new(resources).index_csv,
+            filename: "purchase-orders-#{Time.zone.now.to_i}.csv"
+          )
+        end
+      end
     end
 
     # GET /purchase_orders/1
