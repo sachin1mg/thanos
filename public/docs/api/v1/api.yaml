@@ -796,6 +796,44 @@ paths:
                     example: 200
       requestBody:
         $ref: '#/components/requestBodies/PRVerifyFrontEnd'
+  /purchase_receipts/verify_csv:
+    post:
+      tags:
+        - Purchase Receipts
+      summary: Verify the Sku quantites against the PO's present in the system
+      operationId: verifyCSV
+      description:
+        This API verifies the uploaded CSV with the existing purchase orders in the system.
+        It returns the information regarding extra and deficient sku quantities
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/PRVerificationResponse'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      requestBody:
+        $ref: '#/components/requestBodies/PRVerifyCsvUpload'
   /batches:
     get:
       tags:
@@ -1461,3 +1499,19 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/SkuQuantity'
+    PRVerifyCsvUpload:
+      content:
+        multipart/form-data:
+          schema:
+            required:
+              - purchase_order_ids
+              - file
+            properties:
+              purchase_order_ids:
+                type: array
+                items:
+                  type: integer
+                  example: 123
+              file:
+                type: string
+                format: binary
