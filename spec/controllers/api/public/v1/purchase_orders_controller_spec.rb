@@ -6,10 +6,14 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
   let(:purchase_order) { FactoryBot.create(:purchase_order, user: current_user, vendor: current_vendor) }
   let(:other_user_purchase_order) { FactoryBot.create(:purchase_order) }
 
-  def expected_csv_response(purchase_order)
-    purchase_order_item = purchase_order.purchase_order_items.first
+  def expected_csv_response(purchase_orders)
+    purchase_order_items = PurchaseOrderItem.where(purchase_order_id: purchase_orders.pluck(:id))
     expected_response = "ID,Supplier,Company,Item Name,Pack,Quantity\n"
-    expected_response += "#{purchase_order.id},#{purchase_order.supplier_id},#{purchase_order_item.sku.manufacturer_name},#{purchase_order_item.sku.sku_name},#{purchase_order_item.sku.pack_size},#{purchase_order_item.quantity}\n"
+
+    purchase_order_items.each do |purchase_order_item|
+      expected_response += "#{purchase_order_item.purchase_order_id},#{purchase_order_item.purchase_order.supplier_id},#{purchase_order_item.sku.manufacturer_name},#{purchase_order_item.sku.sku_name},#{purchase_order_item.sku.pack_size},#{purchase_order_item.quantity}\n"
+    end
+    expected_response
   end
 
   describe '#index json and csv format' do
@@ -73,7 +77,7 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
         get :index, params: { format: 'csv' }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to eq(expected_csv_response(purchase_orders.first))
+        expect(response.body).to eq(expected_csv_response(purchase_orders))
       end
     end
 
@@ -94,7 +98,7 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
         get :index, params: { id: PurchaseOrder.first.id, format: 'csv' }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to eq(expected_csv_response(PurchaseOrder.first))
+        expect(response.body).to eq(expected_csv_response([PurchaseOrder.first]))
       end
     end
 
@@ -122,7 +126,7 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
         get :index, params: {  supplier_name: 'Anubhav', format: 'csv' }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to eq(expected_csv_response(PurchaseOrder.last))
+        expect(response.body).to eq(expected_csv_response([PurchaseOrder.last]))
       end
     end
 
@@ -147,7 +151,7 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
 
         get :index, params: { status: 'pending', format: 'csv' }
         expect(response).to have_http_status(:ok)
-        expect(response.body).to eq(expected_csv_response(purchase_order))
+        expect(response.body).to eq(expected_csv_response([purchase_order]))
       end
     end
 

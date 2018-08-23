@@ -275,6 +275,58 @@ paths:
             schema:
               type: string
               example: '2018-08-18'
+  /purchase_orders.csv:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Download PO information
+      operationId: getPOInformation
+      description: Get Purchase Orders for given filters
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Purchase Orders downloaded successfully
+          content:
+            application/json:
+              schema:
+                type: file
+      parameters:
+        - name: id
+          in: query
+          description: Filter Purchase Orders by id
+          schema:
+            type: integer
+            format: int32
+            example: 21
+        - name: status
+          in: query
+          description: Filter Purchase Orders by status
+          schema:
+            type: string
+            example: 'pending'
+        - name: supplier_name
+          in: query
+          description: Filter Purchase Orders by supplier name
+          schema:
+            type: string
+            example: 'Sup ABC'
+        - name: created_from
+          in: query
+          description: Filter Purchase Orders created after the provided date
+          schema:
+            type: string
+            example: '2018-08-12'
+        - name: created_to
+          in: query
+          description: Filter Purchase Orders created before the provided date
+          schema:
+            type: string
+            example: '2018-08-18'
   /purchase_orders/{purchase_order_id}:
     get:
       tags:
