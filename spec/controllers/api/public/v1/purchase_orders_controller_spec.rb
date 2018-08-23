@@ -141,6 +141,23 @@ RSpec.describe Api::Public::V1::PurchaseOrdersController, type: :controller do
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
+
+    context 'when pagination is applied' do
+      it 'should return paginated results' do
+        FactoryBot.create_list(:purchase_order, 5, user: current_user, vendor: current_vendor)
+        purchase_order = PurchaseOrder.second
+        get :index, params: { page: 2, per_page: 1 }
+
+        expected_data = [purchase_order.slice(:id, :supplier_id, :vendor_id,
+                         :code, :status, :type, :created_at, :updated_at)
+                         .merge(supplier_name: purchase_order.supplier.name)]
+        expected_meta = { total_pages: 5, total_count: 5, page: 2 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
   end
 
   describe '#show' do

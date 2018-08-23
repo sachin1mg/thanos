@@ -100,6 +100,20 @@ RSpec.describe Api::Public::V1::LocationsController, type: :controller, skip_aut
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
+
+    context 'when pagination is applied' do
+      it 'should return paginated results' do
+        FactoryBot.create_list(:location, 5, vendor: Vendor.first)
+        get :index, params: { page: 2, per_page: 1 }
+
+        expected_data = [Location.second.slice(default_attributes)]
+        expected_meta = { total_pages: 5, total_count: 5, page: 2 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
   end
 
   describe '#create' do

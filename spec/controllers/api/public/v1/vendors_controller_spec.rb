@@ -48,6 +48,20 @@ RSpec.describe Api::Public::V1::VendorsController, type: :controller, skip_auth:
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
       end
     end
+
+    context 'when pagination is applied' do
+      it 'should return paginated results' do
+        FactoryBot.create_list(:vendor, 5)
+        get :index, params: { page: 2, per_page: 1 }
+
+        expected_data = [Vendor.second.slice(:id, :name, :status, :metadata, :invoice_number_template, :created_at, :updated_at)]
+        expected_meta = { total_pages: 6, total_count: 6, page: 2 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
   end
 
   describe '#create' do
