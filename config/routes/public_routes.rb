@@ -24,8 +24,10 @@ module PublicRoutes
           end
           resources :material_requests, only: [:index, :show]
           resources :purchase_receipts, except: [:new, :edit, :destroy] do
-            post 'verify', on: :collection
-            post 'verify_csv', on: :collection
+            collection do
+              post 'verify'
+              post 'verify_csv'
+            end
             resources :purchase_receipt_items, except: [:new, :edit, :destroy]
           end
           resources :schemes, only: [:create, :update, :index, :show]

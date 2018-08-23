@@ -31,13 +31,10 @@ module ProcurementModule
         received_quantity = data[:quantity]
         ordered_quantity = purchase_order_items.where(status: :draft).sum(:quantity)
         
-        if ordered_quantity == received_quantity
-          result[:fulfilled] << { sku_id: sku.id, quantity: ordered_quantity }
-        elsif ordered_quantity < received_quantity
-          result[:fulfilled] << { sku_id: sku.id, quantity: ordered_quantity }
+        result[:fulfilled] << { sku_id: sku.id, quantity: [ordered_quantity, received_quantity].min }
+        if ordered_quantity < received_quantity
           result[:extra] << { sku_id: sku.id, quantity: received_quantity - ordered_quantity }
-        else
-          result[:fulfilled] << { sku_id: sku.id, quantity: received_quantity }
+        elsif ordered_quantity > received_quantity
           result[:shortages] << { sku_id: sku.id, quantity: ordered_quantity - received_quantity }
         end
       end
