@@ -9,6 +9,8 @@ info:
   contact:
     email: anubhav.singh@1mg.com
 tags:
+  - name: User
+    description: User related API's
   - name: Health Check
     description: To check system is up or not
   - name: Material Requests
@@ -20,6 +22,60 @@ tags:
   - name: Batches
     description: Batch related API's
 paths:
+  /login:
+    post:
+      tags:
+        - User
+      servers:
+        - url: http://localhost:3000
+      summary: Log in user
+      operationId: userLogIn
+      description: Log in user and create session
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Suppliers created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: '$example.token$'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: 'theronstreich@naderbaumbach.co'
+                password:
+                  type: string
+                  example: 'hackathon'
   /health:
     get:
       tags:
@@ -50,6 +106,8 @@ paths:
                     example: 200
   /material_requests:
     get:
+      security:
+        - Authorization: []
       tags:
         - Material Requests
       summary: Get Material Requests information
@@ -121,6 +179,8 @@ paths:
             example: '2018-08-18'
   /material_requests.csv:
     get:
+      security:
+        - Authorization: []
       tags:
         - Material Requests
       summary: Download Shortage information
@@ -169,6 +229,8 @@ paths:
     get:
       tags:
         - Material Requests
+      security:
+        - Authorization: []
       summary: Get Material Request information
       operationId: getMRInformation
       responses:
@@ -190,7 +252,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/MaterialRequest'
                   is_success:
                     type: boolean
@@ -198,10 +259,20 @@ paths:
                   status_code:
                     type: string
                     example: 200
+    parameters:
+        - name: material_request_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
   /purchase_orders:
       get:
         tags:
           - Purchase Orders
+        security:
+          - Authorization: []
         summary: Get Purchase Orders information
         operationId: getPurchaseOrders
         description: |
@@ -279,6 +350,8 @@ paths:
     get:
       tags:
         - Purchase Orders
+      security:
+        - Authorization: []
       summary: Get Purchase Orders information
       operationId: getPOInformation
       responses:
@@ -301,7 +374,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/PurchaseOrder'
                   meta:
                     $ref: '#/components/schemas/Meta'
@@ -311,9 +383,19 @@ paths:
                   status_code:
                     type: string
                     example: 200
+      parameters:
+        - name: purchase_order_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
     put:
       tags:
         - Purchase Orders
+      security:
+        - Authorization: []
       summary: Update Purchase Orders status
       operationId: putPOStatus
       responses:
@@ -336,7 +418,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/PurchaseOrder'
                   meta:
                     $ref: '#/components/schemas/Meta'
@@ -346,12 +427,22 @@ paths:
                   status_code:
                     type: string
                     example: 200
+      parameters:
+        - name: purchase_order_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
       requestBody:
         $ref: '#/components/requestBodies/PurchaseOrder'
   /suppliers:
     get:
       tags:
         - Suppliers
+      security:
+        - Authorization: []
       summary: Get Suppliers Information
       operationId: getSupplierDetails
       description: |
@@ -400,6 +491,8 @@ paths:
     post:
       tags:
         - Suppliers
+      security:
+        - Authorization: []
       summary: Create Supplier based on parameters
       operationId: createSupplier
       description: |
@@ -426,7 +519,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Supplier'
                   is_success:
                     type: boolean
@@ -440,6 +532,8 @@ paths:
     get:
       tags:
         - Suppliers
+      security:
+        - Authorization: []
       summary: Get Supplier Information
       operationId: getSupplierInformation
       responses:
@@ -461,7 +555,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Supplier'
                   is_success:
                     type: boolean
@@ -469,9 +562,19 @@ paths:
                   status_code:
                     type: string
                     example: 200
+      parameters:
+        - name: supplier_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
     put:
       tags:
         - Suppliers
+      security:
+        - Authorization: []
       summary: Update Supplier based on parameters
       operationId: updateSupplier
       responses:
@@ -493,7 +596,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Supplier'
                   is_success:
                     type: boolean
@@ -503,10 +605,20 @@ paths:
                     example: 200
       requestBody:
         $ref: '#/components/requestBodies/Supplier'
+      parameters:
+        - name: supplier_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
   /locations:
     get:
       tags:
         - Locations
+      security:
+        - Authorization: []
       summary: Get Locations Information
       operationId: getLocationDetails
       description: |
@@ -576,6 +688,8 @@ paths:
     post:
       tags:
         - Locations
+      security:
+        - Authorization: []
       summary: Create Location for current vendor based on parameters
       operationId: createLocation
       description: |
@@ -602,7 +716,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Location'
                   is_success:
                     type: boolean
@@ -616,6 +729,8 @@ paths:
     get:
       tags:
         - Locations
+      security:
+        - Authorization: []
       summary: Get Location Information
       operationId: getLocationInformation
       responses:
@@ -637,7 +752,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Location'
                   is_success:
                     type: boolean
@@ -645,9 +759,19 @@ paths:
                   status_code:
                     type: string
                     example: 200
+      parameters:
+        - name: location_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
     put:
       tags:
         - Locations
+      security:
+        - Authorization: []
       summary: Update Locations based on parameters
       operationId: updateLocation
       responses:
@@ -669,7 +793,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Location'
                   is_success:
                     type: boolean
@@ -679,87 +802,99 @@ paths:
                     example: 200
       requestBody:
         $ref: '#/components/requestBodies/Location'
+      parameters:
+        - name: location_id
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int32
+            example: 21
   /purchase_receipts:
-      get:
-        tags:
-          - Purchase Receipts
-        summary: Get Purchase Receipts information
-        operationId: getPRDetails
-        description: |
-          Get Purchase Receipts for given filters
-          ---
-          ---
-          1. id => /purchase_receipts?id=3
-          2. status => /purchase_receipts?status=pending
-          3. created_from => /purchase_receipts?created_from=2018-08-12 (Format - YYYY-MM-DD)
-          4. created_to => /purchase_receipts?created_to=2018-08-18 (Format - YYYY-MM-DD)
-        responses:
-          400:
-            description: Bad Request
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorObject400'
-          200:
-            description: Purchase Receipts fetched successfully
-            content:
-              application/json:
-                schema:
-                  type: object
-                  required:
-                    - data
-                    - meta
-                    - is_success
-                    - status_code
-                  properties:
-                    data:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/PurchaseReceipt'
-                    meta:
-                      $ref: '#/components/schemas/Meta'
-                    is_success:
-                      type: boolean
-                      example: true
-                    status_code:
-                      type: string
-                      example: 200
-        parameters:
-          - name: id
-            in: query
-            description: Filter Purchase Receipts by id
-            schema:
-              type: integer
-              format: int32
-              example: 21
-          - name: status
-            in: query
-            description: Filter Purchase Receipts by status
-            schema:
-              type: string
-              example: 'pending'
-          - name: supplier_name
-            in: query
-            description: Filter Purchase Receipts by supplier name
-            schema:
-              type: string
-              example: 'name'
-          - name: created_from
-            in: query
-            description: Filter Purchase Receipts created after the provided date
-            schema:
-              type: string
-              example: '2018-08-12'
-          - name: created_to
-            in: query
-            description: Filter Purchase Receipts created before the provided date
-            schema:
-              type: string
-              example: '2018-08-18'
+    get:
+      tags:
+        - Purchase Receipts
+      security:
+        - Authorization: []
+      summary: Get Purchase Receipts information
+      operationId: getPRDetails
+      description: |
+        Get Purchase Receipts for given filters
+        ---
+        ---
+        1. id => /purchase_receipts?id=3
+        2. status => /purchase_receipts?status=pending
+        3. created_from => /purchase_receipts?created_from=2018-08-12 (Format - YYYY-MM-DD)
+        4. created_to => /purchase_receipts?created_to=2018-08-18 (Format - YYYY-MM-DD)
+      responses:
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject400'
+        200:
+          description: Purchase Receipts fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                  - is_success
+                  - status_code
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PurchaseReceipt'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  is_success:
+                    type: boolean
+                    example: true
+                  status_code:
+                    type: string
+                    example: 200
+      parameters:
+        - name: id
+          in: query
+          description: Filter Purchase Receipts by id
+          schema:
+            type: integer
+            format: int32
+            example: 21
+        - name: status
+          in: query
+          description: Filter Purchase Receipts by status
+          schema:
+            type: string
+            example: 'pending'
+        - name: supplier_name
+          in: query
+          description: Filter Purchase Receipts by supplier name
+          schema:
+            type: string
+            example: 'name'
+        - name: created_from
+          in: query
+          description: Filter Purchase Receipts created after the provided date
+          schema:
+            type: string
+            example: '2018-08-12'
+        - name: created_to
+          in: query
+          description: Filter Purchase Receipts created before the provided date
+          schema:
+            type: string
+            example: '2018-08-18'
   /batches:
     get:
       tags:
         - Batches
+      security:
+        - Authorization: []
       summary: Get Batches Information
       operationId: getBatchDetails
       description: Get Batches for given filters
@@ -837,6 +972,8 @@ paths:
     post:
       tags:
         - Batches
+      security:
+        - Authorization: []
       summary: Create Batch for a sku
       operationId: createBatch
       description: Create a new location based on given parameters.
@@ -859,7 +996,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Batch'
                   is_success:
                     type: boolean
@@ -873,6 +1009,8 @@ paths:
     get:
       tags:
         - Batches
+      security:
+        - Authorization: []
       summary: Get Batch Information
       operationId: getBatchInformation
       responses:
@@ -894,7 +1032,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Batch'
                   is_success:
                     type: boolean
@@ -905,6 +1042,7 @@ paths:
       parameters:
         - name: batch_id
           in: path
+          required: true
           schema:
             type: integer
             format: int32
@@ -912,6 +1050,8 @@ paths:
     put:
       tags:
         - Batches
+      security:
+        - Authorization: []
       summary: Update Batches based on parameters
       operationId: updateBatch
       responses:
@@ -933,7 +1073,6 @@ paths:
                   - status_code
                 properties:
                   data:
-                    type: object
                     $ref: '#/components/schemas/Batch'
                   is_success:
                     type: boolean
@@ -945,12 +1084,18 @@ paths:
         $ref: '#/components/requestBodies/Batch'
       parameters:
         - name: batch_id
+          required: true
           in: path
           schema:
             type: integer
             format: int32
             example: 21
 components:
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      in: header
+      name: Authorization
   schemas:
     Health:
       type: object
@@ -1013,7 +1158,6 @@ components:
           type: string
           example: '2018-08-17T15:11:14.222+05:30'
         sku:
-          type: object
           $ref: '#/components/schemas/Sku'
     PurchaseOrder:
       type: object
@@ -1089,7 +1233,8 @@ components:
               type: string
               example: 'cancelled'
             total_amount:
-              type: float
+              type: number
+              format: float
               example: 123.5
             created_at:
               type: string
@@ -1351,3 +1496,40 @@ components:
                   bin:
                     type: string
                     example: 'bin'
+    Batch:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - location
+            properties:
+              location:
+                type: object
+                required:
+                  - sku_id
+                  - mrp
+                  - code
+                  - name
+                  - manufacturing_date
+                  - expiry_date
+                properties:
+                  sku_id:
+                    type: integer
+                    example: 1
+                  mrp:
+                    type: number
+                    format: float
+                    example: 20.00
+                  code:
+                    type: string
+                    example: 'slab'
+                  name:
+                    type: string
+                    example: 'bin'
+                  manufacturing_date:
+                    type: string
+                    example: '2018-08-20'
+                  expiry_date:
+                    type: string
+                    example: '2018-08-20'
