@@ -10,7 +10,7 @@ PUMA:
 
 PSQL:
   POOL: 5
-  HOST: localhost
+  HOST: postgres.1mginfra.com
   PORT: 5432
   USERNAME: odin_user
   PASSWORD: odin_pass
