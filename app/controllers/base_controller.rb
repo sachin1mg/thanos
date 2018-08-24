@@ -5,8 +5,8 @@ class BaseController < ApplicationController
 
 
   def valid_pagination_params?
-    param! :page, Integer, default: 1
-    param! :per_page, Integer, default: Settings.CONSTANTS.PAGINATION.DEFAULT_PER_PAGE
+    param! :page, Integer, min: 1, default: 1
+    param! :per_page, Integer, min: 1, default: Settings.CONSTANTS.PAGINATION.DEFAULT_PER_PAGE
   end
 
   #

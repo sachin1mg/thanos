@@ -3,7 +3,7 @@ module Api::Public::V1
     skip_before_action :valid_action?, only: [:index, :show]
 
     def index
-      supplier_skus = SupplierSku.filter(filter_params)
+      supplier_skus = SupplierSku.filter(index_filters)
       render_serializer scope: supplier_skus
     end
 
@@ -39,7 +39,7 @@ module Api::Public::V1
       @sku ||= Sku.find(params[:sku_id])
     end
 
-    def filter_params
+    def index_filters
       param! :sku_name, String, transform: :strip
       param! :supplier_name, String, transform: :strip
 

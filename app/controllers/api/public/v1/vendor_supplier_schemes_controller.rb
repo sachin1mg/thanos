@@ -3,7 +3,7 @@ module Api::Public::V1
     skip_before_action :valid_action?, only: [:index, :show]
 
     def index
-      render_serializer scope: vendor_supplier_schemes.filter(filter_params)
+      render_serializer scope: vendor_supplier_schemes.filter(index_filters)
     end
 
     def show
@@ -46,7 +46,7 @@ module Api::Public::V1
       @scheme ||= Scheme.find(params[:scheme_id])
     end
 
-    def filter_params
+    def index_filters
       param! :scheme_name, String, transform: :strip
       param! :sku_name, String, transform: :strip
       param! :supplier_name, String, transform: :strip
