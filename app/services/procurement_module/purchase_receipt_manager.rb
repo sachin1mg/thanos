@@ -31,6 +31,8 @@ module ProcurementModule
         received_quantity = data[:quantity]
         ordered_quantity = purchase_order_items.where(status: :draft).sum(:quantity)
         
+        result[:extra] << data and next if ordered_quantity == 0
+
         result[:fulfilled] << { sku_id: sku.id, quantity: [ordered_quantity, received_quantity].min }
         if ordered_quantity < received_quantity
           result[:extra] << { sku_id: sku.id, quantity: received_quantity - ordered_quantity }

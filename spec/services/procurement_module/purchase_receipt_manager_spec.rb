@@ -300,8 +300,7 @@ RSpec.describe ProcurementModule::PurchaseReceiptManager, type: :service do
             shortages: [ { sku_id: sku.id, quantity: 5 } ],
             extra: [ { sku_id: sku2.id, quantity: desired_quantity_sku2 } ],
             not_in_po: [ { sku_id: sku3.id, quantity: 100 } ],
-            fulfilled: [ { sku_id: sku.id, quantity: desired_quantity_sku - 5 },
-                         { sku_id: sku2.id, quantity: 0 } ]
+            fulfilled: [ { sku_id: sku.id, quantity: desired_quantity_sku - 5 } ]
           }
   
           sku_quantities = [ { sku_id: sku.id, quantity: desired_quantity_sku - 5 },
