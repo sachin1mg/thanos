@@ -22,6 +22,16 @@ RSpec.describe Api::Public::V1::SkusController, type: :controller, skip_auth: tr
   end
 
   describe '#index' do
+    context 'when filters are invalid' do
+      it 'should raise bad request' do
+        get :index, params: { per_page: 0 }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { page: 0 }
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
     context 'when no filters are applied' do
       it 'should return valid skus' do
         FactoryBot.create_list(:sku, 5)
@@ -89,6 +99,49 @@ RSpec.describe Api::Public::V1::SkusController, type: :controller, skip_auth: tr
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'when pagination is applied' do
+      it 'should return paginated results' do
+        FactoryBot.create_list(:sku, 5)
+        get :index, params: { page: 2, per_page: 1 }
+
+        expected_data = [Sku.second.slice(:id, :onemg_sku_id, :sku_name, :manufacturer_name,
+                                          :item_group, :uom, :pack_size, :created_at, :updated_at)]
+        expected_meta = { total_pages: 5, total_count: 5, page: 2 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
+
+    context 'when pagination is applied with more than maximum page no' do
+      it 'should return empty results' do
+        FactoryBot.create_list(:sku, 5)
+        get :index, params: { page: 6, per_page: 1 }
+
+        expected_meta = { total_pages: 5, total_count: 5, page: 6 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size([].count).at_path('data')
+        expect(response.body).to be_json_eql([].to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
+
+    context 'when pagination is applied with filter' do
+      it 'should return paginated results' do
+        FactoryBot.create_list(:sku, 5)
+        get :index, params: { page: 1, per_page: 2, onemg_sku_id_filter: Sku.second.onemg_sku_id }
+
+        expected_data = [Sku.second.slice(:id, :onemg_sku_id, :sku_name, :manufacturer_name,
+                                          :item_group, :uom, :pack_size, :created_at, :updated_at)]
+        expected_meta = { total_pages: 1, total_count: 1, page: 1 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
       end
     end
   end

@@ -22,6 +22,12 @@ RSpec.describe Api::Public::V1::MaterialRequestsController, type: :controller do
 
         get :index, params: { created_to: 'invalid date' }
         expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { per_page: 0 }
+        expect(response).to have_http_status(:bad_request)
+
+        get :index, params: { page: 0 }
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -106,6 +112,45 @@ RSpec.describe Api::Public::V1::MaterialRequestsController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(response.body).to have_json_size(expected_data.count).at_path('data')
         expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+      end
+    end
+
+    context 'when pagination is applied' do
+      it 'should return paginated results' do
+        get :index, params: { page: 2, per_page: 1 }
+
+        expected_data = [MaterialRequest.second.slice(default_attributes).merge(sku: MaterialRequest.second.sku.slice(sku_default_attributes))]
+        expected_meta = { total_pages: 5, total_count: 5, page: 2 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
+
+    context 'when pagination is applied with more than maximum page no' do
+      it 'should return empty results' do
+        get :index, params: { page: 6, per_page: 1 }
+
+        expected_meta = { total_pages: 5, total_count: 5, page: 6 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size([].count).at_path('data')
+        expect(response.body).to be_json_eql([].to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
+      end
+    end
+
+    context 'when pagination is applied with filter' do
+      it 'should return paginated results' do
+        material_request = MaterialRequest.second
+        get :index, params: { page: 1, per_page: 2, id: material_request.id }
+
+        expected_data = [material_request.slice(default_attributes).merge(sku: material_request.sku.slice(sku_default_attributes))]
+        expected_meta = { total_pages: 1, total_count: 1, page: 1 }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to have_json_size(expected_data.count).at_path('data')
+        expect(response.body).to be_json_eql(expected_data.to_json).at_path('data')
+        expect(response.body).to be_json_eql(expected_meta.to_json).at_path('meta')
       end
     end
   end
