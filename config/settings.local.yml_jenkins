@@ -1,0 +1,66 @@
+RAILS:
+  SECRET_KEY_BASE: ''
+
+PUMA:
+  THREADS:
+    MIN: 1
+    MAX: 5
+  WORKERS: 1
+  PORT: 3000
+
+PSQL:
+  POOL: 5
+  HOST: localhost
+  PORT: 5432
+  USERNAME: odin_user
+  PASSWORD: odin_pass
+  DATABASE: odin_db
+  CONNECT_TIMEOUT: 2
+  READ_TIMEOUT: 10
+  WRITE_TIMEOUT: 10
+  CHECKOUT_TIMEOUT: 5
+
+CACHE:
+  ENABLE: true
+  REDIS:
+    HOST: <%= ENV['REDIS_HOST'] %>
+    PORT: <%= ENV['REDIS_PORT'] %>
+
+SIDEKIQ:
+  REDIS:
+    HOST: <%= ENV['REDIS_HOST'] %>
+    PORT: <%= ENV['REDIS_PORT'] %>
+  SERVER:
+    REDIS:
+      POOL: 25
+  CLIENT:
+    REDIS:
+      POOL: 5
+
+NEW_RELIC:
+  KEY: samplekey
+
+SENTRY:
+  DSN: samplekey
+  TAGS:
+    service: VanillaApplication
+
+LOGRAGE:
+  ENABLE_RESPONSE: false
+
+REST_CLIENT:
+  ENABLE_LOGGING: false
+  USER_AGENT: vanilla_application
+  TIMEOUTS:
+    DEFAULT: 3
+    INTERSERVICE: 1
+
+DATADOG:
+  ENABLE: false
+  DEBUG: false
+
+CONSTANTS:
+  DOMAIN: 'local.vanilla-application.com'
+  PAGINATION:
+    DEFAULT_PER_PAGE: 25
+    MAX_PER_PAGE: 100
